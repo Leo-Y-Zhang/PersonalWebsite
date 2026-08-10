@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leo Y. Zhang</title>
+<meta name="description" content="Mathematics and software that proves its own results.">
+<meta property="og:title" content="Leo Y. Zhang">
+<meta property="og:description" content="Mathematics and software that proves its own results.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://leo-y-zhang.github.io/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Leo Y. Zhang</h1>
+  <p class="tagline">Mathematics, and software that proves its own results.</p>
+</header>
+
+<main>
+  <section aria-labelledby="about-h">
+    <h2 id="about-h">About</h2>
+    <p>I'm a sixth-form student in the UK. Most of what I build follows one idea:
+    a result is worth what its verification is worth. So the puzzle generator
+    re-proves every puzzle before emitting it, the consensus protocol has its
+    safety properties machine-checked, and the renderer is validated against
+    what the physics predicts &mdash; you can check the claim yourself instead of
+    taking my word for it.</p>
+  </section>
+
+  <section aria-labelledby="maths-h">
+    <h2 id="maths-h">Mathematics</h2>
+    <p>I compute new terms in families of mixed van der Waerden numbers whose
+    OEIS entries had been unchanged since 2012. The first,
+    <strong>A217058&nbsp;a(12)&nbsp;=&nbsp;57</strong>, was reviewed and approved
+    by the OEIS in August 2026; three further terms are under editorial review.
+    Every lower bound ships a colouring you can verify by hand, with no solver
+    involved. The method, the encoding, and the honest limits of what has
+    actually been proved are written up in
+    <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>.</p>
+  </section>
+
+  <section aria-labelledby="projects-h">
+    <h2 id="projects-h">Selected projects</h2>
+    <ul class="projects">
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
+        <span class="lang">Python</span>
+        <p>Four new mixed van der Waerden numbers from SAT. Every lower bound
+        ships a colouring you can verify by hand.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a>
+        <span class="lang">TypeScript</span>
+        <p>A deterministic, zero-dependency Monte Carlo path tracer whose 274
+        tests validate the rendering physics, not just the code.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/RaftSim">RaftSim</a>
+        <span class="lang">Python</span>
+        <p>Raft consensus in a seeded fault simulator: the five safety
+        properties are checked after every step, and any failure replays from
+        its seed.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a>
+        <span class="lang">Python</span>
+        <p>An educational quantum-circuit compiler whose optimisations and SWAP
+        routing are proved correct by an exact unitary equivalence check.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a>
+        <span class="lang">Python</span>
+        <p>Decomposes a reported LLM benchmark score into measured capability
+        and measured artifacts, with Shapley attribution.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/Understudy">Understudy</a>
+        <span class="lang">JavaScript</span>
+        <p>An interview rehearsal studio in the browser: on-device face and
+        speech analysis with annotated replay. Zero data leaves your device.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/TerminalAgent">TerminalAgent</a>
+        <span class="lang">TypeScript</span>
+        <p>A terminal AI coding assistant: agentic tool loop, per-turn
+        checkpoints with a refusing /undo, and 205 offline unit tests.</p>
+      </li>
+      <li>
+        <a href="https://github.com/Leo-Y-Zhang/PuzzleForge">PuzzleForge</a>
+        <span class="lang">Python</span>
+        <p>An offline chess-puzzle generator: a bundled from-scratch engine
+        re-proves every answer before it ships. Pure Python, zero dependencies.</p>
+      </li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p>Everything above is public: <a href="https://github.com/Leo-Y-Zhang">github.com/Leo-Y-Zhang</a></p>
+</footer>
+</body>
+</html>
