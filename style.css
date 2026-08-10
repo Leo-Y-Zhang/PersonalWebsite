@@ -120,19 +120,22 @@ a:focus-visible {
   width: var(--cell);
   height: var(--cell);
   border-radius: 3px;
-  animation: cell-in 0.45s both;
-  animation-delay: calc(var(--i) * 14ms);
+  opacity: 1; /* always visible: the strip is the point, not the animation */
 }
 .cert .c1 { background: var(--navy); }
 .cert .c2 { background: var(--ochre); }
 .cert .w  { border: 1.5px solid var(--muted); background: transparent; }
 
-@keyframes cell-in {
-  from { opacity: 0; transform: scale(0.55); }
-  to   { opacity: 1; transform: scale(1); }
+/* Entrance is pure enhancement, and only where motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .cert .cells i {
+    animation: cell-in 0.5s backwards;
+    animation-delay: calc(var(--i) * 11ms);
+  }
 }
-@media (prefers-reduced-motion: reduce) {
-  .cert .cells i { animation: none; }
+@keyframes cell-in {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .cert figcaption {
