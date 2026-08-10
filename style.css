@@ -1,17 +1,44 @@
+/* Leo Y. Zhang — personal site.
+   Type: Fraunces (variable, self-hosted) for voice; IBM Plex Mono for receipts.
+   The one bold element is the certificate strip; everything else stays quiet. */
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("fonts/fraunces-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Plex Mono";
+  src: url("fonts/plexmono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Plex Mono";
+  src: url("fonts/plexmono-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
 :root {
-  --bg: #fdfdfb;
-  --ink: #1c1e21;
-  --muted: #5c6370;
-  --accent: #0b57a4;
-  --rule: #e3e1da;
+  --bg: #faf9f5;
+  --ink: #1a1c21;
+  --muted: #5d6472;
+  --navy: #0b57a4;
+  --ochre: #b07a10;
+  --rule: #e5e2d8;
+  --cell: 14px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14161a;
-    --ink: #e6e4de;
-    --muted: #9aa1ac;
-    --accent: #6fb0ea;
-    --rule: #2a2e35;
+    --bg: #13161a;
+    --ink: #e8e6e0;
+    --muted: #99a1ad;
+    --navy: #6fb0ea;
+    --ochre: #d9a441;
+    --rule: #2a2e36;
   }
 }
 
@@ -19,77 +46,143 @@
 
 body {
   margin: 0 auto;
-  padding: 3.5rem 1.25rem 4rem;
-  max-width: 42rem;
+  padding: 3.5rem 1.4rem 4.5rem;
+  max-width: 44rem;
   background: var(--bg);
   color: var(--ink);
-  font: 1.0625rem/1.65 ui-serif, Georgia, "Times New Roman", serif;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.66;
+  font-variation-settings: "opsz" 12;
 }
+
+/* ---------- masthead ---------- */
+
+.mast { margin-bottom: 2.75rem; }
+.mast .mark { display: block; width: 44px; height: 44px; margin-bottom: 1.1rem; }
 
 h1 {
-  font-size: 1.9rem;
-  line-height: 1.2;
-  margin: 0 0 0.35rem;
-  letter-spacing: -0.01em;
-}
-
-h2 {
-  font-size: 1.05rem;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--muted);
-  margin: 2.75rem 0 0.75rem;
-  border-top: 1px solid var(--rule);
-  padding-top: 1.5rem;
+  font-size: clamp(2.3rem, 6vw, 3.3rem);
+  font-weight: 620;
+  font-variation-settings: "opsz" 144;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  margin: 0 0 0.45rem;
+  text-wrap: balance;
 }
 
 .tagline {
   color: var(--muted);
   margin: 0;
+  font-size: 1.1rem;
+}
+
+/* ---------- section labels: the mono "receipts" voice ---------- */
+
+h2 {
+  font-family: "Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin: 3rem 0 0.9rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.6rem;
 }
 
 p { margin: 0 0 1rem; }
 
 a {
-  color: var(--accent);
+  color: var(--navy);
   text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  text-underline-offset: 2.5px;
 }
 a:hover { text-decoration-thickness: 2px; }
 a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--navy);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-.projects {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.projects li {
-  margin: 0 0 1.4rem;
-}
-.projects li a {
-  font-weight: 600;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  font-size: 1rem;
-}
-.projects li p {
-  margin: 0.15rem 0 0;
-}
-.lang {
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin-left: 0.5rem;
+/* ---------- the certificate ---------- */
+
+.cert { margin: 0 0 0.5rem; }
+
+.cert .cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 0.9rem;
 }
 
+.cert .cells i {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 3px;
+  animation: cell-in 0.45s both;
+  animation-delay: calc(var(--i) * 14ms);
+}
+.cert .c1 { background: var(--navy); }
+.cert .c2 { background: var(--ochre); }
+.cert .w  { border: 1.5px solid var(--muted); background: transparent; }
+
+@keyframes cell-in {
+  from { opacity: 0; transform: scale(0.55); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cert .cells i { animation: none; }
+}
+
+.cert figcaption {
+  font-family: "Plex Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 40rem;
+}
+.cert figcaption .claim { color: var(--ink); font-weight: 500; }
+.cert .k1 { color: var(--navy); font-weight: 500; }
+.cert .k2 { color: var(--ochre); font-weight: 500; }
+
+/* ---------- projects: each card leads with its receipt ---------- */
+
+.projects { list-style: none; margin: 0; padding: 0; }
+
+.projects li { margin: 0 0 1.7rem; }
+
+.projects .name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-variation-settings: "opsz" 30;
+}
+.projects .lang {
+  font-family: "Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-left: 0.55rem;
+}
+.projects .receipt {
+  display: block;
+  font-family: "Plex Mono", ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--navy);
+  margin: 0.2rem 0 0.15rem;
+}
+.projects li p { margin: 0; }
+
+/* ---------- footer ---------- */
+
 footer {
-  margin-top: 3rem;
+  margin-top: 3.25rem;
   border-top: 1px solid var(--rule);
-  padding-top: 1.25rem;
+  padding-top: 1.4rem;
   font-size: 0.95rem;
   color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
 }
+footer .mark { width: 22px; height: 22px; flex: none; }
+footer p { margin: 0; }
