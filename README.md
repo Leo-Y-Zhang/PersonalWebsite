@@ -1,4 +1,4 @@
-# leo-y-zhang.github.io
+# PersonalWebsite
 
 Personal site. Hand-written HTML and CSS, no build step, no JavaScript,
 no tracking. The strip on the front page is the real lower-bound certificate
