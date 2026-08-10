@@ -110,12 +110,15 @@
   <section aria-labelledby="maths-h">
     <h2 id="maths-h">Mathematics</h2>
     <p>I compute new terms in families of mixed van der Waerden numbers whose
-    OEIS entries had been unchanged since 2012. The first is approved and
-    published; three further terms are under editorial review. Every lower bound
-    ships a colouring like the one above; the upper bounds are SAT refutations,
-    reduced where stated to machine-checked proof objects. The method, the
-    encoding, and the honest limits of what has actually been proved are written
-    up in <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>.</p>
+    OEIS entries had been unchanged since Tanbir Ahmed's work in 2012. The first
+    is <a href="https://oeis.org/A217058">approved and published by the OEIS</a>;
+    three further terms are under editorial review. Every lower bound ships a
+    colouring like the one above; the upper bounds are SAT refutations, reduced
+    where stated to machine-checked proof objects. The method, the encoding, and
+    the honest limits of what has actually been proved are set out in a
+    <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">paper</a>,
+    with all the code and certificates in
+    <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>.</p>
   </section>
 
   <section aria-labelledby="projects-h">
@@ -127,6 +130,14 @@
         <span class="receipt">every bound ships a hand-checkable certificate</span>
         <p>Four new mixed van der Waerden numbers from SAT, with the write-up
         honest about which claims carry which kind of evidence.</p>
+      </li>
+      <li>
+        <a class="name" href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a>
+        <span class="lang">Python</span>
+        <span class="receipt">the tests prove the gradients, not just run the code</span>
+        <p>A reverse-mode autograd engine and a small GPT built on top of it,
+        from scratch. Every gradient is checked against finite differences, and
+        the demo model actually trains.</p>
       </li>
       <li>
         <a class="name" href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a>
