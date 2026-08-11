@@ -1,14 +1,8 @@
-/* Leo Y. Zhang — personal site.
-   Type: Fraunces (variable, self-hosted) for voice; IBM Plex Mono for receipts.
-   The one bold element is the certificate strip; everything else stays quiet. */
+/* Leo Y. Zhang — academic homepage.
+   Single column, sans-serif, content over decoration. IBM Plex Mono is kept for
+   the things that are data: sequence ids, term values, the certificate legend.
+   The certificate strip is the only figure on the page and stays as it was. */
 
-@font-face {
-  font-family: "Fraunces";
-  src: url("fonts/fraunces-var.woff2") format("woff2");
-  font-weight: 400 700;
-  font-style: normal;
-  font-display: swap;
-}
 @font-face {
   font-family: "Plex Mono";
   src: url("fonts/plexmono-400.woff2") format("woff2");
@@ -23,22 +17,26 @@
 }
 
 :root {
-  --bg: #faf9f5;
-  --ink: #1a1c21;
-  --muted: #5d6472;
+  --bg: #fbfaf7;
+  --ink: #16181d;
+  --muted: #5c6373;
   --navy: #0b57a4;
-  --ochre: #b07a10;
-  --rule: #e5e2d8;
-  --cell: 14px;
+  --ochre: #a8730d;
+  --rule: #e3e0d8;
+  --panel: #f2f0ea;
+  --cell: 13px;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #13161a;
-    --ink: #e8e6e0;
-    --muted: #99a1ad;
-    --navy: #6fb0ea;
+    --bg: #14171b;
+    --ink: #e7e5df;
+    --muted: #98a0ac;
+    --navy: #74b3ec;
     --ochre: #d9a441;
-    --rule: #2a2e36;
+    --rule: #282c33;
+    --panel: #1b1f24;
   }
 }
 
@@ -46,52 +44,17 @@
 
 body {
   margin: 0 auto;
-  padding: 3.5rem 1.4rem 4.5rem;
-  max-width: 44rem;
+  padding: 2.75rem 1.4rem 4rem;
+  max-width: 45rem;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.0625rem;
-  line-height: 1.66;
-  font-variation-settings: "opsz" 12;
+  font-family: var(--sans);
+  font-size: 1.0125rem;
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* ---------- masthead ---------- */
-
-.mast { margin-bottom: 2.75rem; }
-.mast .mark { display: block; width: 44px; height: 44px; margin-bottom: 1.1rem; }
-
-h1 {
-  font-size: clamp(2.3rem, 6vw, 3.3rem);
-  font-weight: 620;
-  font-variation-settings: "opsz" 144;
-  letter-spacing: -0.015em;
-  line-height: 1.08;
-  margin: 0 0 0.45rem;
-  text-wrap: balance;
-}
-
-.tagline {
-  color: var(--muted);
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-/* ---------- section labels: the mono "receipts" voice ---------- */
-
-h2 {
-  font-family: "Plex Mono", ui-monospace, monospace;
-  font-size: 0.78rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-  margin: 3rem 0 0.9rem;
-  border-top: 1px solid var(--rule);
-  padding-top: 1.6rem;
-}
-
-p { margin: 0 0 1rem; }
+p { margin: 0 0 0.95rem; }
 
 a {
   color: var(--navy);
@@ -105,15 +68,89 @@ a:focus-visible {
   border-radius: 2px;
 }
 
+.m { font-family: var(--mono); font-size: 0.92em; }
+
+/* ---------- masthead: name beside the mark, as an academic page does ------- */
+
+.mast {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  margin-bottom: 1.25rem;
+}
+.portrait {
+  width: 76px;
+  height: 76px;
+  flex: none;
+  border-radius: 8px;
+}
+.ident { min-width: 0; }
+
+h1 {
+  font-size: clamp(1.75rem, 5.5vw, 2.3rem);
+  font-weight: 650;
+  letter-spacing: 0.005em;
+  line-height: 1.12;
+  margin: 0 0 0.28rem;
+}
+.role { margin: 0; color: var(--ink); font-size: 1rem; }
+.affil { margin: 0.12rem 0 0; color: var(--muted); font-size: 0.92rem; }
+
+/* ---------- section nav ---------- */
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.15rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2.25rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+}
+nav a { color: var(--muted); text-decoration: none; }
+nav a:hover, nav a:focus-visible { color: var(--navy); text-decoration: underline; }
+
+/* ---------- headings ---------- */
+
+h2 {
+  font-size: 1.28rem;
+  font-weight: 650;
+  letter-spacing: -0.008em;
+  margin: 2.6rem 0 0.85rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+section:first-of-type h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+
+h3 {
+  font-size: 1.02rem;
+  font-weight: 640;
+  margin: 0 0 0.3rem;
+}
+
+/* ---------- research: the two halves ---------- */
+
+.halves { margin: 0 0 1.5rem; padding-left: 1.15rem; }
+.halves li { margin-bottom: 0.5rem; }
+
 /* ---------- the certificate ---------- */
 
-.cert { margin: 0 0 0.5rem; }
+.cert {
+  margin: 0;
+  padding: 1.15rem 1.2rem 1.05rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
 
 .cert .cells {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.85rem;
 }
 
 .cert .cells i {
@@ -139,53 +176,108 @@ a:focus-visible {
 }
 
 .cert figcaption {
-  font-family: "Plex Mono", ui-monospace, monospace;
+  font-size: 0.86rem;
+  line-height: 1.62;
+  color: var(--muted);
+}
+.cert figcaption .claim {
+  font-family: var(--mono);
+  color: var(--ink);
+  font-weight: 500;
+}
+.cert .k1 { color: var(--navy); font-weight: 600; }
+.cert .k2 { color: var(--ochre); font-weight: 600; }
+
+/* ---------- research interests ---------- */
+
+.interests { margin: 0; padding-left: 1.4rem; }
+.interests > li { margin-bottom: 1.35rem; }
+.interests > li::marker { color: var(--muted); font-family: var(--mono); font-size: 0.85rem; }
+.interests p { margin: 0 0 0.35rem; }
+.interests .standing {
+  font-family: var(--mono);
+  font-size: 0.79rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---------- the OEIS table ---------- */
+
+.seqs {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.1rem;
+  font-size: 0.93rem;
+}
+.seqs caption {
+  caption-side: bottom;
+  text-align: left;
+  color: var(--muted);
   font-size: 0.82rem;
-  line-height: 1.7;
-  color: var(--muted);
-  max-width: 40rem;
+  padding-top: 0.6rem;
 }
-.cert figcaption .claim { color: var(--ink); font-weight: 500; }
-.cert .k1 { color: var(--navy); font-weight: 500; }
-.cert .k2 { color: var(--ochre); font-weight: 500; }
-
-/* ---------- projects: each card leads with its receipt ---------- */
-
-.projects { list-style: none; margin: 0; padding: 0; }
-
-.projects li { margin: 0 0 1.7rem; }
-
-.projects .name {
-  font-size: 1.15rem;
-  font-weight: 600;
-  font-variation-settings: "opsz" 30;
+.seqs th, .seqs td {
+  text-align: left;
+  padding: 0.5rem 0.7rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: baseline;
 }
-.projects .lang {
-  font-family: "Plex Mono", ui-monospace, monospace;
+.seqs thead th {
+  font-family: var(--mono);
   font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--muted);
-  margin-left: 0.55rem;
+  border-bottom-width: 1.5px;
 }
-.projects .receipt {
-  display: block;
-  font-family: "Plex Mono", ui-monospace, monospace;
-  font-size: 0.8rem;
-  color: var(--navy);
-  margin: 0.2rem 0 0.15rem;
+.seqs tbody th { font-family: var(--mono); font-weight: 500; }
+.seqs .ok { color: var(--navy); font-weight: 600; }
+.seqs .pend { color: var(--muted); }
+
+.withheld {
+  border-left: 2px solid var(--ochre);
+  padding: 0.15rem 0 0.15rem 0.9rem;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
-.projects li p { margin: 0; }
+.withheld strong { color: var(--ink); }
+
+/* ---------- software ---------- */
+
+.projects { margin: 0; }
+.projects dt {
+  margin: 1.05rem 0 0.15rem;
+  font-weight: 600;
+}
+.projects dt:first-child { margin-top: 0; }
+.projects .lang {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 0.5rem;
+}
+.projects dd { margin: 0; color: var(--ink); }
 
 /* ---------- footer ---------- */
 
 footer {
-  margin-top: 3.25rem;
+  margin-top: 2.9rem;
   border-top: 1px solid var(--rule);
-  padding-top: 1.4rem;
-  font-size: 0.95rem;
+  padding-top: 1.2rem;
+  font-size: 0.88rem;
   color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
 }
-footer .mark { width: 22px; height: 22px; flex: none; }
 footer p { margin: 0; }
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 30rem) {
+  body { padding-top: 2rem; }
+  .mast { gap: 0.9rem; }
+  .portrait { width: 58px; height: 58px; }
+  :root { --cell: 11px; }
+  .cert { padding: 0.9rem; }
+}

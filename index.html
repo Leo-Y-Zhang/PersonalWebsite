@@ -4,200 +4,296 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leo Y. Zhang</title>
-<meta name="description" content="Mathematics, and software that proves its own results.">
+<meta name="description" content="Mixed van der Waerden numbers, and software that proves its own results.">
 <meta property="og:title" content="Leo Y. Zhang">
-<meta property="og:description" content="Mathematics, and software that proves its own results.">
+<meta property="og:description" content="Mixed van der Waerden numbers, and software that proves its own results.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header class="mast">
-  <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-    <rect width="64" height="64" rx="12" fill="#0b57a4"/>
+  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Monogram: L dot Z">
+    <rect width="64" height="64" rx="8" fill="#0b57a4"/>
     <text x="32" y="42" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#fdfdfb" text-anchor="middle">L&#183;Z</text>
   </svg>
-  <h1>Leo Y. Zhang</h1>
-  <p class="tagline">Mathematics, and software that proves its own results.</p>
+  <div class="ident">
+    <h1>Leo Y. Zhang</h1>
+    <p class="role">Mixed van der Waerden numbers &middot; verification-first software</p>
+    <p class="affil">Sixth-form student, United Kingdom</p>
+  </div>
 </header>
 
+<nav aria-label="Sections">
+  <a href="#about">About</a>
+  <a href="#research">Research</a>
+  <a href="#interests">Interests</a>
+  <a href="#contributions">Contributions</a>
+  <a href="#software">Software</a>
+  <a href="#contact">Contact</a>
+</nav>
+
 <main>
-  <section aria-labelledby="cert-h">
-    <h2 id="cert-h">A result, and its proof</h2>
-    <figure class="cert">
-      <div class="cells" role="img" aria-label="The 56-cell certificate colouring for OEIS A217058: navy cells are class one, ochre cells are class two, hollow cells are wildcards.">
-      <i class="c2" style="--i:0" title="position 1: class 2"></i>
-      <i class="w" style="--i:1" title="position 2: wildcard"></i>
-      <i class="c2" style="--i:2" title="position 3: class 2"></i>
-      <i class="c1" style="--i:3" title="position 4: class 1"></i>
-      <i class="c2" style="--i:4" title="position 5: class 2"></i>
-      <i class="c2" style="--i:5" title="position 6: class 2"></i>
-      <i class="c1" style="--i:6" title="position 7: class 1"></i>
-      <i class="c2" style="--i:7" title="position 8: class 2"></i>
-      <i class="c1" style="--i:8" title="position 9: class 1"></i>
-      <i class="c2" style="--i:9" title="position 10: class 2"></i>
-      <i class="w" style="--i:10" title="position 11: wildcard"></i>
-      <i class="c1" style="--i:11" title="position 12: class 1"></i>
-      <i class="c2" style="--i:12" title="position 13: class 2"></i>
-      <i class="w" style="--i:13" title="position 14: wildcard"></i>
-      <i class="c2" style="--i:14" title="position 15: class 2"></i>
-      <i class="c2" style="--i:15" title="position 16: class 2"></i>
-      <i class="c2" style="--i:16" title="position 17: class 2"></i>
-      <i class="c1" style="--i:17" title="position 18: class 1"></i>
-      <i class="c1" style="--i:18" title="position 19: class 1"></i>
-      <i class="w" style="--i:19" title="position 20: wildcard"></i>
-      <i class="c1" style="--i:20" title="position 21: class 1"></i>
-      <i class="c1" style="--i:21" title="position 22: class 1"></i>
-      <i class="c2" style="--i:22" title="position 23: class 2"></i>
-      <i class="w" style="--i:23" title="position 24: wildcard"></i>
-      <i class="c2" style="--i:24" title="position 25: class 2"></i>
-      <i class="c2" style="--i:25" title="position 26: class 2"></i>
-      <i class="c2" style="--i:26" title="position 27: class 2"></i>
-      <i class="c1" style="--i:27" title="position 28: class 1"></i>
-      <i class="w" style="--i:28" title="position 29: wildcard"></i>
-      <i class="c2" style="--i:29" title="position 30: class 2"></i>
-      <i class="c2" style="--i:30" title="position 31: class 2"></i>
-      <i class="c2" style="--i:31" title="position 32: class 2"></i>
-      <i class="w" style="--i:32" title="position 33: wildcard"></i>
-      <i class="c2" style="--i:33" title="position 34: class 2"></i>
-      <i class="w" style="--i:34" title="position 35: wildcard"></i>
-      <i class="c1" style="--i:35" title="position 36: class 1"></i>
-      <i class="w" style="--i:36" title="position 37: wildcard"></i>
-      <i class="w" style="--i:37" title="position 38: wildcard"></i>
-      <i class="c1" style="--i:38" title="position 39: class 1"></i>
-      <i class="c2" style="--i:39" title="position 40: class 2"></i>
-      <i class="c2" style="--i:40" title="position 41: class 2"></i>
-      <i class="c2" style="--i:41" title="position 42: class 2"></i>
-      <i class="c1" style="--i:42" title="position 43: class 1"></i>
-      <i class="c2" style="--i:43" title="position 44: class 2"></i>
-      <i class="c1" style="--i:44" title="position 45: class 1"></i>
-      <i class="c1" style="--i:45" title="position 46: class 1"></i>
-      <i class="c2" style="--i:46" title="position 47: class 2"></i>
-      <i class="c1" style="--i:47" title="position 48: class 1"></i>
-      <i class="c2" style="--i:48" title="position 49: class 2"></i>
-      <i class="w" style="--i:49" title="position 50: wildcard"></i>
-      <i class="w" style="--i:50" title="position 51: wildcard"></i>
-      <i class="c2" style="--i:51" title="position 52: class 2"></i>
-      <i class="c2" style="--i:52" title="position 53: class 2"></i>
-      <i class="c2" style="--i:53" title="position 54: class 2"></i>
-      <i class="c1" style="--i:54" title="position 55: class 1"></i>
-      <i class="c2" style="--i:55" title="position 56: class 2"></i>
-      </div>
-      <figcaption>
-        <span class="claim">w(14; 2&#185;&#178;, 3, 4) &gt; 56.</span>
-        This strip is the published proof: 56 cells,
-        <span class="k1">navy</span> never carrying three in arithmetic progression,
-        <span class="k2">ochre</span> never carrying four, twelve wildcards.
-        You can check it by hand, or with a sixty-line standard-library script &mdash;
-        no solver, and no trusting me, required. It is one half of
-        <a href="https://oeis.org/A217058">OEIS&nbsp;A217058</a>&nbsp;a(12)&nbsp;=&nbsp;57,
-        reviewed and approved in August 2026.
-      </figcaption>
-    </figure>
-  </section>
 
-  <section aria-labelledby="about-h">
-    <h2 id="about-h">About</h2>
-    <p>I'm a sixth-form student in the UK. Most of what I build follows the idea
-    above: a result is worth what its verification is worth. So the puzzle
-    generator re-proves every puzzle before emitting it, the consensus protocol
-    has its safety properties machine-checked, and the renderer is validated
-    against what the physics predicts &mdash; you can check the claim yourself
-    instead of taking my word for it.</p>
-  </section>
+<section id="about" aria-labelledby="about-h">
+  <h2 id="about-h">About</h2>
+  <p>I am a sixth-form student in the United Kingdom, working on exact values in
+  Ramsey-type combinatorics and on software built around a single idea: a result
+  is worth what its verification is worth. Where a claim can be made checkable by
+  someone who does not trust me, I make it checkable.</p>
+</section>
 
-  <section aria-labelledby="maths-h">
-    <h2 id="maths-h">Mathematics</h2>
-    <p>I compute new terms in families of mixed van der Waerden numbers whose
-    OEIS entries had been unchanged since Tanbir Ahmed's work in 2012. The first
-    is <a href="https://oeis.org/A217058">approved and published by the OEIS</a>;
-    three further terms are under editorial review. Every lower bound ships a
-    colouring like the one above; the upper bounds are SAT refutations, reduced
-    where stated to machine-checked proof objects. The method, the encoding, and
-    the honest limits of what has actually been proved are set out in a
-    <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">paper</a>,
-    with all the code and certificates in
-    <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>.</p>
-  </section>
+<section id="research" aria-labelledby="research-h">
+  <h2 id="research-h">Research</h2>
 
-  <section aria-labelledby="projects-h">
-    <h2 id="projects-h">Selected projects</h2>
-    <ul class="projects">
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
-        <span class="lang">Python</span>
-        <span class="receipt">every bound ships a hand-checkable certificate</span>
-        <p>Four new mixed van der Waerden numbers from SAT, with the write-up
-        honest about which claims carry which kind of evidence.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a>
-        <span class="lang">Python</span>
-        <span class="receipt">the tests prove the gradients, not just run the code</span>
-        <p>A reverse-mode autograd engine and a small GPT built on top of it,
-        from scratch. Every gradient is checked against finite differences, and
-        the demo model actually trains.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a>
-        <span class="lang">TypeScript</span>
-        <span class="receipt">274 tests validate the physics, not just the code</span>
-        <p>A deterministic, zero-dependency Monte Carlo path tracer checked
-        against what the rendering equations predict.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/RaftSim">RaftSim</a>
-        <span class="lang">Python</span>
-        <span class="receipt">five safety properties checked after every step</span>
-        <p>Raft consensus in a seeded fault simulator; any violation replays
-        exactly from its seed.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a>
-        <span class="lang">Python</span>
-        <span class="receipt">optimisations proved by exact unitary equivalence</span>
-        <p>An educational quantum-circuit compiler whose transformations are
-        verified, not asserted.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a>
-        <span class="lang">Python</span>
-        <span class="receipt">benchmark scores split into capability and artifact</span>
-        <p>Decomposes a reported LLM benchmark result with Shapley attribution
-        and default-deny reporting.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/Understudy">Understudy</a>
-        <span class="lang">JavaScript</span>
-        <span class="receipt">zero data leaves your device</span>
-        <p>An interview rehearsal studio in the browser: on-device face and
-        speech analysis with annotated replay.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/TerminalAgent">TerminalAgent</a>
-        <span class="lang">TypeScript</span>
-        <span class="receipt">205 offline tests; /undo refuses when it cannot restore</span>
-        <p>A terminal AI coding assistant with an agentic tool loop and per-turn
-        checkpoints.</p>
-      </li>
-      <li>
-        <a class="name" href="https://github.com/Leo-Y-Zhang/PuzzleForge">PuzzleForge</a>
-        <span class="lang">Python</span>
-        <span class="receipt">a bundled engine re-proves every answer</span>
-        <p>An offline chess-puzzle generator in pure Python with zero
-        dependencies.</p>
-      </li>
-    </ul>
-  </section>
+  <p>My main line is <strong>mixed van der Waerden numbers</strong>
+  <span class="m">w(j+r;&nbsp;2<sup>j</sup>,&nbsp;t<sub>1</sub>&hellip;t<sub>r</sub>)</span>
+  &mdash; families whose OEIS entries had stood unchanged since Tanbir Ahmed's
+  work in 2012. Each new term needs two independent halves, and they are not
+  equally trustworthy:</p>
+
+  <ul class="halves">
+    <li><strong>The lower bound is a certificate.</strong> A colouring of
+    <span class="m">[1,n]</span> with the required property. You read the string,
+    apply the definition, and you are done &mdash; no solver, and no trust in me.</li>
+    <li><strong>The upper bound asserts that no colouring exists.</strong> That is
+    only as good as the SAT encoding behind it, so it is the half where the real
+    work sits, and where I say so plainly.</li>
+  </ul>
+
+  <figure class="cert">
+    <div class="cells" role="img" aria-label="The 56-cell certificate colouring for OEIS A217058: navy cells are class one, ochre cells are class two, hollow cells are wildcards.">
+    <i class="c2" style="--i:0" title="position 1: class 2"></i>
+    <i class="w" style="--i:1" title="position 2: wildcard"></i>
+    <i class="c2" style="--i:2" title="position 3: class 2"></i>
+    <i class="c1" style="--i:3" title="position 4: class 1"></i>
+    <i class="c2" style="--i:4" title="position 5: class 2"></i>
+    <i class="c2" style="--i:5" title="position 6: class 2"></i>
+    <i class="c1" style="--i:6" title="position 7: class 1"></i>
+    <i class="c2" style="--i:7" title="position 8: class 2"></i>
+    <i class="c1" style="--i:8" title="position 9: class 1"></i>
+    <i class="c2" style="--i:9" title="position 10: class 2"></i>
+    <i class="w" style="--i:10" title="position 11: wildcard"></i>
+    <i class="c1" style="--i:11" title="position 12: class 1"></i>
+    <i class="c2" style="--i:12" title="position 13: class 2"></i>
+    <i class="w" style="--i:13" title="position 14: wildcard"></i>
+    <i class="c2" style="--i:14" title="position 15: class 2"></i>
+    <i class="c2" style="--i:15" title="position 16: class 2"></i>
+    <i class="c2" style="--i:16" title="position 17: class 2"></i>
+    <i class="c1" style="--i:17" title="position 18: class 1"></i>
+    <i class="c1" style="--i:18" title="position 19: class 1"></i>
+    <i class="w" style="--i:19" title="position 20: wildcard"></i>
+    <i class="c1" style="--i:20" title="position 21: class 1"></i>
+    <i class="c1" style="--i:21" title="position 22: class 1"></i>
+    <i class="c2" style="--i:22" title="position 23: class 2"></i>
+    <i class="w" style="--i:23" title="position 24: wildcard"></i>
+    <i class="c2" style="--i:24" title="position 25: class 2"></i>
+    <i class="c2" style="--i:25" title="position 26: class 2"></i>
+    <i class="c2" style="--i:26" title="position 27: class 2"></i>
+    <i class="c1" style="--i:27" title="position 28: class 1"></i>
+    <i class="w" style="--i:28" title="position 29: wildcard"></i>
+    <i class="c2" style="--i:29" title="position 30: class 2"></i>
+    <i class="c2" style="--i:30" title="position 31: class 2"></i>
+    <i class="c2" style="--i:31" title="position 32: class 2"></i>
+    <i class="w" style="--i:32" title="position 33: wildcard"></i>
+    <i class="c2" style="--i:33" title="position 34: class 2"></i>
+    <i class="w" style="--i:34" title="position 35: wildcard"></i>
+    <i class="c1" style="--i:35" title="position 36: class 1"></i>
+    <i class="w" style="--i:36" title="position 37: wildcard"></i>
+    <i class="w" style="--i:37" title="position 38: wildcard"></i>
+    <i class="c1" style="--i:38" title="position 39: class 1"></i>
+    <i class="c2" style="--i:39" title="position 40: class 2"></i>
+    <i class="c2" style="--i:40" title="position 41: class 2"></i>
+    <i class="c2" style="--i:41" title="position 42: class 2"></i>
+    <i class="c1" style="--i:42" title="position 43: class 1"></i>
+    <i class="c2" style="--i:43" title="position 44: class 2"></i>
+    <i class="c1" style="--i:44" title="position 45: class 1"></i>
+    <i class="c1" style="--i:45" title="position 46: class 1"></i>
+    <i class="c2" style="--i:46" title="position 47: class 2"></i>
+    <i class="c1" style="--i:47" title="position 48: class 1"></i>
+    <i class="c2" style="--i:48" title="position 49: class 2"></i>
+    <i class="w" style="--i:49" title="position 50: wildcard"></i>
+    <i class="w" style="--i:50" title="position 51: wildcard"></i>
+    <i class="c2" style="--i:51" title="position 52: class 2"></i>
+    <i class="c2" style="--i:52" title="position 53: class 2"></i>
+    <i class="c2" style="--i:53" title="position 54: class 2"></i>
+    <i class="c1" style="--i:54" title="position 55: class 1"></i>
+    <i class="c2" style="--i:55" title="position 56: class 2"></i>
+    </div>
+    <figcaption>
+      <span class="claim">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;&gt;&nbsp;56.</span>
+      The lower-bound certificate for <a href="https://oeis.org/A217058">A217058</a>&nbsp;a(12)&nbsp;=&nbsp;57:
+      56 cells, <span class="k1">navy</span> never carrying three in arithmetic
+      progression, <span class="k2">ochre</span> never carrying four, twelve
+      wildcards. Checkable by hand, or by a sixty-line standard-library script.
+    </figcaption>
+  </figure>
+</section>
+
+<section id="interests" aria-labelledby="interests-h">
+  <h2 id="interests-h">Research interests</h2>
+  <p>The directions I want to work in, and where each one currently stands for
+  me. I have listed what exists rather than what I intend, so the difference
+  between the two is visible.</p>
+
+  <ol class="interests">
+    <li>
+      <h3>Exact values in Ramsey-type combinatorics</h3>
+      <p>Van der Waerden and related numbers, where the object of study is a
+      single integer nobody knows. The appeal is that progress is unambiguous:
+      a bound either holds or it does not.</p>
+      <p class="standing">Four new terms computed; one published by the OEIS,
+      three under review.</p>
+    </li>
+    <li>
+      <h3>SAT encodings and proof certificates</h3>
+      <p>An unsatisfiability result is a mathematical claim resting entirely on
+      an encoding. I am interested in the gap between "the solver said UNSAT"
+      and "this has been proved" &mdash; DRAT-style proof objects, independent
+      checkers, and symmetry breaking that is justified rather than assumed.</p>
+      <p class="standing">Upper bounds reduced to machine-checked proof objects
+      where stated; where not, said so.</p>
+    </li>
+    <li>
+      <h3>Counting on structured graphs</h3>
+      <p>Independence, domination and connected domination on board graphs.
+      A change of coordinates can collapse an exponential count into a frontier
+      dynamic program &mdash; the bishop graph is a rook graph rotated, which
+      turns <span class="m">O(2<sup>n&sup2;/2</sup>)</span> into a DP over
+      <span class="m">O(n)</span> classes per side.</p>
+      <p class="standing">Ten new terms across five sequences, staged behind
+      the same one-at-a-time submission discipline.</p>
+    </li>
+    <li>
+      <h3>Verification of algorithms, not just of code</h3>
+      <p>Deterministic simulation testing, machine-checked invariants, and
+      exact equivalence rather than sampled agreement: safety properties checked
+      after every step, compiler passes proved by unitary equivalence,
+      gradients checked against finite differences.</p>
+      <p class="standing">The recurring design constraint across everything
+      below.</p>
+    </li>
+    <li>
+      <h3>Honest inference from small samples</h3>
+      <p>Most quantitative claims fail statistically rather than logically.
+      I am interested in default-deny methodology: finite-sample bounds,
+      multiple-testing corrections, and reporting that refuses when the evidence
+      does not reach the bar, instead of reporting a number anyway.</p>
+      <p class="standing">Applied to benchmark scores, quantum measurement
+      claims, and backtested track records.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="contributions" aria-labelledby="contributions-h">
+  <h2 id="contributions-h">Contributions to the OEIS</h2>
+
+  <table class="seqs">
+    <caption>Status as recorded by the OEIS. Only the first is published.</caption>
+    <thead>
+      <tr><th scope="col">Sequence</th><th scope="col">Term</th><th scope="col">Value</th><th scope="col">Status</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row"><a href="https://oeis.org/A217058">A217058</a></th>
+        <td class="m">a(12)</td><td class="m">57</td>
+        <td><span class="ok">published</span> &mdash; credited 30 July 2026</td>
+      </tr>
+      <tr>
+        <th scope="row"><a href="https://oeis.org/A217005">A217005</a></th>
+        <td class="m">a(19)</td><td class="m">52</td>
+        <td><span class="pend">submitted, under editorial review</span></td>
+      </tr>
+      <tr>
+        <th scope="row"><a href="https://oeis.org/A217007">A217007</a></th>
+        <td class="m">a(7)</td><td class="m">68</td>
+        <td><span class="pend">submitted, under editorial review</span></td>
+      </tr>
+      <tr>
+        <th scope="row"><a href="https://oeis.org/A217236">A217236</a></th>
+        <td class="m">a(4)</td><td class="m">84</td>
+        <td><span class="pend">submitted, under editorial review</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="withheld"><strong>A fifth value is withheld, not claimed.</strong>
+  The same method gives <span class="m">w(11;&nbsp;2<sup>9</sup>,&nbsp;3,&nbsp;5)&nbsp;=&nbsp;74</span>
+  for <a href="https://oeis.org/A217059">A217059</a>, and it passes the same
+  certificate checks &mdash; but the validation run that reproduces the published
+  adjacent term of that family, as an independent check on the method, was
+  started and killed without a verdict. Until that finishes it stays out of the
+  count.</p>
+
+  <h3>Preprint</h3>
+  <p><em>Four new mixed van der Waerden numbers.</em> Method, encoding, the
+  certificates, and an explicit account of which claims rest on which kind of
+  evidence. Source and all certificates in
+  <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>;
+  the write-up is in
+  <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">paper/</a>.</p>
+</section>
+
+<section id="software" aria-labelledby="software-h">
+  <h2 id="software-h">Software</h2>
+  <p>Each of these exists to make a claim checkable rather than to assert it.</p>
+  <dl class="projects">
+    <dt><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a> <span class="lang">Python</span></dt>
+    <dd>The van der Waerden work: search, SAT encodings, and a certificate for
+    every lower bound.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a> <span class="lang">Python</span></dt>
+    <dd>A reverse-mode autograd engine and a small GPT on top of it, from
+    scratch. Every gradient is checked against finite differences.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a> <span class="lang">TypeScript</span></dt>
+    <dd>A deterministic Monte Carlo path tracer whose 274 tests validate the
+    rendering physics, not just the code.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a> <span class="lang">Python</span></dt>
+    <dd>Raft consensus under a seeded fault simulator; the five safety
+    properties are checked after every step and any failure replays from its
+    seed.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a> <span class="lang">Python</span></dt>
+    <dd>A teaching quantum-circuit compiler whose optimisations and SWAP routing
+    are proved correct by exact unitary equivalence.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/QuantumClaimReferee">QuantumClaimReferee</a> <span class="lang">Python</span></dt>
+    <dd>A finite-sample referee for quantum measurement claims: memory-robust
+    CHSH p-values and default-deny verdicts.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a> <span class="lang">Python</span></dt>
+    <dd>Splits a reported LLM benchmark score into measured capability and
+    measured artifact, with Shapley attribution.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a> <span class="lang">Python</span></dt>
+    <dd>An offline mate-in-N generator; a bundled from-scratch engine re-proves
+    every puzzle before it is emitted.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/TerminalAgent">TerminalAgent</a> <span class="lang">TypeScript</span></dt>
+    <dd>A terminal coding assistant with per-turn checkpoints and an
+    <span class="m">/undo</span> that refuses when it cannot restore.</dd>
+  </dl>
+</section>
+
+<section id="contact" aria-labelledby="contact-h">
+  <h2 id="contact-h">Contact</h2>
+  <p>Everything I publish is at
+  <a href="https://github.com/Leo-Y-Zhang">github.com/Leo-Y-Zhang</a>.
+  For anything about the van der Waerden work, the issue tracker on
+  <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a> reaches me
+  and keeps the discussion next to the certificates it concerns.</p>
+</section>
+
 </main>
 
 <footer>
-  <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-    <rect width="64" height="64" rx="12" fill="#0b57a4"/>
-    <text x="32" y="42" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#fdfdfb" text-anchor="middle">L&#183;Z</text>
-  </svg>
-  <p>Everything above is public: <a href="https://github.com/Leo-Y-Zhang">github.com/Leo-Y-Zhang</a></p>
+  <p>Leo Y. Zhang &middot; the certificate above, and every claim on this page, is
+  reproducible from the linked source.</p>
 </footer>
+
 </body>
 </html>
