@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  certificate:
+    name: Verify the rendered certificate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Re-verify w(14; 2^12, 3, 4) > 56 from index.html
+        run: python3 tools/verify_certificate.py
