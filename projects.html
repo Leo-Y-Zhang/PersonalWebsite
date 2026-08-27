@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leo Y. Zhang &mdash; Projects</title>
+<meta name="description" content="The complete project portfolio: verified systems, published combinatorics, and production software.">
+<meta property="og:title" content="Leo Y. Zhang &mdash; Projects">
+<meta property="og:description" content="The complete project portfolio: verified systems, published combinatorics, and production software.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/projects.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="mast">
+  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Monogram: L dot Z">
+    <rect width="64" height="64" rx="8" fill="#0b57a4"/>
+    <text x="32" y="42" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#fdfdfb" text-anchor="middle">L&#183;Z</text>
+  </svg>
+  <div class="ident">
+    <h1>Leo Y. Zhang</h1>
+    <p class="role">Projects &mdash; the complete portfolio</p>
+    <p class="affil">Sixth-form student, United Kingdom</p>
+  </div>
+</header>
+
+<nav aria-label="Sections">
+  <a href="index.html">Home</a>
+  <a href="#flagships">Flagships</a>
+  <a href="#team">Team</a>
+  <a href="#index-all">Everything</a>
+  <a href="#method">Method</a>
+  <a href="vdw.html">vdW numbers</a>
+</nav>
+
+<main>
+
+<section id="glance" aria-labelledby="glance-h">
+  <h2 id="glance-h">At a glance</h2>
+  <p><strong>43 repositories</strong> (38 public, 5 private) with continuous
+  integration on 41 of 43 &middot; <strong>50 accepted OEIS terms</strong> across
+  14 sequences &middot; <strong>one live production web application</strong>
+  &middot; over <strong>3,700 automated tests</strong> measured across the two
+  flagship systems. Figures re-derived from the live sources on 26 August 2026;
+  the <a href="index.html#research">research itself is on the home page</a>, with
+  the certificate to prove it.</p>
+</section>
+
+<section id="flagships" aria-labelledby="flagships-h">
+  <h2 id="flagships-h">Flagships</h2>
+
+  <dl class="projects">
+    <dt><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a> <span class="lang">Python</span></dt>
+    <dd>The published combinatorics: SAT encodings, DRAT proof certificates, and
+    a verification gate (<span class="m">verify_all.py</span>, in CI) that
+    re-derives every published value from scratch before it is quoted &mdash;
+    fifty accepted OEIS terms across fourteen sequences ride on it. The full
+    story is <a href="index.html#research">on the home page</a>.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/Osmium">Osmium</a> <span class="lang">Rust</span></dt>
+    <dd>An x86_64 operating system from scratch, closed at v0.6.0: BIOS and UEFI
+    boot, preemptive scheduling of ring-3 programs in isolated address spaces
+    &mdash; a crashing program dies alone &mdash; a shell, and a RAM-only
+    filesystem. A CI boot test proves the privacy claims: no network stack
+    exists, freed memory is zeroed, nothing reaches the disk.</dd>
+
+    <dt>Production web application <span class="lang">TypeScript &middot; PostgreSQL &middot; private</span></dt>
+    <dd>A live product with real users, designed, built, deployed and maintained
+    solo: row-level security, versioned migrations, staged deployments behind a
+    manual production gate, and roughly 980 unit plus 85 end-to-end browser
+    tests. The repository is private because it holds operational configuration,
+    and the product is not named here; details on request.</dd>
+
+    <dt>Systematic trading research platform <span class="lang">Python &middot; private</span></dt>
+    <dd>Institutional-grade engineering around an honest research core: an
+    immutable hash-chained event ledger, broker reconciliation with
+    operator-gated resolution, a latched kill-switch battery, a supervised
+    paper-trading deployment, and a browser operations terminal &mdash;
+    <strong>3,574 automated tests</strong> measured 26 August 2026, with
+    mutation testing on the safety-critical seams. Every candidate strategy
+    faces deflated-Sharpe and overfitting gates that default to rejection, and
+    most fail: results are pre-registered before they run, and the status
+    document is generated from the system, never typed.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a> <span class="lang">Python &middot; Raspberry Pi</span></dt>
+    <dd>Decentralised climate early-warning, built as the software lead of a
+    two-person team: twenty sensing nodes scoring flood and heat risk 0&ndash;100
+    in real time on one Raspberry Pi, an explainable anomaly model, and honest
+    data-source provenance &mdash; a reading is labelled <em>hardware</em> only
+    when a physical sensor produced it. 144 automated tests and a one-command
+    judge validation passing 5/5 (26 August 2026).</dd>
+  </dl>
+</section>
+
+<section id="team" aria-labelledby="team-h">
+  <h2 id="team-h">Team &amp; competitions</h2>
+  <dl class="projects">
+    <dt><a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">EndeavourRacing</a> <span class="lang">TypeScript</span></dt>
+    <dd>The team's three web applications for STEM Racing 2026: public site,
+    lap-timing and driver-performance tool, and a project, risk and budget
+    dashboard.</dd>
+
+    <dt>Wharton Global High School Investment Competition <span class="lang">2026&ndash;27</span></dt>
+    <dd>Entered as part of a team; the trading round runs September to December
+    2026.</dd>
+
+    <dt>Independent research manuscript <span class="lang">June 2026</span></dt>
+    <dd>Sixty-two pages on network structure in equity markets: the framework is
+    validated on synthetic data, and the empirical validation is specified but
+    deliberately not yet claimed.</dd>
+  </dl>
+</section>
+
+<section id="index-all" aria-labelledby="index-h">
+  <h2 id="index-h">Everything else, one line each</h2>
+  <p>Each of these exists to make a claim checkable rather than to assert it.</p>
+  <dl class="projects">
+    <dt><a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a> <span class="lang">Rust</span></dt>
+    <dd>An RV32IM RISC-V interpreter, tested against the architecture's official
+    compliance vectors rather than hand-written cases.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a> <span class="lang">Lean 4</span></dt>
+    <dd>A machine-checked proof-checker development: the soundness argument
+    lives in a proof assistant, not a comment.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a> <span class="lang">Go</span></dt>
+    <dd>Partition-tests a real key-value cluster and machine-checks the observed
+    histories for linearizability; the checker is validated against a
+    brute-force oracle.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a> <span class="lang">Python</span></dt>
+    <dd>The frontier dynamic programs behind the board-graph OEIS terms
+    &mdash; exact counts where brute force is <span class="m">O(2<sup>n&sup2;/2</sup>)</span>.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/BishopVerify">BishopVerify</a> <span class="lang">Python</span></dt>
+    <dd>An independent verifier for those counts &mdash; the published numbers are
+    re-derived by different code before they are trusted.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a> <span class="lang">Python</span></dt>
+    <dd>A classical-cipher solver graded against real National Cipher Challenge
+    material: 37 of 43 solved, with zero confidently-wrong answers &mdash; it
+    prefers to refuse.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a> <span class="lang">Python</span></dt>
+    <dd>A reverse-mode autograd engine and a small GPT on top, from scratch;
+    every gradient is checked against finite differences.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a> <span class="lang">TypeScript</span></dt>
+    <dd>A deterministic Monte Carlo path tracer whose 274 tests validate the
+    rendering physics, not just the code.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a> <span class="lang">Python</span></dt>
+    <dd>Raft consensus under a seeded fault simulator; the five safety
+    properties are checked after every step and any failure replays from its
+    seed.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a> <span class="lang">Python</span></dt>
+    <dd>A teaching quantum-circuit compiler whose optimisations and SWAP routing
+    are proved correct by exact unitary equivalence.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/QuantumClaimReferee">QuantumClaimReferee</a> <span class="lang">Python</span></dt>
+    <dd>A finite-sample referee for quantum measurement claims: memory-robust
+    CHSH p-values and default-deny verdicts.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a> <span class="lang">Python</span></dt>
+    <dd>Splits a reported LLM benchmark score into measured capability and
+    measured artifact, with exact Shapley attribution.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/ProjectSentinel">ProjectSentinel</a> <span class="lang">Python</span></dt>
+    <dd>A pitch-book generator where no figure is typed by hand: a CI gate
+    checks every tagged figure against a tested model and fails if it finds
+    nothing to check. The content is deliberately fictional; the pattern is the
+    product.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/Understudy">Understudy</a> <span class="lang">TypeScript</span></dt>
+    <dd>An AI interview simulator, v1 live.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a> <span class="lang">Python</span></dt>
+    <dd>An offline mate-in-N generator; a bundled from-scratch engine re-proves
+    every puzzle before it is emitted.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/TerminalAgent">TerminalAgent</a> <span class="lang">TypeScript</span></dt>
+    <dd>A terminal coding assistant with per-turn checkpoints and an
+    <span class="m">/undo</span> that refuses when it cannot restore.</dd>
+  </dl>
+</section>
+
+<section id="method" aria-labelledby="method-h">
+  <h2 id="method-h">Method</h2>
+  <p>The through-line: claims are cheap, verification is the work.</p>
+  <ul class="halves">
+    <li><strong>Tests that were seen to fail.</strong> New behaviour starts with
+    a failing test; a test never observed failing is decoration. Mutation
+    testing guards the safety-critical paths.</li>
+    <li><strong>Generated, never typed.</strong> Documents that quote numbers are
+    derived from the systems they describe, with drift gates that fail when
+    document and code disagree.</li>
+    <li><strong>Pre-registration.</strong> Research declares hypotheses and
+    thresholds before it runs; a result that fails its gate is published as a
+    failure, not re-tuned until it passes.</li>
+    <li><strong>Security as a floor.</strong> Secret scanning on every commit
+    across all 43 repositories, dependency auditing, and periodic security
+    sweeps with adversarial verification of every finding.</li>
+    <li><strong>Honest limits.</strong> Solver verdicts are not proofs, a private
+    repository's figures are dated measurements, and unfinished work is
+    labelled unfinished.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p>Leo Y. Zhang &middot; figures dated 26 August 2026 &middot; every public
+  claim on this page is reproducible from the linked source.</p>
+</footer>
+
+</body>
+</html>
