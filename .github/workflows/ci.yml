@@ -11,6 +11,10 @@ jobs:
   certificate:
     name: Verify the rendered certificate
     runs-on: ubuntu-latest
+    # Measured: this job takes about six seconds. GitHub's default is 360
+    # minutes, so an unbounded hang would burn six hours of the account quota
+    # before being killed. Ten is a backstop, not a target.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Re-verify w(14; 2^12, 3, 4) > 56 from index.html
