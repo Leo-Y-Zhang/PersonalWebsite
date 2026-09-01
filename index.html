@@ -28,9 +28,11 @@
 
 <nav aria-label="Sections">
   <a href="#about">About</a>
+  <a href="#news">News</a>
   <a href="#research">Research</a>
   <a href="#interests">Interests</a>
   <a href="#contributions">Contributions</a>
+  <a href="#paper">Paper</a>
   <a href="#software">Software</a>
   <a href="projects.html">Projects</a>
   <a href="vdw.html">vdW numbers</a>
@@ -45,6 +47,47 @@
   Ramsey-type combinatorics and on software built around a single idea: a result
   is worth what its verification is worth. Where a claim can be made checkable by
   someone who does not trust me, I make it checkable.</p>
+
+  <ul class="glance">
+    <li><strong>162</strong> accepted OEIS terms across <strong>20</strong> sequences</li>
+    <li><strong>23,851</strong> per-cube DRAT proofs, every one replayed by drat-trim</li>
+    <li><strong>5</strong> new mixed van der Waerden numbers, in sequences unmoved since 2012</li>
+  </ul>
+  <p class="asof">OEIS figure re-derived from the live database on 1 September 2026
+  by <a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">a script that fails if the
+  number has moved</a>, rather than typed from memory.</p>
+</section>
+
+<section id="news" aria-labelledby="news-h">
+  <h2 id="news-h">News</h2>
+  <dl class="news">
+    <dt>1 Sep 2026</dt>
+    <dd>Three more sequences published &mdash;
+      <a href="https://oeis.org/A325556">A325556</a>,
+      <a href="https://oeis.org/A347414">A347414</a> and
+      <a href="https://oeis.org/A353403">A353403</a>.
+      That takes the total to 162 accepted terms across 20 sequences.</dd>
+
+    <dt>31 Aug 2026</dt>
+    <dd>Seventy-one terms approved in one day across
+      <a href="https://oeis.org/A319381">A319381</a>,
+      <a href="https://oeis.org/A323586">A323586</a> and
+      <a href="https://oeis.org/A325555">A325555</a> &mdash; sequences whose
+      published range had stopped where a brute force ran out of patience.</dd>
+
+    <dt>Aug 2026</dt>
+    <dd><em>Five new mixed van der Waerden numbers, with machine-checked upper
+      bounds</em> is being prepared for submission to <em>Experimental
+      Mathematics</em>.</dd>
+
+    <dt>4 Aug 2026</dt>
+    <dd>The headline upper bound stopped resting on a solver's word:
+      <span class="m">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;=&nbsp;57</span>
+      reduced to 4,487 per-cube DRAT proofs, all replayed to
+      <span class="m">s VERIFIED</span>, with a checked proof that the cube set
+      is exhaustive. The other four upper bounds still rest on cross-checked
+      solver verdicts, and the paper says so.</dd>
+  </dl>
 </section>
 
 <section id="research" aria-labelledby="research-h">
@@ -132,6 +175,21 @@
       wildcards. Checkable by hand, or by a sixty-line standard-library script.
     </figcaption>
   </figure>
+
+  <h3 id="check">Check it yourself</h3>
+  <p>You should not take the figure above on trust, and you do not have to. This
+  reads the colouring back out of the page you are looking at and re-derives the
+  property from the definition &mdash; it enumerates the arithmetic progressions
+  itself rather than comparing the page against a second copy of my answer. No
+  dependencies, standard library only, about a second to run:</p>
+
+  <pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/PersonalWebsite
+python PersonalWebsite/tools/verify_certificate.py</code></pre>
+
+  <p>It prints the two classes it found, confirms every position in
+  <span class="m">[1,56]</span> is coloured exactly once, and exits non-zero if
+  the page is wrong. If I ever edit the figure and break the claim, this fails
+  in continuous integration before you see it.</p>
 </section>
 
 <section id="interests" aria-labelledby="interests-h">
@@ -266,13 +324,37 @@
   One hundred and sixty-two accepted terms across twenty sequences in
   total.</p>
 
-  <h3>Preprint</h3>
-  <p><em>Five new mixed van der Waerden numbers.</em> Method, encoding, the
-  certificates, and an explicit account of which claims rest on which kind of
-  evidence. Source and all certificates in
-  <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>;
-  the write-up is in
-  <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">paper/</a>.</p>
+</section>
+
+<section id="paper" aria-labelledby="paper-h">
+  <h2 id="paper-h">Paper</h2>
+
+  <p class="pub"><strong>Five new mixed van der Waerden numbers, with
+  machine-checked upper bounds.</strong> <span class="venue">Being prepared for
+  submission to <em>Experimental Mathematics</em>, September 2026.</span>
+  <span class="links">[<a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">paper</a>]
+  [<a href="https://github.com/Leo-Y-Zhang/MathRecords">code and certificates</a>]</span></p>
+
+  <p>Method, encoding, the certificates, and an explicit account of which claims
+  rest on which kind of evidence. The distinction the paper is careful about,
+  because it is the one a reader would otherwise get wrong:</p>
+
+  <ul class="halves">
+    <li><strong>One upper bound is a proof object.</strong>
+    <span class="m">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;=&nbsp;57</span>
+    is reduced to 4,487 per-cube DRAT proofs, each replayed to
+    <span class="m">s VERIFIED</span> by drat-trim against a single formula hash,
+    with a separately checked proof that the cube set is exhaustive.</li>
+    <li><strong>The other four are not.</strong> They rest on cross-checked
+    solver verdicts along independent paths. That is a weaker kind of assurance,
+    it is stated in the abstract rather than buried, and closing it is the
+    obvious next piece of work.</li>
+  </ul>
+
+  <p>Across all five families the certification run produced 23,851 per-cube
+  proofs. The tooling, computation and drafting involved substantial AI
+  assistance, disclosed plainly in the paper's Methods section; the verification
+  programme exists so that a reader does not have to take that on trust.</p>
 </section>
 
 <section id="software" aria-labelledby="software-h">

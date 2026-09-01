@@ -261,6 +261,75 @@ h3 {
 }
 .projects dd { margin: 0; color: var(--ink); }
 
+/* ---------- at a glance: the three numbers, with their provenance --------- */
+
+.glance {
+  margin: 1.1rem 0 0.5rem;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.glance li {
+  padding: 0.42rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.95rem;
+}
+.glance strong {
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--navy);
+}
+.asof {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0.55rem 0 0;
+}
+
+/* ---------- news: dated, newest first ---------- */
+
+.news { margin: 0; }
+.news dt {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 1.05rem 0 0.2rem;
+}
+.news dt:first-child { margin-top: 0; }
+.news dd { margin: 0 0 0.1rem; }
+
+/* ---------- the runnable check: the reader can refute the figure ---------- */
+
+.run {
+  margin: 0 0 0.95rem;
+  padding: 0.8rem 0.95rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--navy);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.83rem;
+  line-height: 1.75;
+}
+.run code { font: inherit; white-space: pre; }
+
+/* ---------- a publication entry, in the shape an academic expects -------- */
+
+.pub {
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--navy);
+  margin-bottom: 1.15rem;
+}
+.pub .venue { color: var(--muted); }
+.pub .links {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--mono);
+  font-size: 0.79rem;
+}
+
 /* ---------- footer ---------- */
 
 footer {
