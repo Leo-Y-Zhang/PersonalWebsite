@@ -62,6 +62,14 @@
   <h2 id="news-h">News</h2>
   <dl class="news">
     <dt>1 Sep 2026</dt>
+    <dd>All five upper bounds are now machine-checked. The equal-target
+      families had resisted: the cube generator dropped colour-permutation
+      images, which is sound for searching but is not a refutation, so the
+      per-cube proofs never covered those branches. Taking colour symmetry out
+      of the cube set closed it, and the total stands at 23,851 per-cube DRAT
+      proofs across the five families.</dd>
+
+    <dt>1 Sep 2026</dt>
     <dd>Three more sequences published &mdash;
       <a href="https://oeis.org/A325556">A325556</a>,
       <a href="https://oeis.org/A347414">A347414</a> and
@@ -85,8 +93,7 @@
       <span class="m">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;=&nbsp;57</span>
       reduced to 4,487 per-cube DRAT proofs, all replayed to
       <span class="m">s VERIFIED</span>, with a checked proof that the cube set
-      is exhaustive. The other four upper bounds still rest on cross-checked
-      solver verdicts, and the paper says so.</dd>
+      is exhaustive.</dd>
   </dl>
 </section>
 
@@ -340,15 +347,20 @@ python PersonalWebsite/tools/verify_certificate.py</code></pre>
   because it is the one a reader would otherwise get wrong:</p>
 
   <ul class="halves">
-    <li><strong>One upper bound is a proof object.</strong>
-    <span class="m">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;=&nbsp;57</span>
-    is reduced to 4,487 per-cube DRAT proofs, each replayed to
-    <span class="m">s VERIFIED</span> by drat-trim against a single formula hash,
-    with a separately checked proof that the cube set is exhaustive.</li>
-    <li><strong>The other four are not.</strong> They rest on cross-checked
-    solver verdicts along independent paths. That is a weaker kind of assurance,
-    it is stated in the abstract rather than buried, and closing it is the
-    obvious next piece of work.</li>
+    <li><strong>Every upper bound is a proof object.</strong> All five are
+    reduced to per-cube DRAT proofs &mdash; 23,851 in total, each replayed to
+    <span class="m">s VERIFIED</span> by drat-trim against a single formula hash
+    &mdash; and each family carries a separately checked composition proof that
+    its cube set covers the whole assignment tree.</li>
+    <li><strong>The equal-target families were the hard ones.</strong> The cube
+    generator dropped colour-permutation images, which is sound when you are
+    <em>searching</em>, because some other prefix is the image, but it is not a
+    <em>refutation</em>, so the per-cube proofs never covered those branches and
+    <span class="m">[3,3]</span> and <span class="m">[4,4]</span> could not be
+    certified at all. Taking colour symmetry out of the cube set fixes it, and
+    the effect is measured rather than argued: the cube sets are byte-identical
+    with and without it for the differing-target families, and exactly double
+    for the equal-target ones.</li>
   </ul>
 
   <p>Across all five families the certification run produced 23,851 per-cube
