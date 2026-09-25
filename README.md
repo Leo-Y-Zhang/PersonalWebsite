@@ -7,8 +7,20 @@ no tracking. The strip on the front page is the real lower-bound certificate
 for OEIS A217058 a(12) = 57 — the cells are the published colouring, not
 decoration.
 
-Fonts are self-hosted in `fonts/`: Fraunces and IBM Plex Mono, both under the
-SIL Open Font License 1.1.
+The one page not written by hand is `vdw.html`: `tools/build_vdw_page.py`
+generates it from an OEIS snapshot and the b-files in a MathRecords checkout,
+and refuses to write it if the two disagree. `tools/verify_certificate.py`
+re-derives the front-page certificate from `index.html` itself. CI runs the
+verifier and the tests on every push; locally they need Python and nothing
+else:
+
+```sh
+python tools/verify_certificate.py
+python -m unittest discover -s tests -v
+```
+
+Fonts are self-hosted in `fonts/`: IBM Plex Mono, under the SIL Open Font
+License 1.1.
 
 Served by GitHub Pages from the repository root, so a push to `main` is a
 deploy. The live address is the one at the top; it is also on the repository's
