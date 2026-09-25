@@ -51,14 +51,13 @@
   <ul class="halves">
     <li><strong>Lower bounds are certificates.</strong> Each new term links a
     witness colouring; checking it needs the definition and nothing else.</li>
-    <li><strong>Upper bounds are labelled honestly.</strong> One of the five new
-    refutations &mdash; the headline <span class="m">a(12)&nbsp;=&nbsp;57</span>
-    of A217058 &mdash; has been reduced to formally checked proof objects:
-    4,487 per-cube DRAT proofs, each replayed to <span class="m">s&nbsp;VERIFIED</span>
-    by drat-trim, plus a checked proof that the cube set is exhaustive. The
-    other four rest on cross-checked solver verdicts along independent
-    derivation paths, and the tables say so rather than dressing a verdict as
-    a proof.</li>
+    <li><strong>Upper bounds are labelled honestly.</strong> All five new
+    refutations have been reduced to formally checked proof objects:
+    23,851 per-cube DRAT proofs across the five families, each replayed to
+    <span class="m">s&nbsp;VERIFIED</span> by drat-trim, plus a checked proof
+    for each family that its cube set is exhaustive. The tables label every
+    upper bound by the evidence behind it rather than dressing a verdict as a
+    proof.</li>
   </ul>
   <p>The tables are generated from the OEIS and cross-checked against the
   b-files in <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
@@ -251,7 +250,7 @@
       <tr>
         <th scope="row" class="m">a(19)</th>
         <td class="m"><strong>52</strong></td>
-        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 7 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217005_n51_witness.txt">witness colouring</a> for the lower bound; upper bound: cross-checked solver verdict, stated as such</td>
+        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 7 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217005_n51_witness.txt">witness colouring</a> for the lower bound; upper bound reduced to checked DRAT proof objects</td>
       </tr>
     </tbody>
   </table>
@@ -302,7 +301,7 @@
       <tr>
         <th scope="row" class="m">a(7)</th>
         <td class="m"><strong>68</strong></td>
-        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 7 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217007_a7_n67_witness.txt">witness colouring</a> for the lower bound; upper bound: cross-checked solver verdict, stated as such</td>
+        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 7 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217007_a7_n67_witness.txt">witness colouring</a> for the lower bound; upper bound reduced to checked DRAT proof objects</td>
       </tr>
     </tbody>
   </table>
@@ -338,7 +337,7 @@
       <tr>
         <th scope="row" class="m">a(4)</th>
         <td class="m"><strong>84</strong></td>
-        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 7 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217236_a4_n83.txt">witness colouring</a> for the lower bound; upper bound: cross-checked solver verdict, stated as such</td>
+        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 7 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217236_a4_n83.txt">witness colouring</a> for the lower bound; upper bound reduced to checked DRAT proof objects</td>
       </tr>
     </tbody>
   </table>
@@ -399,7 +398,7 @@
       <tr>
         <th scope="row" class="m">a(9)</th>
         <td class="m"><strong>74</strong></td>
-        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 13 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217059_a9_n73.txt">witness colouring</a> for the lower bound; upper bound: cross-checked solver verdict, stated as such</td>
+        <td><span class="ok">new</span> &mdash; published by the OEIS, credited 13 August 2026; <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/cert_A217059_a9_n73.txt">witness colouring</a> for the lower bound; upper bound reduced to checked DRAT proof objects</td>
       </tr>
     </tbody>
   </table>
@@ -412,9 +411,9 @@
   <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/verify_certificate.py">verify_certificate.py</a>; the whole
   repository re-derives every published value from scratch under
   <span class="m">verify_all.py</span>, in CI; and the DRAT machinery &mdash;
-  including the measured cost of each proof and the honest reason the four
-  remaining headline refutations are verdicts rather than proofs &mdash; is
-  documented in <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/DRAT.md">DRAT.md</a>.</p>
+  including the measured cost of each proof and why colour symmetry had to
+  come out of the cube set before the equal-target families could be
+  certified &mdash; is documented in <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/DRAT.md">DRAT.md</a>.</p>
 </section>
 
 <section id="references" aria-labelledby="refs-h">
