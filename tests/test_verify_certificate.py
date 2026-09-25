@@ -194,6 +194,20 @@ class VerifyPage(unittest.TestCase):
         self.assertRejected(self.tampered(("a(12)&nbsp;=&nbsp;57:", "a(11)&nbsp;=&nbsp;57:")),
                             r"offers this as A217058 a\(11\)")
 
+    def test_claim_must_be_the_cited_sequence(self):
+        # Ochre has no 5-term progression either, so this weaker claim is
+        # true of the colouring; it is just not a statement about A217058,
+        # which is w(j+2; 2^j, 3, 4). The bound it proves says nothing about
+        # a(12).
+        page = self.tampered(("3,&nbsp;4)&nbsp;&gt;", "3,&nbsp;5)&nbsp;&gt;"),
+                             ("never carrying four", "never carrying five"))
+        self.assertRejected(page, r"A217058 is w\(j\+2; 2\^j, 3, 4\)")
+
+    def test_unknown_sequence_is_rejected(self):
+        page = self.tampered(('<a href="https://oeis.org/A217058">A217058</a>&nbsp;a(12)',
+                              '<a href="https://oeis.org/A217059">A217059</a>&nbsp;a(12)'))
+        self.assertRejected(page, r"no definition of A217059")
+
     def test_contributions_table_must_list_the_value(self):
         self.assertRejected(
             self.tampered(('<td class="m">a(12)</td><td class="m">57</td>',
