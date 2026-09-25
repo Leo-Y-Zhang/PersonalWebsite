@@ -22,6 +22,7 @@
   --muted: #5c6373;
   --navy: #0b57a4;
   --ochre: #a8730d;
+  --ochre-ink: #8e610b; /* ochre as text: 4.8:1 on the panel, where --ochre is 3.6:1 */
   --rule: #e3e0d8;
   --panel: #f2f0ea;
   --cell: 13px;
@@ -35,6 +36,7 @@
     --muted: #98a0ac;
     --navy: #74b3ec;
     --ochre: #d9a441;
+    --ochre-ink: #d9a441;
     --rule: #282c33;
     --panel: #1b1f24;
   }
@@ -186,7 +188,7 @@ h3 {
   font-weight: 500;
 }
 .cert .k1 { color: var(--navy); font-weight: 600; }
-.cert .k2 { color: var(--ochre); font-weight: 600; }
+.cert .k2 { color: var(--ochre-ink); font-weight: 600; }
 
 /* ---------- research interests ---------- */
 
@@ -298,6 +300,7 @@ h3 {
 }
 .news dt:first-child { margin-top: 0; }
 .news dd { margin: 0 0 0.1rem; }
+.news dd + dd { margin-top: 0.55rem; }
 
 /* ---------- the runnable check: the reader can refute the figure ---------- */
 
