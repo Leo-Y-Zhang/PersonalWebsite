@@ -16,6 +16,6 @@ jobs:
     # before being killed. Ten is a backstop, not a target.
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Re-verify w(14; 2^12, 3, 4) > 56 from index.html
         run: python3 tools/verify_certificate.py
