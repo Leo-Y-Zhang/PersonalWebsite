@@ -19,3 +19,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Re-verify w(14; 2^12, 3, 4) > 56 from index.html
         run: python3 tools/verify_certificate.py
+      # The step above shows the verifier accepts the page as published; the
+      # tests pin what the page tools must refuse.
+      - name: Test the page tools
+        run: python3 -m unittest discover -s tests -v
