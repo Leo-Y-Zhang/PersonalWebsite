@@ -1,18 +1,20 @@
 """Generate vdw.html - the mixed van der Waerden reference page.
 
 Generated, never typed: every value in the page's tables comes from an OEIS
-snapshot (fetched with --fetch, or read from --snapshots) cross-checked against
-the b-files in a MathRecords checkout. Any disagreement kills the build - a
-reference page whose two sources differ must not exist.
+snapshot (the entry's JSON as the OEIS serves it, saved as oeis_<A-number>.json
+in the --snapshots directory) cross-checked against the b-files in a
+MathRecords checkout. Any disagreement kills the build - a reference page whose
+two sources differ must not exist.
 
 Usage:
-    python tools/build_vdw_page.py --mathrecords C:/dev/MathRecords \
+    python tools/build_vdw_page.py --mathrecords <MathRecords checkout> \
         --snapshots <dir with oeis_A2170xx.json> --out vdw.html
 """
 from __future__ import annotations
 
 import argparse
 import datetime as _dt
+import html
 import json
 import sys
 from pathlib import Path
@@ -66,6 +68,11 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
     cert_file = mathrecords / cert
     if not cert_file.is_file():
         sys.exit(f"REFUSING: witness certificate {cert} not found in MathRecords")
+    last = offset + len(fam["values"]) - 1
+    if not offset <= new_idx <= last:
+        sys.exit(f"REFUSING: {seq} a({new_idx}) is the new term, but the OEIS "
+                 f"snapshot only has a({offset})..a({last}) - the page would show "
+                 f"no new term and no certificate")
     drat = seq == DRAT_CHECKED
 
     rows = []
@@ -91,8 +98,7 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
                 f'        <td>previously known &mdash; as recorded by the OEIS</td>\n'
                 f'      </tr>')
     import re as _re
-    name = (fam["name"].replace("<", "&lt;").replace(">", "&gt;")
-            .replace("...", "&hellip;"))
+    name = html.escape(fam["name"], quote=False).replace("...", "&hellip;")
     # The OEIS name arrives in ASCII maths; render the subscripts properly.
     name = _re.sub(r"t_\{([^}]+)\}", lambda m: "t<sub>" + m.group(1) + "</sub>", name)
     name = _re.sub(r"t_([0-9]+)", lambda m: "t<sub>" + m.group(1) + "</sub>", name)
