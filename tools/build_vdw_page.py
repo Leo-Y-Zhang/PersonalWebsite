@@ -28,10 +28,11 @@ FAMILIES = [
     ("A217059", 9, "13 August 2026", "vdw/cert_A217059_a9_n73.txt"),
 ]
 
-#: The one headline refutation reduced to checked proof objects (paper, sec. DRAT):
-#: 4,487 per-cube DRAT proofs each replayed to "s VERIFIED" + a checked
-#: cube-exhaustiveness proof. The other four are cross-checked solver verdicts.
-DRAT_CHECKED = "A217058"
+#: Families whose headline refutation is reduced to checked proof objects
+#: (paper, sec. DRAT): per-cube DRAT proofs each replayed to "s VERIFIED" + a
+#: checked cube-exhaustiveness proof. All five since MathRecords 3e6ff70, 23,851
+#: per-cube proofs in total; a family missing here is labelled a solver verdict.
+DRAT_CHECKED = {"A217058", "A217005", "A217007", "A217236", "A217059"}
 
 GH = "https://github.com/Leo-Y-Zhang/MathRecords/blob/main/"
 
@@ -73,7 +74,7 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
         sys.exit(f"REFUSING: {seq} a({new_idx}) is the new term, but the OEIS "
                  f"snapshot only has a({offset})..a({last}) - the page would show "
                  f"no new term and no certificate")
-    drat = seq == DRAT_CHECKED
+    drat = seq in DRAT_CHECKED
 
     rows = []
     for i, val in enumerate(fam["values"]):
@@ -178,14 +179,13 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
   <ul class="halves">
     <li><strong>Lower bounds are certificates.</strong> Each new term links a
     witness colouring; checking it needs the definition and nothing else.</li>
-    <li><strong>Upper bounds are labelled honestly.</strong> One of the five new
-    refutations &mdash; the headline <span class="m">a(12)&nbsp;=&nbsp;57</span>
-    of A217058 &mdash; has been reduced to formally checked proof objects:
-    4,487 per-cube DRAT proofs, each replayed to <span class="m">s&nbsp;VERIFIED</span>
-    by drat-trim, plus a checked proof that the cube set is exhaustive. The
-    other four rest on cross-checked solver verdicts along independent
-    derivation paths, and the tables say so rather than dressing a verdict as
-    a proof.</li>
+    <li><strong>Upper bounds are labelled honestly.</strong> All five new
+    refutations have been reduced to formally checked proof objects:
+    23,851 per-cube DRAT proofs across the five families, each replayed to
+    <span class="m">s&nbsp;VERIFIED</span> by drat-trim, plus a checked proof
+    for each family that its cube set is exhaustive. The tables label every
+    upper bound by the evidence behind it rather than dressing a verdict as a
+    proof.</li>
   </ul>
   <p>The tables are generated from the OEIS and cross-checked against the
   b-files in <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
@@ -205,9 +205,9 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
   <a href="{GH}vdw/verify_certificate.py">verify_certificate.py</a>; the whole
   repository re-derives every published value from scratch under
   <span class="m">verify_all.py</span>, in CI; and the DRAT machinery &mdash;
-  including the measured cost of each proof and the honest reason the four
-  remaining headline refutations are verdicts rather than proofs &mdash; is
-  documented in <a href="{GH}vdw/DRAT.md">DRAT.md</a>.</p>
+  including the measured cost of each proof and why colour symmetry had to
+  come out of the cube set before the equal-target families could be
+  certified &mdash; is documented in <a href="{GH}vdw/DRAT.md">DRAT.md</a>.</p>
 </section>
 
 <section id="references" aria-labelledby="refs-h">
