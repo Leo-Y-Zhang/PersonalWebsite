@@ -4,7 +4,12 @@ The builder's promise is that it refuses to write vdw.html when its sources
 disagree or when the page would say less than it claims. Each refusal is
 exercised here against small synthetic inputs. The last test holds the
 committed vdw.html to the builder: rendering the page's own data again must
-give back the page byte for byte, so a hand edit to either one shows up.
+give back the page byte for byte, so a hand edit to the prose, provenance
+labels, credit dates or links, or a builder change the page was not
+regenerated for, shows up. The terms, names and regeneration date are read
+back out of the page itself, so a consistent hand edit to those passes here;
+the terms and names are held to their sources only when the builder is run
+against a MathRecords checkout and an OEIS snapshot.
 
 Standard library only:  python -m unittest discover -s tests -v
 """
