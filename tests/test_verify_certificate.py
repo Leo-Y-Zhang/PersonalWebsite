@@ -162,6 +162,16 @@ class VerifyPage(unittest.TestCase):
             self.tampered((cell(3, 2), cell(3, 2).replace("position 3", "position 4"))),
             r"cell 3 claims to be position 4")
 
+    def test_cell_without_a_class_is_rejected(self):
+        # A cell with no class renders no colour, whatever its title says.
+        self.assertRejected(self.tampered((cell(4, 1), cell(4, 1).replace(' class="c1"', ""))),
+                            r"cell 4 is missing a class, style or title")
+
+    def test_unreadable_title_is_rejected(self):
+        self.assertRejected(
+            self.tampered((cell(4, 1), cell(4, 1).replace("class 1", "navy"))),
+            r"cell 4 has an unreadable title")
+
     def test_colour_outside_the_claim_is_rejected(self):
         # The claim has two non-wildcard colours; a third would escape every
         # progression check.
@@ -177,6 +187,12 @@ class VerifyPage(unittest.TestCase):
                             r"two CSS classes render the same colour")
 
     # --- the claim, and the term it is offered for ----------------------------
+
+    def test_caption_without_a_claim_is_rejected(self):
+        claim = ('<span class="claim">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)'
+                 '&nbsp;&gt;&nbsp;56.</span>')
+        self.assertRejected(self.tampered((claim, "")),
+                            r"could not read the w\(\.\.\.\) claim in the caption")
 
     def test_bound_must_match_the_cells(self):
         self.assertRejected(self.tampered(("&gt;&nbsp;56.", "&gt;&nbsp;57.")),
@@ -238,6 +254,10 @@ class VerifyPage(unittest.TestCase):
     def test_caption_must_count_the_wildcards(self):
         self.assertRejected(self.tampered(("twelve\n      wildcards", "eleven\n      wildcards")),
                             r"caption says eleven wildcards, page renders 12")
+
+    def test_wildcard_count_must_be_a_number(self):
+        self.assertRejected(self.tampered(("twelve\n      wildcards", "several\n      wildcards")),
+                            r"caption says 'several' wildcards, which is not a number word")
 
     def test_aria_label_must_count_the_cells(self):
         self.assertRejected(self.tampered(("The 56-cell certificate", "The 55-cell certificate")),
