@@ -8,7 +8,9 @@ rather than comparing the page against a second copy of the answer.
 
 Everything it checks is taken from the page: the parameters come from the
 rendered claim, the colouring comes from the rendered cells, and the wording of
-the caption is held to the same numbers. Standard library only.
+the caption is held to the same numbers. The one thing it brings with it is the
+definition of the sequence the certificate is offered for, so that the claim
+cannot quietly become a weaker one. Standard library only.
 
 Usage: python tools/verify_certificate.py [path/to/index.html]
 Exit status 0 if the page is sound, 1 if it is not.
@@ -27,6 +29,14 @@ WORDS = {
     "twenty": 20,
 }
 NUMBERS = {v: k for k, v in WORDS.items()}
+
+# What each citable sequence is: A217058(j) = w(j+2; 2^j, 3, 4), indexed by
+# the number j of wildcard colours. This is the sequence's definition, not a
+# table of its values. Without it the page could weaken its own claim (ochre
+# avoiding 5-term progressions instead of 4-term ones), the colouring would
+# still pass, and the script would report a bound on A217058 that nothing had
+# proved.
+DEFINITIONS = {"A217058": (3, 4)}
 
 
 class Problem(Exception):
@@ -225,6 +235,14 @@ def verify(path):
     m = find(r"(A\d{6})\D+a\((\d+)\)\s*=\s*(\d+)", caption,
              "the OEIS reference in the caption")
     seq, term, value = m.group(1), int(m.group(2)), int(m.group(3))
+    if seq not in DEFINITIONS:
+        raise Problem("the caption offers this for %s, but this script has no "
+                      "definition of %s to hold the claim to" % (seq, seq))
+    if sorted(targets) != sorted(DEFINITIONS[seq]):
+        raise Problem("the claim has targets %s, but %s is w(j+%d; 2^j, %s)"
+                      % (", ".join(str(t) for t in targets), seq,
+                         len(DEFINITIONS[seq]),
+                         ", ".join(str(t) for t in DEFINITIONS[seq])))
     if term != j:
         raise Problem("caption offers this as %s a(%d) but the claim has 2^%d; "
                       "the sequence is indexed by that exponent" % (seq, term, j))
