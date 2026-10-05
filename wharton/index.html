@@ -284,6 +284,8 @@ dialog.dlg h3 { margin: 0 0 6px; font-size: 17px; }
 details.fold > summary { cursor: pointer; padding: 14px 18px; font-weight: 600; font-size: 15px; }
 details.fold[open] > summary { border-bottom: 1px solid var(--line); }
 .dl .d { white-space: normal; }
+.note.szrec { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 0 0 16px; }
+.note.szrec > span { flex: 1 1 380px; }
 @media (max-width: 1200px) { .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .g21 { grid-template-columns: 1fr; } }
 @media (max-width: 980px) { .g2, .g3 { grid-template-columns: 1fr; } .qa { grid-template-columns: 1fr; gap: 4px; } }
 @media (max-width: 860px) {
@@ -2435,6 +2437,22 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     for (const t of picks) { const l = T.lines.find((z) => z.t === t); if (l) l.w += each; else T.lines.push({ t, w: each, role: "Growth (research pick)" }); }
     us.w -= each * picks.length;
   };
+  // Put a sized security into the target: its weight becomes w1 of the account and the change is taken
+  // from (or given back to) the funding lines pro rata: the rest of its asset class, all other lines,
+  // or cash, as the Position sizer assumed. Treasury rungs are never used to fund. Returns the change.
+  App.addToTarget = function (t, w1, fund) {
+    const T = App.target(), line = T.lines.find((l) => l.t === t), w0 = line ? line.w : 0, cls = App.classOf(t);
+    let pool = fund === "cash" ? [] : T.lines.filter((l) => l.t !== t && l.w > 0 && (fund === "all" || App.classOf(l.t) === cls));
+    if (fund !== "cash" && !pool.length) pool = [];
+    const W = pool.reduce((s, l) => s + l.w, 0), room = pool.length ? W : App.targetCash(T);
+    const d = Math.max(-w0, Math.min(w1 - w0, room));
+    if (Math.abs(d) < 1e-6) return 0;
+    if (pool.length) pool.forEach((l) => (l.w -= (d * l.w) / W));
+    if (line) line.w = w0 + d; else T.lines.push({ t, w: d, role: cls === "Bonds" ? "Growth sleeve bonds" : "Growth (sized)" });
+    T.lines = T.lines.filter((l) => l.w > 1e-6);
+    T.src = "custom"; T.built = App.today();
+    return d;
+  };
   App.targetLines = (T = App.target()) => T.lines.map((l) => ({ ...l, rung: false })).concat(T.rungs.map((r) => ({ t: App.rungTicker(r), w: r.w, rung: r })));
   App.targetCash = (T = App.target()) => Math.max(0, 1 - App.targetLines(T).reduce((s, l) => s + l.w, 0));
   // Shares of the account: Treasury rungs, equity, other bonds, other assets and cash.
@@ -2456,6 +2474,11 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     for (const l of App.targetLines()) if (D.has(l.t) && l.w > 0) w.set(l.t, (w.get(l.t) || 0) + l.w);
     return done(kind === "tgt" ? "the target portfolio" : kind === "opt" ? "the target portfolio (the Optimiser has no result yet)" : "the target portfolio (no holdings entered yet)");
   };
+  // Size limits. IPS §15: no single Sleeve B security above 10% of Sleeve B, applied to single stocks
+  // (the IPS table's own funds are larger); Sleeve B is everything but the Treasury rungs. Funds keep the
+  // team's size guideline. A limit chosen on the Position sizer overrides both.
+  App.stockCap = () => 0.1 * Math.max(0, 1 - App.target().rungs.reduce((s, r) => s + r.w, 0));
+  App.capFor = (t, o = {}) => (o.cap > 0 ? o.cap : (D.info(t) || {}).cls === "EQ" ? App.stockCap() : App.state.rules.teamMax);
   // How much of security t to add (or sell) to a starting portfolio. o: { base, fund, aim, cap, vmax, keep, mu }
   App.sizer = function (t, o) {
     const st = App.settings(), q = D.periodsPerYear[st.freq], rfP = st.rf / q, R = App.state.rules;
@@ -2474,8 +2497,8 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     const betas = ret.tickers.map((_, i) => S.ols(ret.R.map((r) => r[i] - rfP), em).beta), hist = ret.tickers.map((_, i) => S.mean(ret.R.map((r) => r[i])) * q);
     const mu = ret.tickers.map((x, i) => App.muFor(x, betas[i], o.mu, hist[i])), ex = mu.map((m) => m - st.rf);
     const E0 = M.dot(w, ex), e = ex[k] - (fund === "cash" ? 0 : M.dot(f, ex)), V0 = S.variance(xb) * q, c = S.covariance(xb, xd) * q, v = S.variance(xd) * q;
-    const cap = o.cap > 0 ? o.cap : R.teamMax;
-    let lo = R.shortOK ? -cap - wk : -wk, hi = cap - wk, loWhy = R.shortOK ? "short limit" : wk > 1e-9 ? "sell it all" : "none: adding it would not help", hiWhy = `the ${pc(cap, 0)} size limit`;
+    const cap = App.capFor(t, o);
+    let lo = R.shortOK ? -cap - wk : -wk, hi = cap - wk, loWhy = R.shortOK ? "short limit" : wk > 1e-9 ? "sell it all" : "none: adding it would not help", hiWhy = `the ${pc(cap, 1)} size limit`;
     if (fund === "cash") { const avail = Math.max(0, cashW - (o.keep || 0)); if (avail < hi) { hi = Math.max(Math.min(hi, 0), avail); hiWhy = "the cash available"; } }
     else if (W < hi) { hi = W; hiWhy = "what the funding holdings hold"; }
     const res = A.lineOpt({ E0, V0, e, c, v, lo, hi, loWhy, hiWhy, vmax: o.vmax > 0 ? o.vmax : Infinity, aim: o.aim });
@@ -2500,7 +2523,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     const exB = ret.tickers.map((t, i) => App.muFor(t, betas[i], o.mu) - st.rf), E0 = M.dot(w, exB), fund = o.fund === "all" && W > 1e-9 ? "all" : "cash", eF = fund === "all" ? E0 / W : 0;
     const Lb = [1], Lf = [1], Lm = [1];
     ret.R.forEach((r, j) => { const rb = r.reduce((s, v, i) => s + w[i] * v, 0) + cashW * rfP; Lb.push(Lb[j] * (1 + rb)); Lf.push(Lf[j] * (1 + (W > 0 ? (rb - cashW * rfP) / W : rfP))); Lm.push(Lm[j] * (1 + r[mi])); });
-    const pd = ret.pDates, cap = o.cap > 0 ? o.cap : R.teamMax, out = [];
+    const pd = ret.pDates, out = [];
     const pool = new Set(o.pool || D.list.map((m) => m.t));
     for (const t of pool) {
       if (!D.has(t) || /^(TGT|UST|CLIENT)-/.test(t)) continue;
@@ -2515,7 +2538,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
       }
       const beta = S.covariance(xk, xm) / S.variance(xm), mu = App.muFor(t, beta, o.mu), wk = B.w.get(t) || 0;
       const V0 = S.variance(xb) * q, c = S.covariance(xb, xd) * q, v = S.variance(xd) * q, e = mu - st.rf - eF;
-      let hi = cap - wk, lo = -wk; if (fund === "cash") hi = Math.min(hi, Math.max(0, cashW - (o.keep || 0))); else hi = Math.min(hi, W - wk);
+      let hi = App.capFor(t, o) - wk, lo = -wk; if (fund === "cash") hi = Math.min(hi, Math.max(0, cashW - (o.keep || 0))); else hi = Math.min(hi, W - wk);
       if (hi < lo) hi = lo;
       const r = A.lineOpt({ E0, V0, e, c, v, lo, hi, vmax: o.vmax > 0 ? o.vmax : Infinity, aim: "sharpe" }), vol = Math.sqrt(S.variance(xk) * q), info = D.info(t) || {};
       out.push({ t, name: info.name || t, sector: info.cls === "EQ" ? info.sector : App.classOf(t), cls: info.cls, synth: D.isSynth(t), mu, vol, score: A.riskScore(vol), corr: S.covariance(xk, xb) / Math.sqrt(S.variance(xk) * S.variance(xb) || 1), wk, a: r.a, w1: wk + r.a, gain: r.S - r.S0, S1: r.S });
@@ -2693,7 +2716,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     ])
       + U.panel("Build the target", `<div class="ctl"><span class="lbl">Start from</span>${U.seg("tsrc", [["ips", "IPS table (recommended)"], ["plan", "Client plan, Jan 2027"], ["holdings", "Current holdings"]], ["plan", "ips", "holdings"].includes(T.src) ? T.src : "")}<span class="lbl">U.S. equity in research picks</span><span class="inpw" style="display:inline-flex;align-items:center;gap:6px"><input class="inp num sm" id="tStocks" value="${Math.round((T.stocks || 0) * 100)}" size="3">%</span><span class="help">${picks.length ? `${picks.length} Buy-rated stock${picks.length > 1 ? "s" : ""} on the research list, each held to ${pc(R.teamMax, 0)}` : "Rate stocks Buy on the research list to use this"}</span></div>
         <p class="help">Built from ${srcName}${T.built ? ` on ${U.date(T.built)}` : ""}. ${T.src === "plan" ? `The client plan puts ${App.state.plan.st.prefund27} of the ten $50,000 payments into Treasuries in January 2027; WInS starts with the same $300,000, so the account can hold exactly that ladder plus the growth sleeve's first-year mix. The IPS, the Final Report and the Trading Notes Analysis describe the IPS table instead.` : `The account mirrors Year 2 of the plan, as the IPS (§15), the Final Report and the Trading Notes Analysis state: ten Treasuries, one maturing before each $50,000 payment (6.8% of the account each), and the growth sleeve at 65% equity, 33% bonds and 2% cash.`} Edit any weight, add lines, or send the Optimiser's result here. ${fit === "above" ? `<b class="neg">This target's risk score (${ps.score}) is above the client's level (${cr.score}); the IPS and trading notes would need to justify it.</b>` : ""}</p>`)
-      + U.panel("Funds and stocks", lt + `<div class="row" style="padding:0 18px 6px"><input class="inp up sm" id="tAddT" list="tickers" placeholder="Ticker" size="10"><input class="inp num sm" id="tAddW" placeholder="weight %" size="8"><button class="btn sec small" id="tAdd">Add line</button><span class="grow"></span><button class="btn small" data-go="TRADE">Plan the trades</button></div>`, { flush: true, sub: `weights of a ${U.usd(nav)} account`, acts: `<button class="lnk" data-csv="target">CSV</button>` })
+      + U.panel("Funds and stocks", lt + `<div class="row" style="padding:0 18px 6px"><input class="inp up sm" id="tAddT" list="tickers" placeholder="Ticker" size="10"><input class="inp num sm" id="tAddW" placeholder="weight %" size="8" title="Leave blank for the Position sizer's suggested size"><button class="btn sec small" id="tAdd">Add line</button><span class="help">blank weight = the suggested size</span><span class="grow"></span><button class="btn small" data-go="TRADE">Plan the trades</button></div>`, { flush: true, sub: `weights of a ${U.usd(nav)} account`, acts: `<button class="lnk" data-csv="target">CSV</button>` })
       + U.panel("Government bonds (the operating-reserve ladder)", rt + `<div class="row" style="padding:0 18px 6px"><button class="btn sec small" id="tAddR">Add a bond</button><span class="help">WInS lists U.S., UK, German, French, Italian and Dutch government bonds. For each payment the plan holds the U.S. Treasury maturing in the 12 months before it (15 November of the year before is ideal); choose the exact note in WInS and enter its coupon.</span></div>`, { flush: true });
     App.csvs.set("target", () => [["Line", "Role", "TargetWeight", "TargetDollars", "HeldDollars"]].concat(T.lines.map((l) => [l.t, l.role || "", l.w.toFixed(6), (l.w * nav).toFixed(2), held(l.t).toFixed(2)])).concat(T.rungs.map((r) => [r.name, "Operating reserve", r.w.toFixed(6), (r.w * nav).toFixed(2), heldBond(r.mat).toFixed(2)])).concat([["CASH", "", cashT.toFixed(6), (cashT * nav).toFixed(2), b.cash.toFixed(2)]]));
     const edit = () => { T.src = "custom"; T.built = App.today(); App.changed("all"); };
@@ -2706,7 +2729,16 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     root.querySelectorAll("[data-tdel]").forEach((el) => (el.onclick = () => { T.lines.splice(+el.dataset.tdel, 1); edit(); }));
     root.querySelectorAll("[data-rdel]").forEach((el) => (el.onclick = () => { T.rungs.splice(+el.dataset.rdel, 1); edit(); }));
     root.querySelectorAll("[data-size]").forEach((el) => (el.onclick = () => { App.state.size.t = el.dataset.size; App.state.size.base = "tgt"; App.go("SIZE"); }));
-    U.$("#tAdd").onclick = () => { const t = U.$("#tAddT").value.trim().toUpperCase(), w = parseFloat(U.$("#tAddW").value) / 100; if (!t || !(w > 0)) return U.toast("Enter a ticker and a weight", "err"); if (!D.has(t)) U.toast(`${t} has no price history yet; add it to the research list for a stand-in`, "err"); const l = T.lines.find((z) => z.t === t); if (l) l.w += w; else T.lines.push({ t, w }); edit(); };
+    U.$("#tAdd").onclick = () => {
+      const t = U.$("#tAddT").value.trim().toUpperCase(), w = parseFloat(U.$("#tAddW").value) / 100; if (!t) return U.toast("Enter a ticker", "err");
+      if (!(w > 0)) { // no weight: use the Position sizer's suggestion, paid for from the rest of its asset class
+        const z = App.sizer(t, { ...App.sizeOpts(), base: "tgt", fund: "class", aim: "sharpe" });
+        if (!z.ok) return U.toast(z.error || `Cannot size ${t}`, "err");
+        if (!(z.res.a > 0.0005)) return U.toast(`The sizer suggests none of ${t} for this target; type a weight to add it anyway`, "err");
+        const d = App.addToTarget(t, z.w1, z.fund); App.changed("all"); return U.toast(`${t} added at the suggested ${pc(z.wk + d, 1)} (${U.usd(d * nav)}), paid for from ${z.fund === "cash" ? "cash" : "the rest of its asset class"}`);
+      }
+      if (!D.has(t)) U.toast(`${t} has no price history yet; add it to the research list for a stand-in`, "err"); const l = T.lines.find((z) => z.t === t); if (l) l.w += w; else T.lines.push({ t, w }); edit();
+    };
     U.$("#tAddR").onclick = () => App.bondDialog({ target: true });
   }
 
@@ -3217,6 +3249,8 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
       const nm = (r) => (r.bond ? r.info.name : r.t), over = b.rows.filter((r) => r.w > R.posLimit + 1e-9), big = b.rows.filter((r) => r.w > R.teamMax + 1e-9 && r.w <= R.posLimit + 1e-9);
       add(over.length ? "FAIL" : "PASS", `No holding above ${pc(R.posLimit, 0)} of the account`, over.length ? over.map((r) => `${nm(r)} is ${pc(r.w, 1)}`).join(", ") + "." : `Largest holding is ${b.rows.length ? pc(Math.max(...b.rows.map((r) => r.w || 0)), 1) : "—"}.`, "IPS limit; the 2026-27 rules set no position limit");
       add(big.length ? "WARN" : "PASS", `Holdings kept to about ${pc(R.teamMax, 0)} each`, big.length ? `${big.map((r) => `${nm(r)} ${pc(r.w, 1)}`).join(", ")}: trim, or be ready to explain why they stay large.` : "Every holding is within the team guideline.", "Team guideline for appropriate diversification");
+      const sbV = b.rows.filter((r) => !r.bond).reduce((s, r) => s + (isFinite(r.val) ? r.val : 0), 0) + b.cash, bigStock = b.rows.filter((r) => !r.bond && r.info && r.info.cls === "EQ" && isFinite(r.val) && sbV > 0 && r.val > 0.1 * sbV + 1e-6);
+      if (b.rows.some((r) => r.bond)) add(bigStock.length ? "WARN" : "PASS", "No stock above 10% of Sleeve B", bigStock.length ? `${bigStock.map((r) => `${r.t} ${pc(r.val / sbV, 1)}`).join(", ")} of Sleeve B: the Trades page trims it to target.` : "Every stock is within the limit.", "IPS §15: a single Sleeve B security above 10% of Sleeve B triggers a rebalance");
       const low = b.rows.filter((r) => !r.bond && r.sh > 0 && r.info && r.info.cls === "EQ" && r.px > 0 && r.px < R.minPrice);
       add(low.length ? "FAIL" : "PASS", `Stocks priced at $${R.minPrice} or more`, low.length ? `Below $${R.minPrice}: ${low.map((r) => `${r.t} ${U.usd(r.px, 2)}`).join(", ")}.` : "Every stock is at or above the minimum (checked at the prices entered; a non-U.S. stock needs the equivalent of $5).", "2026-27 Trading Details: stocks priced at $5 or more, or the local equivalent");
       const noPx = b.rows.filter((r) => r.noPx).map((r) => r.t);
@@ -3321,6 +3355,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
       if (o.tw > 0 && !o.cur) { o.d = o.tsh; o.kind = o.d > 0 ? "build" : "hold"; o.why = o.d > 0 ? "not held yet: opens the position" : `its target (${U.usd(o.tgt)}) is less than one share`; }
       else if (!(o.tw > 0)) { o.d = -o.cur; o.kind = "exit"; o.why = `not in the ${label}: sell it all`; }
       else if (w0 > R.posLimit + 1e-9 && dd < 0) { o.d = dd; o.kind = "cap"; o.why = `${pc(w0, 1)} of the account, above the ${pc(R.posLimit, 0)} limit: trim to target`; }
+      else if (!o.fund && o.eq && sbNow > 0 && o.held > 0.1 * sbNow + 1e-6 && dd < 0) { o.d = dd; o.kind = "cap"; o.why = `${pc(o.held / sbNow, 1)} of Sleeve B, above the IPS limit of 10% for one stock: trim to target`; }
       else if (dd && (mode === "all" || bandHit) && Math.abs(dd * o.px) >= minT) { o.d = dd; o.kind = "rebal"; o.why = rebWhy; }
       else { o.kind = "hold"; o.why = !dd ? "at target" : Math.abs(dd * o.px) < minT ? `${U.usd(Math.abs(dd * o.px))} off target, under the ${U.usd(minT)} minimum trade` : !built ? "already held; rebalanced only once the build is complete" : `${U.usd(Math.abs(dd * o.px))} off target; Sleeve B equity is inside the ±${(band * 100).toFixed(0)}-point band`; }
       const opp = o.d > 0 ? "Sell" : "Buy";
@@ -3335,10 +3370,17 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
       const name = r.name || App.rungName(r.mat, r.cpn, r.ctry), kind = need > 0 ? (unit > 0 ? "build" : "price") : "hold";
       return { r, t, held, tgt, need, clean, dirty, unit, units, cost: units * unit, typed: isFinite(typed), bi, name, kind, cusip: r.cusip || "", why: kind === "hold" ? (held > 0 ? "held to maturity: never sold or topped up" : "at target") : held > 0 ? "below target: top up" : "funds one $50,000 payment; held to maturity" };
     });
-    const nBond = (z) => z.kind === "build" && z.units > 0, act = lines.filter((o) => o.ok && o.d && o.kind !== "wait"), fees = (T.fee || 0) * (act.length + bonds.filter(nBond).length);
+    const nBond = (z) => z.kind === "build" && z.units > 0, act = lines.filter((o) => o.ok && o.d && o.kind !== "wait");
+    let fees = (T.fee || 0) * (act.length + bonds.filter(nBond).length);
     let post = b.cash - act.reduce((s, o) => s + o.val, 0) - bonds.reduce((s, z) => s + (nBond(z) ? z.cost : z.kind === "price" ? z.need : 0), 0) - lines.filter((o) => o.kind === "price" && !o.cur).reduce((s, o) => s + o.tgt, 0) - fees;
     // Bonds are rounded to the nearest $1,000 of face; if that would overdraw the cash, round the largest overshoots down.
     while (post < -0.005) { const z = bonds.filter((q) => nBond(q) && q.cost > q.need).sort((p, q) => q.cost - q.need - (p.cost - p.need))[0]; if (!z) break; z.units--; z.cost = z.units * z.unit; post += z.unit; }
+    // Paying for the buys: if the cash would run out, trim positions that are above their target to it,
+    // largest overweight first, even under the minimum trade, until the buys are covered.
+    if (post < -0.005) {
+      const over = lines.filter((o) => o.ok && o.kind === "hold" && o.tw > 0 && o.cur > o.tsh && !(logged.get(o.t) || new Set()).has("Buy")).sort((p, q) => (q.cur - q.tsh) * q.px - (p.cur - p.tsh) * p.px);
+      for (const o of over) { if (post >= -0.005) break; o.d = o.tsh - o.cur; o.kind = "fund"; o.side = "Sell"; o.val = o.d * o.px; o.w1 = nav > 0 ? o.tsh * o.px / nav : NaN; o.why = "above its target: trimmed to pay for the buys"; post -= o.val + (T.fee || 0); fees += T.fee || 0; act.push(o); }
+    }
     const bondOrders = bonds.filter((z) => nBond(z) || z.kind === "price"), sells = lines.filter((o) => o.side === "Sell" && o.kind !== "hold" && o.kind !== "wait");
     const buys = lines.filter((o) => o.side === "Buy" && (o.kind === "price" ? !o.cur : o.kind !== "hold" && o.kind !== "wait"));
     const steps = [
@@ -3355,6 +3397,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     if (cnt("exit")) why.push(`${cnt("exit")} holding${cnt("exit") > 1 ? "s" : ""} not in the ${label}`);
     if (cnt("cap")) why.push(`${cnt("cap")} holding${cnt("cap") > 1 ? "s" : ""} above the ${pc(R.posLimit, 0)} limit`);
     if (cnt("rebal")) why.push(rebWhy);
+    if (cnt("fund")) why.push(`${cnt("fund")} trim${cnt("fund") > 1 ? "s" : ""} to pay for the buys`);
     let verdict;
     if (today > R.to) verdict = { k: "done", h: "Trading has ended", t: "The WInS portfolio is frozen. Export the trade log for the Final Report." };
     else if (nOrd) verdict = { k: "go", h: `Trade: ${nOrd} order${nOrd > 1 ? "s" : ""}`, t: `${why.join("; ")}.`.replace(/^./, (c) => c.toUpperCase()) + (needPx ? ` Type the WInS price for the ${needPx} marked "price needed" to get their quantities.` : "") };
@@ -3579,7 +3622,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
       ${sec("Stand-ins for missing history", `<p>A security without price history in the data is measured through funds that are in it:</p>${fx("r = Σ kᵢ·rᵢ + k_cash·r_cash\nwith a stated volatility σ and correlation ρ:  r* = β·r + e,  β = ρσ/σ_r,  e ⟂ r,  sd(e) = σ√(1 − ρ²)")}<p>Built in: funds tracking the same or a very similar index as a fund in the data (VEA through EFA, BND through AGG, VGSH through SHY), and bond funds matched on duration with SHY (1.9 years), IEF (7.1) and TLT (15.9). Research-list stocks use the stand-in the team chooses, or by default the sector fund (U.S.) or the market's country or regional fund, with the team's volatility (else 1.35× the fund's, at least 25%) and a correlation of 0.6 (0.45 with a regional fund). The specific part e is seeded, so results repeat. Importing real prices replaces any stand-in.</p>`)}
       ${sec("Government bonds", `${fx("Dirty price = Σ CFⱼ / (1 + y/f)^(f·tⱼ),   tⱼ = (j + τ)/f,   τ = share of the coupon period still to run\nAccrued = (100·c/f)·(1 − τ),   clean = dirty − accrued\nModified duration = Σ tⱼ·PVⱼ / P / (1 + y/f),   DV01 = D_mod × P × 0.0001")}<p>Coupons are paid twice a year for U.S., UK and Italian bonds and once a year for German, French and Dutch bonds. Yield is solved from the WInS price; before a price is entered it comes from the September 2026 Treasury curve. A U.S. Treasury's risk is a duration-matched blend of Treasury funds. A non-U.S. bond held in dollars adds its own rates and the currency: volatility √((0.8%·D)² + FX²) with FX 7.5-8%, correlated 0.6·(0.8%·D)/σ with the U.S. blend.</p>`)}
       ${sec("Forward-looking expected returns", `${fx("Bonds: μ = Treasury yield at the fund's duration + credit spread net of defaults (bond positions: their own yield)\nOther holdings: μ = r_f + β·ERP (CAPM)\nBlack-Litterman views from the research list: absolute view qₖ = the team's 12-month forecast, confidence cₖ (default 30%)")}<p>Past average returns are shown for comparison but are too uncertain to optimise on. "Team forecasts" uses the research list's numbers directly where entered.</p>`)}
-      ${sec("Orders: whether to trade, what and how much", `<p>Dollar target = target weight × account value. Once every Treasury rung is held, Sleeve B (everything but the rungs, cash included) is run on its own value: target = weight ÷ Sleeve B's total weight × Sleeve B now. Shares = ⌊target ÷ price⌋, whole shares. Bonds: target ÷ ((clean price + accrued interest) × 10) $1,000 bonds, to the nearest bond; if rounding up would overdraw the cash, the largest overshoots are rounded down. The price is the WInS price typed in, else the last close in the data; a bond without a typed price is priced on the Treasury curve at its maturity. Rules (IPS §15; WInS Implementation Plan §6): every target position is bought once; a Treasury rung is never sold or topped up; after the build a position is traded only when Sleeve B's equity share is more than the band (3 points) from target, or the position is above the ${pc(App.state.rules.posLimit, 0)} limit; a position not in the target is sold; changes under the minimum trade ($500) are skipped; from the glide date (2 November) the target moves the glide step (5 points of Sleeve B) from the equity funds to the bond funds, pro rata; a security already traded today is not traded back the same day (no day trading). Orders are listed sells first, then Treasuries, funds and stocks. Cash after trading = cash − buys + sells − fees.</p>`)}
+      ${sec("Orders: whether to trade, what and how much", `<p>Dollar target = target weight × account value. Once every Treasury rung is held, Sleeve B (everything but the rungs, cash included) is run on its own value: target = weight ÷ Sleeve B's total weight × Sleeve B now. Shares = ⌊target ÷ price⌋, whole shares. Bonds: target ÷ ((clean price + accrued interest) × 10) $1,000 bonds, to the nearest bond; if rounding up would overdraw the cash, the largest overshoots are rounded down. The price is the WInS price typed in, else the last close in the data; a bond without a typed price is priced on the Treasury curve at its maturity. Rules (IPS §15; WInS Implementation Plan §6): every target position is bought once; a Treasury rung is never sold or topped up; after the build a position is traded only when Sleeve B's equity share is more than the band (3 points) from target, or the position is above the ${pc(App.state.rules.posLimit, 0)} limit; a position not in the target is sold; a single stock above 10% of Sleeve B (IPS §15) is trimmed to target; changes under the minimum trade ($500) are skipped; if the buys would run the cash out, positions above their target are trimmed to it, largest overweight first, to pay for them; from the glide date (2 November) the target moves the glide step (5 points of Sleeve B) from the equity funds to the bond funds, pro rata; a security already traded today is not traded back the same day (no day trading). Orders are listed sells first, then Treasuries, funds and stocks. Cash after trading = cash − buys + sells − fees.</p>`)}
       ${sec("Target portfolio and allocations by risk level", `<p>The default target is the IPS table (IPS §15; WInS Implementation Plan §3): the account mirrors Year 2 of the plan, with ten U.S. Treasuries, one maturing before each $50,000 payment, at 6.8% of the account each, and Sleeve B at 65% equity (ten U.S. stocks in ten sectors, VEA, TSM, VWO), 33% bonds (VGSH, TIP, BSV) and 2% cash. The alternative is the client plan in January 2027: the rungs bought then (market value = cost of each $50,000 payment, with the cushion) and the growth sleeve's first-year mix, equities split 55/30/15 across the U.S., developed and emerging markets, bonds in 7-10 year Treasuries, and cash; a chosen share of its U.S. equity can go to the research list's Buy-rated stocks, equally weighted and each held to the size guideline. For each risk score the Optimiser reports the frontier mix with the highest expected return whose volatility stays within the band (interpolating between frontier points).</p>`)}
       ${sec("Company analysis", fx("NOPAT = EBIT(1 − t)     invested capital = equity + debt − cash     ROIC = NOPAT / invested capital\ncost of equity = r_f(10-year) + β_adj·ERP     cost of debt = interest / debt\nWACC = E/V · cost of equity + D/V · cost of debt · (1 − t)"))}
       ${sec("Default assumptions", `<p>WInS: $300,000 of starting cash, trading 28 September to 6 November 2026, at most 200 trades, stocks at $5 or more, 20% largest holding (IPS). Risk-free rate 4.19% (3-month Treasury bill, 25 Sep 2026). Treasury curve 1 yr 4.41%, 2 yr 4.75%, 5 yr 4.86%, 10 yr 5.01%, 30 yr 5.33% (18 Sep 2026; 7 and 20 years interpolated). Equity risk premium 4.5%. Long-run compound returns in line with published 2026 forecasts: U.S. equities 5.5–6.5%, developed ex-U.S. 6.5–7.5%, emerging 7.5–9%, high-quality bonds 4–5%. U.S. inflation 2.4%, Taiwan about 2.2%. All can be changed.</p>`)}
@@ -3602,7 +3645,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
   const normExch = (s) => { const l = String(s || "").toLowerCase().trim(); if (!l) return ""; const e = App.EXCH.find((z) => z[0].toLowerCase() === l || z[1].toLowerCase() === l) || App.EXCH.find((z) => z[1].toLowerCase().includes(l) || l.includes(z[1].toLowerCase().split(" (")[0]) || (z[2] && l === z[2].toLowerCase())); return e ? e[0] : l.includes("nasdaq") ? "NASDAQ" : l.includes("nyse") ? "NYSE" : "OTHER"; };
   const pctIn = (s) => { const t = String(s ?? "").replace(/[,\s]/g, ""); if (!t) return null; const v = parseFloat(t.replace(/[%+]/g, "")); if (!isFinite(v)) return null; return /%/.test(t) || Math.abs(v) >= 1 || !/\./.test(t) ? v / 100 : v; };
   // The sizer's settings, shared by the research list's suggestions.
-  App.sizeOpts = function () { const z = App.state.size, R = App.state.rules, cr = App.clientRisk(); return { base: z.base, fund: z.fund, aim: z.aim, cap: z.cap > 0 ? z.cap : R.teamMax, vmax: z.vmax === 0 ? Infinity : z.vmax > 0 ? z.vmax : A.riskBand(cr.hiScore).hi, mu: z.mu, keep: 0 }; };
+  App.sizeOpts = function () { const z = App.state.size, R = App.state.rules, cr = App.clientRisk(); return { base: z.base, fund: z.fund, aim: z.aim, cap: z.cap > 0 ? z.cap : null, vmax: z.vmax === 0 ? Infinity : z.vmax > 0 ? z.vmax : A.riskBand(cr.hiScore).hi, mu: z.mu, keep: 0 }; };
   App.researchStats = function (r) {
     const so = App.sizeOpts(), key = `rs:${r.t}:${so.base}:${so.mu}:${so.cap}:${so.vmax}`; if (App.cache[key]) return App.cache[key];
     const st = App.settings(), q = D.periodsPerYear[st.freq], rfP = st.rf / q, out = { has: D.has(r.t) };
@@ -3657,9 +3700,9 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
       { h: "Volatility", n: 1, f: (r) => { const s = st.get(r.t); return s && isFinite(s.vol) ? `${pc(s.vol, 0)}${s.synth ? `<span class="nm" title="${U.esc((s.info || {}).proxy || "")}">stand-in${s.info && s.info.assumed ? ", assumed" : ""}</span>` : ""}` : "—"; } },
       { h: "Risk", n: 1, f: (r) => { const s = st.get(r.t); return s && isFinite(s.vol) ? x(App.riskTag(s.score), App.riskExplain(s.vol, s.score, r.t)) : "—"; } },
       { h: "Correlation", n: 1, f: (r) => { const s = st.get(r.t); return s && isFinite(s.corr) ? s.corr.toFixed(2) : "—"; }, tip: `With ${baseLab}` },
-      { h: "Suggested size", n: 1, f: (r) => { const s = st.get(r.t); if (!s || !s.size) return r.rating === "Short" || r.rating === "Exclude" ? '<span class="muted">not held</span>' : "—"; const z = s.size, a = z.res.a; return Math.abs(a) < 0.0005 ? '<span class="muted">none</span>' : `<b class="${a > 0 ? "pos" : "neg"}">${a > 0 ? "+" : "−"}${pc(Math.abs(a), 1)}</b><span class="nm">${U.usd(Math.abs(z.dollars))} · to ${pc(z.w1, 1)}</span>`; }, tip: "Best amount by Sharpe ratio, paid for from the same asset class, within the Position sizer's size limit and risk ceiling" },
+      { h: "Suggested size", n: 1, f: (r) => { const s = st.get(r.t); if (!s || !s.size) return r.rating === "Short" || r.rating === "Exclude" ? '<span class="muted">not held</span>' : "—"; const z = s.size, a = z.res.a; return Math.abs(a) < 0.0005 ? '<span class="muted">none</span>' : `<b class="${a > 0 ? "pos" : "neg"}">${a > 0 ? "+" : "−"}${pc(Math.abs(a), 1)}</b><span class="nm">${isFinite(z.shares) && z.shares ? `${a > 0 ? "buy" : "sell"} ${U.num(Math.abs(z.shares), 0)} shares · ` : ""}${U.usd(Math.abs(z.dollars))} · to ${pc(z.w1, 1)}</span>`; }, tip: "Best amount by Sharpe ratio, paid for from the same asset class, within the Position sizer's size limit and risk ceiling" },
     ];
-    const acts = (r) => `<span class="rsa"><button class="lnk" data-redit="${rows.indexOf(r)}">Edit</button> · <button class="lnk" data-rsize="${U.esc(r.t)}">Size</button> · <button class="lnk" data-rdel="${rows.indexOf(r)}">Remove</button></span>`;
+    const acts = (r) => `<span class="rsa"><button class="lnk" data-redit="${rows.indexOf(r)}">Edit</button> · <button class="lnk" data-rsize="${U.esc(r.t)}">Size</button>${r.rating === "Short" || r.rating === "Exclude" ? "" : ` · <button class="lnk" data-radd="${U.esc(r.t)}" title="Add the suggested size to the target portfolio; Trades then shows the order">Add to target</button>`} · <button class="lnk" data-rdel="${rows.indexOf(r)}">Remove</button></span>`;
     const detail = (r) => { const fl = App.researchFlags(r, st.get(r.t)); const bits = [r.risks ? `<span><b>Key risks:</b> ${U.esc(r.risks)}</span>` : "", r.fcNote ? `<span class="muted">Forecast: ${U.esc(r.fcNote)}.</span>` : "", r.notes ? `<span class="muted">${U.esc(r.notes)}</span>` : "", r.by || r.src ? `<span class="muted">${U.esc([r.by ? "by " + r.by : "", r.src].filter(Boolean).join(" · "))}</span>` : ""].filter(Boolean).join(" "); return `<div class="rsd">${acts(r)}${fl.length ? `<span class="rsf">${fl.join("")}</span>` : ""}${bits}</div>`; };
     const tbl = shown.length ? `<div class="tw"><table class="tbl rs"><thead><tr>${cells.map((c) => `<th class="${c.n ? "n" : ""}" ${c.tip ? `title="${U.esc(c.tip)}"` : ""}>${c.h}</th>`).join("")}</tr></thead><tbody>${shown.map((r) => `<tr class="rsm">${cells.map((c) => `<td class="${c.n ? "n" : ""}">${c.f(r)}</td>`).join("")}</tr><tr class="rsx"><td colspan="${cells.length}">${detail(r)}</td></tr>`).join("")}</tbody></table></div>` : U.empty(rows.length ? "Nothing with this rating" : "No candidates yet", "Add candidates one at a time, or paste rows from a spreadsheet or from Claude using the column template.");
     const cover = `<div class="lbl" style="margin-top:0">Buy and Hold stocks by sector</div><div class="bars">${Object.entries(secs).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="brow"><span>${U.esc(k)}</span>${U.bar(v, Math.max(...Object.values(secs)))}<b>${v}</b></div>`).join("") || '<p class="help">None yet.</p>'}</div>
@@ -3678,6 +3721,12 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     root.querySelectorAll("[data-rfc]").forEach((el) => el.addEventListener("change", () => { const v = pctIn(el.value.includes("%") ? el.value : el.value + "%"); rows[+el.dataset.rfc].fc = v; App.changed("all"); }));
     root.querySelectorAll("[data-redit]").forEach((b) => (b.onclick = () => App.researchDialog(rows[+b.dataset.redit])));
     root.querySelectorAll("[data-rsize]").forEach((b) => (b.onclick = () => { App.state.size.t = b.dataset.rsize; App.go("SIZE"); }));
+    root.querySelectorAll("[data-radd]").forEach((b) => (b.onclick = () => {
+      const row = App.researchRow(b.dataset.radd), z = row && App.researchStats(row).size;
+      if (!z || Math.abs(z.res.a) < 0.0005) return U.toast(`The sizer suggests no change in ${b.dataset.radd} for this portfolio; type a weight on the Target portfolio to add it anyway`, "err");
+      const d = App.addToTarget(row.t, z.w1, z.fund); if (Math.abs(d) < 1e-6) return U.toast("Nothing in the target to pay for it", "err");
+      App.changed("all"); U.toast(`${row.t} is now ${pc(z.wk + d, 1)} of the target; here are the orders`); App.go("TRADE", { tab: "orders" });
+    }));
     root.querySelectorAll("[data-rdel]").forEach((b) => (b.onclick = () => { const r = rows[+b.dataset.rdel]; if (confirm(`Remove ${r.t} from the research list?`)) { rows.splice(+b.dataset.rdel, 1); App.changed("all"); } }));
     root.querySelectorAll("[data-find]").forEach((b) => (b.onclick = () => { Object.assign(App.state.size, { pool: "stocks", sec: b.dataset.find }); App.go("SIZE"); setTimeout(() => { const el = U.$("#rankBox"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 400); }));
     U.$("#rsAdd").onclick = () => App.researchDialog(null);
@@ -3755,7 +3804,7 @@ details.fold[open] > summary { border-bottom: 1px solid var(--line); }
     const z = App.state.size, R = App.state.rules, cr = App.clientRisk(), o = App.sizeOpts(), capV = o.cap;
     const t = (z.t || "").toUpperCase(), r = App.sizer(t, o);
     const ctl = `<div class="ctl"><span class="lbl">Security</span><input class="inp up" id="szT" list="tickers" value="${U.esc(t)}" size="12" autocomplete="off"><span class="lbl">Starting from</span>${U.seg("szBase", [["cur", "Current holdings"], ["tgt", "Target portfolio"], ["opt", "Optimiser mix"]], z.base)}<span class="lbl">Pay with</span>${U.seg("szFund", [["class", "Same asset class"], ["cash", "Cash"], ["all", "All holdings"]], z.fund)}</div>
-      <div class="ctl"><span class="lbl">Aim</span>${U.seg("szAim", [["sharpe", "Best return per unit of risk"], ["return", "Most return within the limits"]], z.aim)}<span class="lbl">Size limit</span>${U.seg("szCap", [[String(R.teamMax), `${pc(R.teamMax, 0)} guideline`], [String(R.posLimit), `${pc(R.posLimit, 0)} IPS cap`]], String(capV))}<span class="lbl">Risk ceiling</span>${U.seg("szV", [["", `Client level (score ${cr.hiScore})`], ["0", "None"]], z.vmax === 0 ? "0" : "")}<span class="lbl">Returns</span>${U.seg("szMu", [["fwd", "Forward-looking"], ["team", "Team forecasts"], ["capm", "CAPM"], ["hist", "Past"]], z.mu)}</div>`;
+      <div class="ctl"><span class="lbl">Aim</span>${U.seg("szAim", [["sharpe", "Best return per unit of risk"], ["return", "Most return within the limits"]], z.aim)}<span class="lbl">Size limit</span>${U.seg("szCap", [["", `IPS: stock ${pc(App.stockCap(), 1)}, fund ${pc(R.teamMax, 0)}`], [String(R.teamMax), `${pc(R.teamMax, 0)} of the account`], [String(R.posLimit), `${pc(R.posLimit, 0)} of the account`]], capV > 0 ? String(capV) : "")}<span class="lbl">Risk ceiling</span>${U.seg("szV", [["", `Client level (score ${cr.hiScore})`], ["0", "None"]], z.vmax === 0 ? "0" : "")}<span class="lbl">Returns</span>${U.seg("szMu", [["fwd", "Forward-looking"], ["team", "Team forecasts"], ["capm", "CAPM"], ["hist", "Past"]], z.mu)}</div>`;
     const head = `<div class="ph"><div><h1>Position sizer</h1><p>How risky a security is, and how much of it to hold given everything else in the portfolio. The amount is the one that gives the best return per unit of risk (or the most return) within the size limit, the cash or holdings available to pay for it, and the client's risk level.</p></div></div>`;
     if (!r.ok) { root.innerHTML = head + U.panel("", ctl) + U.panel("", U.empty(r.empty ? "Choose a security" : "Cannot size this", U.esc(r.error))) + `<div id="rankBox"></div>`; bindSize(root); rankLater(o); return; }
     const res = r.res, a = res.a, buy = a > 0.0005, sell = a < -0.0005, st = App.settings();
@@ -3772,6 +3821,7 @@ a* = ${isFinite(res.aStar) ? pc(res.aStar, 2) : "n/a"}\nallowed range ${pc(res.l
         { l: "Sharpe ratio", v: `${isFinite(b.sharpe) ? b.sharpe.toFixed(2) : "—"} → ${isFinite(af.sharpe) ? af.sharpe.toFixed(2) : "—"}`, s: `volatility ${pc(b.vol, 1)} → ${pc(af.vol, 1)}` },
         { l: "Expected return", v: `${pc(b.ret, 2)} → ${pc(af.ret, 2)}`, s: `${U.spct(af.ret - b.ret, 2).replace("%", " points")}: ${U.usd((af.ret - b.ret) * r.B.nav)} a year` },
       ])
+      + (buy || sell ? `<div class="note szrec"><span><b>${recTxt} of ${t}</b>${isFinite(r.shares) ? ` (${U.usd(Math.abs(r.dollars))})` : ""}: from ${pc(r.wk, 1)} to ${pc(r.w1, 1)} of the account, paid for from ${{ cash: "cash", class: "the rest of its asset class, pro rata", all: "all other holdings, pro rata" }[r.fund]}. Add it to the target and the Trades page turns it into orders, with any trims that pay for it.</span><button class="btn" id="szAdd">Add to the target and plan the order</button></div>` : "")
       + `<div class="grid g2">${U.panel("Why this amount", `<div id="chSz" class="chart"></div>`, { sub: `Sharpe ratio of the portfolio as ${t}'s weight changes`, acts: `<button class="lnk" data-png="chSz" data-name="position-size-${t}">PNG</button>` })}${U.panel("Portfolio risk as the weight changes", `<div id="chSzV" class="chart"></div>`, { sub: "volatility, with the risk-score band edges" })}</div>`
       + `<div class="grid g2">${U.panel(`${t}: ${U.esc(r.info.name || "")}`, `<div class="kvs" style="grid-template-columns:1fr">
           <div><span>Expected return (${{ fwd: "forward-looking", team: "team forecast", capm: "CAPM", hist: "past average" }[z.mu]})</span><b>${pc(r.mu, 1)}</b></div>
@@ -3791,12 +3841,13 @@ a* = ${isFinite(res.aStar) ? pc(res.aStar, 2) : "n/a"}\nallowed range ${pc(res.l
     const edges = A.RISK_EDGES.filter((e) => e > Math.min(...r.grid.map((g) => g.vol)) * 0.9 && e < Math.max(...r.grid.map((g) => g.vol)) * 1.1);
     C.lines(U.$("#chSzV"), { x: gx, xType: "num", xFmt: (v) => pc(v, 1), series: [{ name: "Portfolio volatility", y: r.grid.map((g) => g.vol), color: th.s[2] }].concat(edges.map((e) => ({ name: `score ${A.riskScore(e)} starts`, y: gx.map(() => e), color: th.ink3, dash: "3 4", width: 1 }))), marks, yFmt: (v) => pc(v, 1), h: 240, legend: false });
     bindSize(root); rankLater(o);
+    const sa = U.$("#szAdd"); if (sa) sa.onclick = () => { const d = App.addToTarget(t, r.w1, r.fund); if (Math.abs(d) < 1e-6) return U.toast(`Nothing to change: ${r.fund === "cash" ? "no cash left in the target" : "nothing in the target to pay for it"}`, "err"); App.changed("all"); U.toast(`${t} is now ${pc(r.wk + d, 1)} of the target; here are the orders`); App.go("TRADE", { tab: "orders" }); };
   };
   function bindSize(root) {
     const z = App.state.size;
     const tIn = U.$("#szT"); if (tIn) tIn.addEventListener("change", () => { z.t = tIn.value.trim().toUpperCase(); App.changed("ui"); });
     const seg = (name, fn) => { const sg = root.querySelector(`[data-seg=${name}]`); if (sg) sg.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { fn(b.dataset.v); App.changed("ui"); } }); };
-    seg("szBase", (v) => (z.base = v)); seg("szFund", (v) => (z.fund = v)); seg("szAim", (v) => (z.aim = v)); seg("szCap", (v) => (z.cap = +v)); seg("szV", (v) => (z.vmax = v === "0" ? 0 : null)); seg("szMu", (v) => (z.mu = v));
+    seg("szBase", (v) => (z.base = v)); seg("szFund", (v) => (z.fund = v)); seg("szAim", (v) => (z.aim = v)); seg("szCap", (v) => (z.cap = v ? +v : null)); seg("szV", (v) => (z.vmax = v === "0" ? 0 : null)); seg("szMu", (v) => (z.mu = v));
   }
   function rankLater(o) {
     setTimeout(() => {
