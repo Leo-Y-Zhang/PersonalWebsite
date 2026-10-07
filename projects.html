@@ -39,11 +39,11 @@
 
 <section id="glance" aria-labelledby="glance-h">
   <h2 id="glance-h">At a glance</h2>
-  <p><strong>48 repositories</strong> (44 public, 4 private) with continuous
-  integration on 47 of 48 &middot; <strong>174 accepted OEIS terms</strong> across
+  <p><strong>48 public repositories</strong>, with continuous integration on 47
+  of them &middot; <strong>174 accepted OEIS terms</strong> across
   21 sequences &middot; <strong>one live production web application</strong>
   &middot; over <strong>3,700 automated tests</strong> measured across the two
-  flagship systems. Repository figures re-derived from the live sources on 1 September
+  flagship systems. Repository figures re-derived from the live sources on 6 October
   2026 and the OEIS figure on 2 September 2026; the test counts were measured on 26 August 2026. The
   <a href="index.html#research">research itself is on the home page</a>, with
   the certificate to prove it.</p>
@@ -90,7 +90,7 @@
     two-person team: twenty sensing nodes scoring flood and heat risk 0&ndash;100
     in real time on one Raspberry Pi, an explainable anomaly model, and honest
     data-source provenance &mdash; a reading is labelled <em>hardware</em> only
-    when a physical sensor produced it. 144 automated tests and a one-command
+    when a physical sensor produced it. 236 automated tests (6 October 2026) and a one-command
     judge validation passing 5/5 (26 August 2026).</dd>
   </dl>
 </section>
@@ -140,16 +140,17 @@
     re-derived by different code before they are trusted.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a> <span class="lang">Python</span></dt>
-    <dd>A classical-cipher solver graded against real National Cipher Challenge
-    material: 37 of 43 solved, with zero confidently-wrong answers &mdash; it
-    prefers to refuse.</dd>
+    <dd>A classical-cipher solver run on forty published National Cipher
+    Challenge ciphertexts: all twenty-two with a published answer solved, the
+    other eighteen recorded as unverified rather than solved, and none labelled
+    strong while wrong.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a> <span class="lang">Python</span></dt>
     <dd>A reverse-mode autograd engine and a small GPT on top, from scratch;
     every gradient is checked against finite differences.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a> <span class="lang">TypeScript</span></dt>
-    <dd>A deterministic Monte Carlo path tracer whose 274 tests validate the
+    <dd>A deterministic Monte Carlo path tracer whose 278 tests validate the
     rendering physics, not just the code.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a> <span class="lang">Python</span></dt>
@@ -185,6 +186,83 @@
     <dt><a href="https://github.com/Leo-Y-Zhang/TerminalAgent">TerminalAgent</a> <span class="lang">TypeScript</span></dt>
     <dd>A terminal coding assistant with per-turn checkpoints and an
     <span class="m">/undo</span> that refuses when it cannot restore.</dd>
+    <dt><a href="https://github.com/Leo-Y-Zhang/ScrabbleEngine">Tilefish</a> <span class="lang">C++</span></dt>
+    <dd>A championship-style Scrabble engine in one C++ file: move generation, Monte Carlo simulation, endgame solving and self-play training, with a browser version you can <a href="https://leo-y-zhang.github.io/ScrabbleEngine/">play against</a>.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a> <span class="lang">Rust</span></dt>
+    <dd>An independent DRAT and LRAT proof checker with no dependencies, and a <a href="https://leo-y-zhang.github.io/Refute/">browser playground</a> where proof files never leave the tab.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a> <span class="lang">TypeScript</span></dt>
+    <dd>Melting, freezing and boiling from one enthalpy conservation law, benchmarked against the analytic Stefan solution; <a href="https://leo-y-zhang.github.io/MeltSim/">runs in the browser</a>.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/VisionCheckR">VisionCheckR</a> <span class="lang">JavaScript</span></dt>
+    <dd>A privacy-first vision self-check that runs <a href="https://leo-y-zhang.github.io/VisionCheckR/">entirely in the browser</a>; nothing is uploaded. Not a medical device.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a> <span class="lang">Python</span></dt>
+    <dd>2-colour Rado numbers for <span class="m">x<sub>1</sub><sup>2</sup>+&hellip;+x<sub>n</sub><sup>2</sup> = z<sup>2</sup></span>, carried from a(30) to a(60) with DRAT-certified refutations.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a> <span class="lang">Python</span></dt>
+    <dd>Finds OEIS sequences that stopped where a brute force ran out of patience, then extends them, each gated on reproducing every published term first.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a> <span class="lang">Python</span></dt>
+    <dd>A SAT campaign on Erd&#337;s problem #176 (OEIS A398541), with a cold verification gate that must pass before anything is claimed.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/CycleRamsey">CycleRamsey</a> <span class="lang">Python</span></dt>
+    <dd>Three-colour cycle Ramsey numbers as SAT, with a measured account of how far one desktop machine gets.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/PalindromicVDW">PalindromicVDW</a> <span class="lang">Python</span></dt>
+    <dd>Palindromic mixed van der Waerden numbers as SAT, with the same measured account of its limits.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/IaCScanner">IaCScanner</a> <span class="lang">Python</span></dt>
+    <dd>A read-only, offline infrastructure-as-code scanner for Terraform, Kubernetes, Actions and Dockerfiles, with SARIF output.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/DocRedact">DocRedact</a> <span class="lang">Python</span></dt>
+    <dd>A local-first document redaction CLI: validator-driven detection, consistent tokens, and no network access.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/SuiteAudit">SuiteAudit</a> <span class="lang">Python</span></dt>
+    <dd>Finds the tests that cannot fail: tests that would stay green whatever the code did.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/FireTurret">FireTurret</a> <span class="lang">Python</span></dt>
+    <dd>A camera-guided fire-suppression turret demonstrator that corrects its aim by watching where the water lands; simulation only, with the safety case written down.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/TradingEngineResearch">TradingEngineResearch</a> <span class="lang">Python</span></dt>
+    <dd>The research core of a systematic trading platform: a pre-registered alpha search across five data sources whose honest result was negative.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/FilingsLab">FilingsLab</a> <span class="lang">Python &middot; TypeScript</span></dt>
+    <dd>Backtests the disclosure delay in political and insider trades, trading only once a filing is public.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/BacktestAudit">BacktestAudit</a> <span class="lang">Python</span></dt>
+    <dd>Reports how much of a backtest's apparent edge survives luck, non-normal returns and multiple testing.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/HawkesDiffusion">HawkesDiffusion</a> <span class="lang">Python</span></dt>
+    <dd>Cross-exciting Hawkes processes fitted to market event streams, with the identification failures reported rather than hidden.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/ImpliedDensity">ImpliedDensity</a> <span class="lang">Python</span></dt>
+    <dd>Risk-neutral densities from option prices via Breeden&ndash;Litzenberger, and where the method breaks.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/PredictionArbitrage">PredictionArbitrage</a> <span class="lang">Python</span></dt>
+    <dd>Arbitrage detection in prediction markets, every reported number rendered from the results file.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/FinanceEngine">FinanceEngine</a> <span class="lang">Python</span></dt>
+    <dd>A UK personal-finance answer engine that answers only with a named, dated citation, and otherwise says so.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a> <span class="lang">Python</span></dt>
+    <dd>Scans Greek dactylic hexameter and reports only what the metre itself settles.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/LiberPrimusAnalysis">LiberPrimusAnalysis</a> <span class="lang">Python</span></dt>
+    <dd>Cryptanalysis of the unsolved pages of Cicada 3301&rsquo;s <em>Liber Primus</em>: not solved, but a reproducible toolkit and an exclusion ledger.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a> <span class="lang">Python</span></dt>
+    <dd>A geometric permutation test for whether a political boundary bends a city&rsquo;s road network.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/InformaticsOlympiad2025">InformaticsOlympiad2025</a> <span class="lang">Python</span></dt>
+    <dd>British Informatics Olympiad 2025 Round One solutions, with brute-force checkers for the written answers.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a> <span class="lang">JavaScript</span></dt>
+    <dd>Renders vertical chess videos to MP4 entirely on the local machine, with no external assets.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/MacBookHomelab">MacBookHomelab</a> <span class="lang">Docker &middot; Shell</span></dt>
+    <dd>A 2015 MacBook Air turned into a modular home server: one Compose file per service, reachable only over Tailscale.</dd>
   </dl>
 </section>
 
@@ -202,7 +280,7 @@
     thresholds before it runs; a result that fails its gate is published as a
     failure, not re-tuned until it passes.</li>
     <li><strong>Security as a floor.</strong> Secret scanning on every commit
-    across all 48 repositories, dependency auditing, and periodic security
+    across every repository, dependency auditing, and periodic security
     sweeps with adversarial verification of every finding.</li>
     <li><strong>Honest limits.</strong> Solver verdicts are not proofs, a private
     repository's figures are dated measurements, and unfinished work is
