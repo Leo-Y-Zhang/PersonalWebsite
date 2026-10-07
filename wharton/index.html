@@ -3728,10 +3728,11 @@ details.szadv { margin: 10px 0 0; }
     const oLine = (o) => o.bond ? (o.kind === "price" ? `<b class="pos">Buy</b> about ${U.usd(o.need)} of the ${U.esc(o.name.replace(/ \(for the .*\)$/, ""))} <span class="muted">(price needed)</span>` : `<b class="pos">Buy</b> ${o.units} bonds of the ${U.esc(o.name.replace(/ \(for the .*\)$/, ""))} <span class="muted">${U.usd(o.cost)}</span>`) : o.kind === "price" ? `<b class="pos">Buy</b> about ${U.usd(o.tgt)} of <b>${o.t}</b> <span class="muted">(price needed)</span>` : `<b class="${o.d > 0 ? "pos" : "neg"}">${o.side}</b> ${U.num(Math.abs(o.d), 0)} <b>${o.t}</b> <span class="muted">${U.usd(Math.abs(o.val))}</span>`;
     const todo = Z.ok ? `<div class="verdict ${Z.verdict.k}" style="margin:0;border:0;border-radius:0"><div><div class="vh">${Z.verdict.h}</div><p>${U.esc(Z.verdict.t)}</p></div><div class="vb"><button class="btn" data-go="TRADE" data-tab="orders">${ord.length ? "Open the order ticket" : "Open Trades"}</button></div></div>${shown.length ? `<ol class="olist">${shown.map((o) => `<li>${oLine(o)}</li>`).join("")}${ord.length > shown.length ? `<li class="more">and ${ord.length - shown.length} more on the order ticket</li>` : ""}</ol>` : ""}` : "";
     root.innerHTML = `<div class="ph"><div><h1>HergaCapital</h1><p>Wharton Investment Competition 2026–27 for our client, Laura Gao: what to trade in WInS today, then the case questions with the model's answers. ${App.planIsDefault() ? "These are the figures in the deliverables; change the assumptions under Client plan and every number recalculates." : `Calculated with your changed assumptions, so they differ from the deliverables. <button class="lnk" data-go="PLAN" data-tab="assum">Review or reset them</button>`}</p></div></div>
-      ${todo ? U.panel("What to trade", todo, { flush: true, sub: `WInS, ${U.date(Z.today)}; trading ends 6 Nov` }) : ""}
+      ${todo ? U.panel("What to trade", todo, { flush: true, sub: `WInS, ${U.date(Z.today)}; trading ends 6 Nov`, acts: `<button class="lnk" id="monRep" title="The weekly check as text for the team chat">Copy the weekly report</button>` }) : ""}
       ${U.panel("The case questions", qa.map(([q, sub, a, pg, tab]) => `<div class="qa"><div class="q">${q}<em>${sub}</em></div><div class="a">${a}</div><button class="lnk" data-go="${pg}" data-tab="${tab}">Details</button></div>`).join(""), { flush: true, sub: "Laura invests $300,000 in January 2027 and $150,000 in January 2028" })}
       <div class="grid g2"><div class="stack">${U.panel("WInS portfolio", wins, { sub: `starting cash ${U.usd(App.state.pf.capital)}; trading ends 6 Nov` })}${U.panel("How to use this model", `<div class="kvs" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">${[["1. Set the strategy", "Client plan: reserve, growth mix and flexibility fund.", "PLAN"], ["2. Research candidates", "Research list: exchange, sector, forecast, risks and rating for every stock or bond.", "RSCH"], ["3. Build the mix", "Optimiser and Target portfolio: Markowitz weights at the client's risk level.", "OPT"], ["4. Size each trade", "Position sizer: how many shares the IPS gives it, and a check of every rule.", "SIZE"], ["5. Trade and log", "Trades: what to trade today and how much, then the trade log for the Trading Notes Analysis.", "TRADE"], ["6. Check the risk", "Risk and Holdings: paste positions from WInS; volatility, VaR, stress tests.", "RISK"]].map(([t, d, g]) => `<div style="display:block;border:0"><b>${t}</b><p class="help" style="margin:2px 0 4px">${d}</p><button class="lnk" data-go="${g}">Open</button></div>`).join("")}</div>`)}</div>${U.panel("Deadlines", dl, { sub: "2026–27 Competition Guide; 5 p.m. ET" })}</div>`;
     bindCopy(root, { sp: f.sponsor });
+    const mr = U.$("#monRep"); if (mr) mr.onclick = () => U.copy(App.mondayReport());
   };
 
   // ======================= CLIENT PLAN =======================
@@ -4237,7 +4238,7 @@ details.szadv { margin: 10px 0 0; }
       { h: "Off target", n: 1, f: (o) => { const d = o.held - o.tgt; return o.tgt > 0 ? `<span class="${Math.abs(d) > 0.1 * o.tgt ? "warn" : "muted"}">${d > 0 ? "+" : ""}${U.usd(d)} (${d > 0 ? "+" : ""}${pc(d / o.tgt, 0)})</span>` : "—"; } },
       { h: "Why no trade", f: (o) => `<span class="muted wrap">${U.esc(o.why)}</span>` },
     ], holds) : "";
-    el.innerHTML = `<div class="verdict ${verdict.k}"><div><div class="vh">${verdict.h}</div><p>${U.esc(verdict.t)}</p><p class="help">${hoursTxt}${nowTxt}${noBond ? ` <b class="warn">${noBond}</b>` : ""}</p></div>${Z.nOrd ? `<div class="vb"><button class="btn" id="placeAll">Mark all as placed</button><button class="btn sec" id="copyOrders">Copy the order list</button></div>` : ""}</div>
+    el.innerHTML = `<div class="verdict ${verdict.k}"><div><div class="vh">${verdict.h}</div><p>${U.esc(verdict.t)}</p><p class="help">${hoursTxt}${nowTxt}${noBond ? ` <b class="warn">${noBond}</b>` : ""}</p></div><div class="vb">${Z.nOrd ? `<button class="btn" id="placeAll">Mark all as placed</button><button class="btn sec" id="copyOrders">Copy the order list</button>` : ""}<button class="btn sec" id="monRep2" title="The weekly check as text for the team chat">Copy the weekly report</button></div></div>
       ${U.kpis([{ l: "Orders", v: String(Z.nOrd), s: `${steps.filter((s) => s.k !== "sell").reduce((n, s) => n + s.rows.length, 0)} buys, ${(steps.find((s) => s.k === "sell") || { rows: [] }).rows.length} sells` }, { l: "Cash after trading", v: U.usd(post), cls: post < -0.005 ? "bad" : "", s: post < -0.005 ? "not enough cash: lower the buys" : fees ? `after ${U.usd(fees)} of fees` : `${pc(nav > 0 ? post / nav : NaN, 1)} of the account` }, { l: "Trades left after these", v: String(R.maxTrades - App.state.trade.log.length - Z.nOrd), s: `of ${R.maxTrades} for the competition` }, { l: "Sleeve B equity", v: isFinite(Z.eqNow) ? pc(Z.eqNow, 1) : "—", s: `target ${pc(Z.eqT, 1)}${Z.glide ? " after the glide step" : ""}, band ±${(Z.band * 100).toFixed(0)} pts`, cls: Z.bandHit ? "bad" : "" }])}
       ${ticket ? U.panel("Order ticket", `<details class="more" style="margin:0 18px 12px"><summary>Paste today's WInS prices for many securities at once</summary><p class="help">One per line: a ticker or a Treasury's CUSIP, then its price (Treasuries per 100 of face), e.g. <code>VEA 61.52</code> or <code>91282CFV8 95.95</code>. Spaces, tabs, commas or $ signs are fine.</p><textarea class="inp" id="pxPaste" rows="4" placeholder="VEA 61.52&#10;MSFT 510.20&#10;91282CFV8 95.95"></textarea><div class="row"><button class="btn sec small" id="pxGo">Use these prices</button></div></details>` + ticket + `<p class="help" style="padding:0 18px">${stale ? "Share counts use the last close in the data where no WInS price is typed; <b>type today's WInS price in the Price box before placing</b> and the count updates. " : ""}Click <b>Placed</b> after each order goes into WInS: it goes into the trade log with its Trading Note facts and the holdings here follow. Paste the WInS positions on Holdings once the fills are in.</p>`, { flush: true, sub: `in this order, to the ${label}`, acts: `<button class="lnk" data-csv="orders">Download CSV</button>` }) : ""}
       ${holdTbl ? U.panel("No trade needed", holdTbl, { flush: true, sub: "held positions the rules leave alone" }) : ""}
@@ -4269,8 +4270,87 @@ details.szadv { margin: 10px 0 0; }
     el.querySelectorAll("[data-placed]").forEach((bt) => (bt.onclick = () => { const o = all[+bt.dataset.placed]; App.placeOrder(o, label); App.changed("all"); U.toast(`Recorded: ${o.bond ? `Buy ${o.units} bonds of the ${o.name.replace(/ \(for the .*\)$/, "")}` : `${o.side} ${Math.abs(o.d)} ${o.t}`}. Add the team's reasoning in the trade log.`); }));
     const pa = U.$("#placeAll"); if (pa) pa.onclick = () => { if (!all.length) return U.toast("Type the missing prices first", "err"); if (!confirm(`Record all ${all.length} orders as placed in WInS? Each goes into the trade log and the holdings here follow.`)) return; all.forEach((o) => App.placeOrder(o, label)); App.changed("all"); U.toast(`${all.length} trades recorded; add the team's reasoning in the trade log`); };
     const co = U.$("#copyOrders"); if (co) co.onclick = () => U.copy(orderText());
+    const mr = U.$("#monRep2"); if (mr) mr.onclick = () => U.copy(App.mondayReport());
   }
   function bindSrc(el) { const sg = el.querySelector("[data-seg=src]"); if (sg) sg.addEventListener("click", (e) => { const bt = e.target.closest("button"); if (bt) { App.state.trade.source = bt.dataset.v; App.changed("ui"); } }); }
+
+  // ======================= MONDAY REPORT =======================
+  // The weekly check (WInS Implementation Plan §6) as plain text for the team chat: value, mix against
+  // the IPS, risk against the client, trades used, whether to trade, rule checks and what comes next.
+  App.mondayReport = function () {
+    const R = App.state.rules, b = App.book(), Z = App.orderPlan(), cr = App.clientRisk(), log = App.state.trade.log, d = today();
+    const held = b.rows.length > 0, an = held ? App.analysis() : App.targetAnalysis(), score = an.ok ? A.riskScore(an.exVol) : NaN;
+    const nav = held ? b.nav : R.capital, rungs = b.rows.filter((r) => r.bond), ladV = rungs.reduce((s, r) => s + (isFinite(r.val) ? r.val : 0), 0);
+    const big = b.rows.filter((r) => r.w > 0).sort((p, q) => q.w - p.w)[0], checks = held ? PRT.Rules.check() : [], fails = checks.filter((c) => c.s === "FAIL"), warns = checks.filter((c) => c.s === "WARN");
+    const stars = log.filter((e) => e.star).length, wd = new Date(d + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+    const L = [`HergaCapital · WInS weekly check, ${wd}`];
+    if (held) {
+      L.push(`Account ${U.usd(nav)} (${U.spct(nav / R.capital - 1, 2)} since the $${(R.capital / 1000).toFixed(0)}k start) · cash ${U.usd(b.cash)}`);
+      L.push(`Sleeve A, the Treasury ladder: ${U.usd(ladV)} in ${rungs.length} of 10 rungs (${pc(ladV / nav, 1)}) · Sleeve B: ${U.usd(nav - ladV)}`);
+      L.push(`Sleeve B equity ${isFinite(Z.eqNow) ? pc(Z.eqNow, 1) : "—"} against ${pc(Z.eqT, 1)} (band ±${(Z.band * 100).toFixed(0)} points): ${Z.bandHit ? "OUTSIDE the band, rebalance" : "inside the band"}`);
+      if (big) L.push(`Largest holding: ${big.bond ? big.info.name : big.t}, ${pc(big.w, 1)} of the account (limit ${pc(R.posLimit, 0)})`);
+    } else L.push(`No positions yet: the account is ${U.usd(R.capital)} of cash, waiting for the build.`);
+    L.push(`Risk score ${isFinite(score) ? score : "—"} of 100${held ? "" : " (the target portfolio)"} · client ${cr.score}, fits up to ${cr.hiScore}${isFinite(score) && score > cr.hiScore ? ": ABOVE the client's level" : ""}`);
+    L.push(`Trades used: ${log.length} of ${R.maxTrades}`);
+    L.push(`This week: ${Z.ok ? `${Z.verdict.h}. ${Z.verdict.t}` : "the order ticket could not be worked out."}`);
+    if (Z.ok && Z.nOrd) for (const s of Z.steps) for (const o of s.rows) L.push(`  · ${s.bond ? (o.kind === "price" ? `Buy the ${o.name.replace(/ \(for the .*\)$/, "")} (price needed)` : `Buy ${o.units} bonds of the ${o.name.replace(/ \(for the .*\)$/, "")}${o.cusip ? ` (CUSIP ${o.cusip})` : ""}`) : `${o.side} ${o.kind === "price" ? "(price needed)" : Math.abs(o.d)} ${o.t}`}`);
+    if (held) L.push(fails.length ? `Rule checks: ${fails.length} FAIL: ${fails.map((c) => c.rule).join("; ")}` : `Rule checks: all pass${warns.length ? ` (${warns.length} to watch: ${warns.map((c) => c.rule).join("; ")})` : ""}`);
+    const next = [];
+    if (d <= "2026-10-23") next.push(`Trading Notes Analysis due Fri 23 Oct (${stars} of 3 notes picked)`);
+    if (App.state.trade.glideDate && d < App.state.trade.glideDate) next.push(`glide step from ${U.date(App.state.trade.glideDate)} (Sleeve B equity 65% to 60%)`);
+    if (d <= R.to) next.push(`trading ends ${U.date(R.to)} when the IPS is due; the portfolio is then frozen`);
+    if (next.length) L.push(`Next: ${next.join("; ")}.`);
+    L.push("WInS results are reported but not added to Laura's projections.");
+    return L.join("\n");
+  };
+
+  // ======================= TRADING NOTES ANALYSIS DRAFT =======================
+  // Three notes in the deliverable's template (01_Trading_Notes_Analysis.md): the ★ picks, else suggested
+  // ones (the ladder build, a Sleeve B buy, then a sell or rebalance if any). Facts come from the trade log
+  // and the model; [brackets] mark what the team still has to write.
+  App.notesPicks = function () {
+    const log = App.state.trade.log, picked = log.filter((e) => e.star).slice(0, 3);
+    if (picked.length >= 3) return { picks: picked.map((e) => ({ e, suggested: false })) };
+    // Suggestions cover different kinds of decision: the ladder, a sell or rebalance, a single stock (TSM
+    // first: the client's link to Taiwan), then a fund; each kind once.
+    const isFund = (e) => /^ETF/.test((D.info(String(e.t || "").trim()) || {}).cls || "");
+    const kind = (e) => (e.role === "Funding reliability" ? "ladder" : e.side === "Sell" ? "sell" : isFund(e) ? "fund" : "stock");
+    const out = picked.map((e) => ({ e, suggested: false })), kinds = new Set(picked.map(kind)), rest = log.filter((e) => !e.star);
+    const first = (k) => (k === "stock" ? rest.find((e) => kind(e) === k && String(e.t).trim() === "TSM") || rest.find((e) => kind(e) === k) : rest.find((e) => kind(e) === k));
+    for (const k of ["ladder", "sell", "stock", "fund"]) { if (out.length >= 3) break; const e = !kinds.has(k) && first(k); if (e) { out.push({ e, suggested: true }); kinds.add(k); } }
+    for (const e of rest) { if (out.length >= 3) break; if (!out.some((z) => z.e === e)) out.push({ e, suggested: true }); }
+    out.sort((p, q) => (p.e.d < q.e.d ? -1 : p.e.d > q.e.d ? 1 : log.indexOf(p.e) - log.indexOf(q.e)));
+    return { picks: out };
+  };
+  App.notesDraft = function () {
+    const { picks } = App.notesPicks(), cr = App.clientRisk(), start = Date.parse("2026-09-28T00:00:00Z");
+    if (!picks.length) return "";
+    const week = (d) => Math.max(1, Math.floor((Date.parse(d + "T00:00:00Z") - start) / (7 * 86400000)) + 1);
+    const notes = picks.map(({ e, suggested }, k) => {
+      const ladder = e.role === "Funding reliability", sell = e.side === "Sell", t = String(e.t || "").trim(), rr = App.researchRow(t), info = D.info(t) || {};
+      const vol = D.has(t) ? D.recentVol(t) : NaN, sc = isFinite(vol) ? A.riskScore(vol) : NaN, bk = ladder ? "ladder" : D.has(t) || rr ? App.bucketOf(t) : "";
+      const cls = ladder || (!sell && App.target().lines.some((l) => l.t === t)) ? "Reflected" : sell ? "Tested" : "Reflected";
+      const qty = e.qty != null ? (ladder ? `$${U.num(e.qty, 0)} face` : `${U.num(e.qty, 0)} shares`) : "";
+      return [`### Note ${k + 1}. Week ${week(e.d)}: ${ladder ? "building the operating reserve ladder" : sell ? `selling ${t}` : `buying ${t}${info.name && info.name !== t ? ` (${info.name})` : ""}`} (${cls.toLowerCase()})${suggested ? " [suggested pick: confirm or star another in the trade log]" : ""}`,
+        "",
+        `**Date:** ${U.date(e.d)}, Week ${week(e.d)}. **Action:** ${e.side.toLowerCase()} ${qty} ${ladder ? "of the " : ""}${t}${e.px ? ` at ${e.px}${ladder ? " per 100" : ""}` : ""}${e.amt ? ` (${U.usd(e.amt)})` : ""}. **Sleeve and IPS:** ${ladder ? "Sleeve A; IPS 8.2, 9, 15" : `Sleeve B${bk && App.BUCKETS[bk] ? ` (${App.BUCKETS[bk]})` : ""}; IPS 8.3, 13, 15`}. **Role:** ${e.role || "Growth"}.`,
+        "",
+        `**Thesis.** ${String(e.reason || "").trim() || "[why this security, in two sentences, and how it serves the strategy]"}${e.research ? ` Research: ${e.research}` : ""}`,
+        "",
+        `**Dashboard after the trade.** [from the WInS fills on ${U.date(e.d)}: liability present value; ladder market value and DV01 against the liability's; funded ratio; Sleeve B weights against target; largest position.] Client risk level ${cr.score} of 100 (fits up to ${cr.hiScore})${isFinite(sc) ? `; ${t} on its own scores ${sc} of 100 (volatility ${pc(vol, 0)})` : ""}.`,
+        "",
+        `**Risk considered.** ${ladder ? "The rung's market value moves with rates, but it is held to maturity to pay a fixed $50,000, so the payment does not; WInS lists coupon Treasuries, not zeros, so coupons must be reinvested (about 0.1% to 0.2% of reserve value per 100 bp)." : `${rr && rr.risks ? rr.risks + ". " : "[the main risk to the thesis]. "}Sized at its IPS weight, within one stock at most 10% of Sleeve B and no holding above 20% of the account; the portfolio stays within the client's risk level.`}`,
+        "",
+        `**Reversal condition.** ${ladder ? "None. Rungs are never sold (IPS 10); if a CUSIP is unavailable, the substitute is bought the next day and the change recorded." : sell ? "[what would make us buy it back]" : "A thesis break (guidance cut, balance-sheet stress, governance event), never a price move alone (WInS Implementation Plan §6)."}`,
+        "",
+        `**Classification:** ${cls.toLowerCase()} [confirm: reflected / tested / refined]. **Lesson:** ${ladder ? "[e.g. the cost of certainty is visible on day one: this money will never be touched, so every equity decision is about the facility, not the commitment.]" : "[one sentence on what this taught us about the plan for Laura.]"}`].join("\n");
+    });
+    return [`# Trading Notes Analysis: draft from the trade log (${U.date(today())})`, "",
+      "*Three decisions, each recorded in the trade-note template, then classified as reflecting, testing or refining the strategy. WInS results are the team's implementation of the strategy and are not added to Laura's projections. [Bracketed text is for the team to complete from the WInS fills and the team's research.]*", "",
+      ...notes.flatMap((n) => [n, ""]),
+      "## What the three notes show together", "", "[Two or three sentences: how these decisions put the strategy into practice (liability first, then a diversified growth sleeve at the client's risk level), what was tested, and anything the evidence changed in the IPS.]"].join("\n");
+  };
+
   function tradeLog(el) {
     const T = App.state.trade, log = T.log, R = App.state.rules, dt = new Set(App.dayTrades().map(([d, t]) => `${d}|${t}`)), stars = log.filter((e) => e.star).length;
     const sel = (i, f, v, opts) => `<select class="inp sm" data-lg="${i}" data-f="${f}">${opts.map((o) => `<option ${o === v ? "selected" : ""}>${o}</option>`).join("")}</select>`;
@@ -4287,12 +4367,18 @@ details.szadv { margin: 10px 0 0; }
       { h: "", f: (e, i) => `<button class="icon" data-ldel="${i}" aria-label="Remove">✕</button>` },
     ], log) : U.empty("No trades logged yet", "Add trades from the Orders tab after placing them in WInS, or add them here one by one. Copy each WInS trade into this log on the same day, with its reason.");
     el.innerHTML = U.kpis([{ l: "Trades logged", v: `${log.length} of ${R.maxTrades}`, cls: log.length > R.maxTrades ? "bad" : "" }, { l: "Picked for the analysis", v: `${stars} of 3`, s: "due 23 Oct", cls: stars > 3 ? "bad" : "" }, { l: "Without a reason", v: String(log.filter((e) => !String(e.reason || "").trim()).length) }, { l: "Same-day round trips", v: String(dt.size), cls: dt.size ? "bad" : "" }])
-      + U.panel("Trade log", tbl + `<div class="row" style="padding:0 18px 8px"><button class="btn sec small" id="lgAdd">Add a trade</button><button class="btn sec small" id="lgCopy" ${stars ? "" : "disabled"}>Copy the picked notes</button><span class="grow"></span><span class="help">Pick three notes (★) that best show the strategy being supported, tested or refined.</span></div>`, { flush: true, acts: `<button class="lnk" data-csv="trade-log">Download CSV</button>` });
+      + U.panel("Trade log", tbl + `<div class="row" style="padding:0 18px 8px"><button class="btn sec small" id="lgAdd">Add a trade</button><button class="btn sec small" id="lgCopy" ${stars ? "" : "disabled"}>Copy the picked notes</button><button class="btn small" id="lgDraft" ${log.length ? "" : "disabled"}>Draft the Trading Notes Analysis</button><span class="grow"></span><span class="help">Pick three notes (★) that best show the strategy being supported, tested or refined.</span></div>`, { flush: true, acts: `<button class="lnk" data-csv="trade-log">Download CSV</button>` });
     App.csvs.set("trade-log", () => [["Date", "Security", "Action", "Quantity", "FillPrice", "Role", "Reason", "Research", "ProposedBy", "PickedForAnalysis"]].concat(log.map((e) => [e.d, e.t, e.side, e.qty ?? "", e.px ?? "", e.role || "", e.reason || "", e.research || "", e.by || "", e.star ? "yes" : ""])));
     el.querySelectorAll("[data-lg]").forEach((inp) => inp.addEventListener("change", () => { const e = log[+inp.dataset.lg], f = inp.dataset.f; let v = inp.value; if (f === "qty" || f === "px") v = v.trim() === "" ? null : parseFloat(v.replace(/[$,]/g, "")); if (f === "t") v = /\s/.test(v.trim()) ? v.trim() : v.trim().toUpperCase(); e[f] = v; App.changed("ui"); }));
     el.querySelectorAll("[data-star]").forEach((bt) => (bt.onclick = () => { const e = log[+bt.dataset.star]; e.star = !e.star; App.changed("ui"); }));
     el.querySelectorAll("[data-ldel]").forEach((bt) => (bt.onclick = () => { if (confirm("Remove this trade from the log?")) { log.splice(+bt.dataset.ldel, 1); App.changed("ui"); } }));
     U.$("#lgAdd").onclick = () => { log.push({ id: Date.now().toString(36), d: today(), t: "", side: "Buy", qty: null, px: null, reason: "", research: "", role: "Growth", by: "", star: false }); App.changed("ui"); };
+    U.$("#lgDraft").onclick = () => {
+      const md = App.notesDraft(); if (!md) return U.toast("Log some trades first", "err");
+      const pk = App.notesPicks().picks, sug = pk.filter((p) => p.suggested).length;
+      const d = U.drawer("Trading Notes Analysis: draft", `<p class="dd">${pk.length} notes in the deliverable's template${sug ? `; ${sug} suggested by the model (★ your own picks in the trade log to choose them)` : ", from your ★ picks"}. Complete the [bracketed] parts from the WInS fills and your research, then paste it into the Trading Notes Analysis, due Friday 23 October.</p><div class="row"><button class="btn" id="ndCopy">Copy the draft</button><button class="btn sec" id="ndDl">Download (.md)</button></div><pre class="fx" style="white-space:pre-wrap;max-height:62vh;overflow:auto">${U.esc(md)}</pre>`);
+      d.querySelector("#ndCopy").onclick = () => U.copy(md); d.querySelector("#ndDl").onclick = () => U.download(`Trading-Notes-Analysis-draft-${today()}.md`, md, "text/markdown");
+    };
     U.$("#lgCopy").onclick = () => U.copy(log.filter((e) => e.star).map((e, k) => `Trading Note ${k + 1}: ${e.side} ${e.qty ?? ""} ${e.t} on ${U.date(e.d)}${e.px ? ` at ${e.px}` : ""}\nRole: ${e.role || ""}\nReason: ${e.reason || ""}${e.research ? `\nResearch: ${e.research}` : ""}`).join("\n\n"));
   }
   // ======================= COMPANY ANALYSIS (ROIC vs WACC) =======================
