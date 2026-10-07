@@ -313,6 +313,9 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
 }
 .note.bad { border-color: var(--crit); background: #fdecec; }
 :root[data-theme="dark"] .note.bad { background: #3a1d1f; }
+.szorder { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; border-top: 1px solid var(--tint-2); padding-top: 10px; font-size: 15px; }
+.szorder .lbl { margin-right: 6px; }
+details.szadv { margin: 10px 0 0; }
 </style>
 </head>
 <body>
@@ -1301,17 +1304,29 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
   };
 
   // ---------- risk score ----------
-  // 1 to 10 from annualised volatility. Each band is anchored on a familiar kind of holding, so the
-  // score reads the same for a single security and for a whole portfolio.
+  // 1 to 100 from annualised volatility. Ten bands of ten points, each anchored on a familiar kind of
+  // holding, so the score reads the same for a single security and for a whole portfolio; inside a band
+  // the score rises in a straight line with volatility (band 4, scores 31-40, is 5% to 8%), and 60% or
+  // more scores 100.
   A.RISK_EDGES = [0.01, 0.03, 0.05, 0.08, 0.11, 0.14, 0.18, 0.26, 0.4];
+  A.RISK_TOP = 0.6;
+  const EDGE = [0, ...A.RISK_EDGES, A.RISK_TOP];
   A.RISK_LEVELS = [
     [1, "Very low", "cash and Treasury bills"], [2, "Very low", "1-3 year Treasuries"], [3, "Low", "short-term and inflation-linked bonds"],
     [4, "Low", "core bonds; about 30% equities"], [5, "Moderate", "balanced; about 60% equities"], [6, "Moderate", "growth; about 80% equities"],
     [7, "High", "a broad stock-market index"], [8, "High", "a typical large company; emerging markets"], [9, "Very high", "a volatile single stock"], [10, "Very high", "speculative"],
   ];
-  A.riskScore = (vol) => { if (!isFinite(vol)) return NaN; let s = 1; for (const e of A.RISK_EDGES) if (vol >= e - 1e-12) s++; return s; };
-  A.riskBand = (s) => ({ lo: s > 1 ? A.RISK_EDGES[s - 2] : 0, hi: s <= 9 ? A.RISK_EDGES[s - 1] : Infinity });
-  A.riskLabel = (s) => (isFinite(s) ? A.RISK_LEVELS[Math.min(10, Math.max(1, s)) - 1][1] : "");
+  A.riskScore = (vol) => {
+    if (!isFinite(vol)) return NaN; if (vol >= A.RISK_TOP) return 100;
+    let k = 1; for (const e of A.RISK_EDGES) if (vol >= e - 1e-12) k++;
+    const f = Math.max(0, (vol - EDGE[k - 1]) / (EDGE[k] - EDGE[k - 1]));
+    return 10 * (k - 1) + Math.min(10, Math.max(1, Math.ceil(10 * f - 1e-9)));
+  };
+  // The band (1-10) a score falls in, a band's volatility range, and the volatility at the top of a score.
+  A.riskLevel = (pts) => (isFinite(pts) ? Math.min(10, Math.max(1, Math.ceil(pts / 10))) : NaN);
+  A.riskBand = (level) => ({ lo: level > 1 ? A.RISK_EDGES[level - 2] : 0, hi: level <= 9 ? A.RISK_EDGES[level - 1] : Infinity });
+  A.riskVol = (pts) => { if (!(pts < 100)) return Infinity; const k = A.riskLevel(pts), j = pts - 10 * (k - 1); return EDGE[k - 1] + ((EDGE[k] - EDGE[k - 1]) * j) / 10; };
+  A.riskLabel = (pts) => (isFinite(pts) ? A.RISK_LEVELS[A.riskLevel(pts) - 1][1] : "");
 
   // ---------- government bonds ----------
   // Coupon bonds priced from yield with the market's compounding frequency (street convention:
@@ -2596,6 +2611,11 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     }
     return App.cache.an;
   };
+  // Before anything is held: the same analysis of the target portfolio, the account the order ticket builds.
+  App.targetAnalysis = function () {
+    if (!App.cache.anT) { try { App.syncSynth(); const T = App.target(), w = App.targetLines(T).filter((l) => l.w > 0).map((l) => ({ t: l.t, w: l.w })); const c = App.targetCash(T); if (c > 0) w.push({ t: "CASH", w: c }); App.cache.anT = { ...A.analyze(w, App.settings()), planned: true }; } catch (e) { console.error(e); App.cache.anT = { ok: false, error: e.message }; } }
+    return App.cache.anT;
+  };
   App.classOfRow = (r) => (r.bond ? "Bonds" : App.classOf(r.t));
   App.classOf = function (t) { if (t === "CASH") return "Cash"; const i = D.info(t); if (!i) return "Other"; return i.cls === "ETF-FI" || i.cls === "BOND" ? "Bonds" : i.cls === "ETF-CMD" ? "Commodities" : i.cls === "ETF-RE" ? "Real estate" : "Equity"; };
   // With the report's assumptions, paths and seed the plan is the embedded outputs/model_results.json,
@@ -2931,27 +2951,28 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     return { w, ladW, ladDur, mix: { e, b: 1 - e - g.cash, c: g.cash }, cash: rest * g.cash };
   };
   App.clientRisk = function () {
-    if (!App.cache.client) { const cp = App.clientPortfolio(), ps = App.portStats(cp.w); App.cache.client = { ...cp, ...ps, hiScore: ps.score + 1 }; }
+    if (!App.cache.client) { const cp = App.clientPortfolio(), ps = App.portStats(cp.w); App.cache.client = { ...cp, ...ps, hiScore: Math.min(100, 10 * (A.riskLevel(ps.score) + 1)) }; }
     return App.cache.client;
   };
-  App.fit = (score) => { const c = App.clientRisk(); return !isFinite(score) || !isFinite(c.score) ? "" : score > c.hiScore ? "above" : score < c.score - 1 ? "below" : "fits"; };
+  // Fits the client: up to the top of the band above the client's (as on the old 1-10 scale); "below" is two bands under.
+  App.fit = (score) => { const c = App.clientRisk(); return !isFinite(score) || !isFinite(c.score) ? "" : score > c.hiScore ? "above" : A.riskLevel(score) < A.riskLevel(c.score) - 1 ? "below" : "fits"; };
   App.riskTag = function (score, withFit) {
     if (!isFinite(score)) return '<span class="muted">—</span>';
     const f = withFit ? App.fit(score) : "";
-    return `<span class="rsk r${score}" title="${A.riskLabel(score)}: ${U.esc(A.RISK_LEVELS[score - 1][2])}">${score}</span>${withFit && f ? ` <span class="sm ${f === "above" ? "neg" : "muted"}">${f === "above" ? "above the client" : f === "below" ? "below the client" : "fits the client"}</span>` : ""}`;
+    return `<span class="rsk r${A.riskLevel(score)}" title="${A.riskLabel(score)} (${score} of 100): ${U.esc(A.RISK_LEVELS[A.riskLevel(score) - 1][2])}">${score}</span>${withFit && f ? ` <span class="sm ${f === "above" ? "neg" : "muted"}">${f === "above" ? "above the client" : f === "below" ? "below the client" : "fits the client"}</span>` : ""}`;
   };
   App.riskExplain = function (vol, score, what) {
-    const c = App.clientRisk();
-    return { title: `Risk score: ${what}`, value: `${score} of 10 · ${A.riskLabel(score)}`, def: `A 1-to-10 scale from annualised volatility, so a single security and a whole portfolio are read the same way. The client's level comes from the client plan's January 2027 portfolio (WInS starts with the same $300,000): score ${c.score}; up to ${c.hiScore} is treated as fitting the client.`,
-      formula: "score = 1 + number of band edges at or below σ\nedges: 1%, 3%, 5%, 8%, 11%, 14%, 18%, 26%, 40%", subst: `σ = ${pc(vol, 2)} → score ${score} (${A.RISK_LEVELS[score - 1][2]})`,
-      notes: "Bands are anchored on familiar holdings: 2 is 1-3 year Treasuries, 4 core bonds, 5 a 60/40 mix, 7 a broad stock index, 8 a typical large company, 10 speculative. A Treasury ladder's price moves with rates, but it is held to maturity to pay fixed amounts, so its score overstates the risk to the client's payments." };
+    const c = App.clientRisk(), k = A.riskLevel(score), b = A.riskBand(k);
+    return { title: `Risk score: ${what}`, value: `${score} of 100 · ${A.riskLabel(score)}`, def: `A 1-to-100 scale from annualised volatility, so a single security and a whole portfolio are read the same way. The client's level comes from the client plan's January 2027 portfolio (WInS starts with the same $300,000): score ${c.score}; up to ${c.hiScore} is treated as fitting the client.`,
+      formula: "band b = 1 + number of band edges at or below σ\nscore = 10 × (b − 1) + ⌈10 × (σ − lower edge) ÷ (upper edge − lower edge)⌉, at least 1\nedges: 0, 1%, 3%, 5%, 8%, 11%, 14%, 18%, 26%, 40%, 60% (60% or more scores 100)", subst: `σ = ${pc(vol, 2)} → band ${k} (${pc(b.lo, 0)} to ${isFinite(b.hi) ? pc(b.hi, 0) : "60%+"}, ${A.RISK_LEVELS[k - 1][2]}) → score ${score}`,
+      notes: "Bands are anchored on familiar holdings: 11-20 is 1-3 year Treasuries, 31-40 core bonds, 41-50 a 60/40 mix, 61-70 a broad stock index, 71-80 a typical large company, 91-100 speculative. A Treasury ladder's price moves with rates, but it is held to maturity to pay fixed amounts, so its score overstates the risk to the client's payments." };
   };
 
   // ======================= target portfolio =======================
   // What the team plans to hold in WInS: fund and stock lines (weights of the account) and Treasury
   // rungs (market value as a weight). Built from the client plan, the IPS table, holdings or the Optimiser.
   App.IPS_TARGET = {
-    lines: [["MSFT", 0.0114], ["GOOGL", 0.0114], ["JNJ", 0.0114], ["JPM", 0.0114], ["PG", 0.0114], ["WM", 0.0114], ["XOM", 0.0114], ["NEE", 0.0114], ["MCD", 0.0114], ["LIN", 0.0114], ["VEA", 0.0624], ["VWO", 0.0188], ["TSM", 0.0124], ["VGSH", 0.0528], ["TIP", 0.037], ["VCSH", 0.0158]],
+    lines: [["MSFT", 0.01144], ["GOOGL", 0.01144], ["JNJ", 0.01144], ["JPM", 0.01144], ["PG", 0.01144], ["WM", 0.01144], ["XOM", 0.01144], ["NEE", 0.01144], ["MCD", 0.01144], ["LIN", 0.01144], ["VEA", 0.0624], ["VWO", 0.0188], ["TSM", 0.0124], ["VGSH", 0.0528], ["TIP", 0.037], ["VCSH", 0.0158]],
     // [maturity, coupon, CUSIP]: WInS Implementation Plan §3.2; confirm each in the WInS bond search.
     rungs: [["2032-11-15", 0.04125, "91282CFV8"], ["2033-11-15", 0.045, "91282CJJ1"], ["2034-11-15", 0.0425, "91282CLW9"], ["2035-11-15", 0.04, "91282CPJ4"], ["2036-08-15", 0.04625, "91282CRF0"], ["2037-05-15", 0.05, ""], ["2038-05-15", 0.045, ""], ["2039-11-15", 0.04375, ""], ["2040-11-15", 0.0425, "912810QL5"], ["2041-11-15", 0.02, "912810TC2"]],
   };
@@ -3115,8 +3136,13 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const best = { a: res.a, why: res.why, S: res.S, w1: wk + res.a }; let slot = null;
     if (o.aim === "ips") {
       slot = App.ipsSlot(t, rep);
-      const want = isFinite(slot.w) ? slot.w - wk : 0, a = Math.max(Math.min(lo, hi), Math.min(hi, want));
+      let want = isFinite(slot.w) ? slot.w - wk : 0, minNote = "";
+      // A holding off its IPS weight by less than the minimum trade stays as it is (IPS §15), as on the order ticket.
+      const minT = +App.state.trade.minTrade || 0, heldNow = o.base !== "tgt" && o.base !== "opt" && App.book().rows.length ? wk : 0;
+      if (heldNow > 1e-9 && Math.abs(slot.w - heldNow) * B.nav < minT) { minNote = ` (${U.usd(Math.abs(slot.w - heldNow) * B.nav)} off it, under the ${U.usd(minT)} minimum trade, so it stays as it is)`; want = 0; }
+      const a = Math.max(Math.min(lo, hi), Math.min(hi, want));
       const why = Math.abs(a - want) < 1e-9 ? "ips" : a < want ? hiWhy : loWhy;
+      if (minNote) slot = { ...slot, why: slot.why + minNote };
       res = { ...res, a, E: res.fn.E(a), V: res.fn.V(a), S: res.fn.S(a), why };
     }
     const fundW = new Map(); if (fund !== "cash") f.forEach((x, i) => { if (x > 0) fundW.set(ret.tickers[i], x); });
@@ -3155,7 +3181,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     if (ban) add("FAIL", "Allowed by the IPS", `The IPS prohibits ${ban} (§7).`, "IPS §7");
     else if (bk === "ladder") add("WARN", "Sized by the Treasury ladder", "Government bonds are Sleeve A's rungs: one Treasury for each $50,000 payment, 6.8% of the account each, bought from the order ticket and never sold.", "IPS §8.1, §15");
     else add("PASS", "Allowed by the IPS", `${isStock ? "A stock" : "A fund"}; no leverage, short exposure or high-yield bonds.`, "IPS §7");
-    if (!R.shortOK) add(r.w1 < -1e-9 ? "FAIL" : "PASS", "No short selling, no margin", r.w1 < -1e-9 ? "This would be a short position." : sell ? `Sells only what is held (${pc(r.held, 2)}).` : r.fund === "cash" ? "Paid for with cash in the account." : `Paid for by selling ${[...r.fundW.keys()].join(", ") || "other holdings"}: no borrowing.`, "Competition rules; IPS §7");
+    if (!R.shortOK) add(r.w1 < -1e-9 ? "FAIL" : "PASS", "No short selling, no margin", r.w1 < -1e-9 ? "This would be a short position." : sell ? `Sells only what is held (${pc(r.held, 2)}).` : r.fresh ? "Paid for with cash (no positions yet)." : r.fund === "cash" ? "Paid for with cash in the account." : `Paid for by selling ${[...r.fundW.keys()].join(", ") || "other holdings"}: no borrowing.`, "Competition rules; IPS §7");
     if (bk !== "ladder") add(bk === "none" ? (buy ? "FAIL" : "WARN") : "PASS", "Part of the IPS mix", bk === "none" ? `Not one of Sleeve B's IPS buckets (U.S., international and emerging equity; 1-3 year Treasuries, TIPS, short investment-grade credit). ${r.wk > 0 ? "The order ticket sells it unless it is in the target." : "Buying it moves Sleeve B away from the IPS."}` : `${App.BUCKETS[bk]}: ${pc(r.slot ? r.slot.bkW : 0, 2)} of the account in the target.`, "IPS §8.3");
     if (buy) {
       // 2. research and the security's own rules
@@ -3173,7 +3199,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     }
     if (buy || sell) add(Math.abs(r.dollars) >= (Tr.minTrade || 0) ? "PASS" : "WARN", `Trade of at least ${U.usd(Tr.minTrade || 0)}`, `${U.usd(Math.abs(r.dollars))}${Math.abs(r.dollars) >= (Tr.minTrade || 0) ? "." : ": under the minimum trade, so the order ticket skips it."}`, "IPS §15; WInS Implementation Plan §6");
     // 3. size limits
-    if (isStock && bk !== "ladder") add(r.w1 / sb1 > 0.1 + 1e-9 ? "FAIL" : "PASS", "One stock at most 10% of Sleeve B", `${pc(r.w1 / sb1, 1)} of Sleeve B (${pc(r.w1, 2)} of the account; limit ${pc(0.1 * sb1, 2)}).`, "IPS §13");
+    if (isStock && bk !== "ladder") add(r.w1 / sb1 > 0.1 + 1e-9 ? "FAIL" : "PASS", "One stock at most 10% of Sleeve B", `${pc(r.w1 / sb1, 1)} of Sleeve B (${pc(r.w1, 2)} of the account, against a limit of ${pc(0.1 * sb1, 2)} of the account).`, "IPS §13");
     const big = [...w1].filter(([, v]) => v > 0).sort((p, q) => q[1] - p[1])[0] || [t, 0];
     add(r.w1 > R.posLimit + 1e-9 ? "FAIL" : "PASS", `No holding above ${pc(R.posLimit, 0)} of the account`, `${t} ${pc(r.w1, 2)}; largest after: ${/^(TGT|UST)-/.test(big[0]) ? "a Treasury rung" : big[0]} ${pc(big[1], 2)}.`, "IPS §13");
     if (r.w1 > R.teamMax + 1e-9) add("WARN", `Size guideline (${pc(R.teamMax, 0)})`, `${pc(r.w1, 1)} of the account: explain the size in the Trading Note.`, "Team guide");
@@ -3190,7 +3216,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     if (isStock && buy) {
       const stocks = [...w1].filter(([x, v]) => v > 1e-6 && (D.info(x) || {}).cls === "EQ"), secs = new Set(stocks.map(([x]) => (D.info(x) || {}).sector || (App.researchRow(x) || {}).sector).filter(Boolean));
       const mine = info.sector || (rr || {}).sector, same = stocks.filter(([x]) => x !== t && ((D.info(x) || {}).sector || (App.researchRow(x) || {}).sector) === mine).map(([x]) => x);
-      add(same.length ? "WARN" : "PASS", "Sector diversification", `${mine || "Sector unknown"}${same.length ? `: also held in ${same.join(", ")}; the IPS holds one stock per sector` : ": a sector the stocks do not cover yet"}. ${secs.size} sectors among ${stocks.length} stocks (at least ${R.teamSize}, one per team member).`, "WInS Implementation Plan §3.3");
+      add(same.length || !mine ? "WARN" : "PASS", "Sector diversification", `${mine || "Sector not set: choose it on the research list"}${same.length ? `: also held in ${same.join(", ")}; the IPS holds one stock per sector` : ": a sector the stocks do not cover yet"}. ${secs.size} sectors among ${stocks.length} stocks (at least ${R.teamSize}, one per team member).`, "WInS Implementation Plan §3.3");
     }
     if (buy || sell) {
       add(r.after.score <= cr.hiScore ? "PASS" : "FAIL", "Fits the client's risk level", `Portfolio risk score ${r.before.score} → ${r.after.score}; the client's level is ${cr.score} (up to ${cr.hiScore} fits).`, "IPS §5");
@@ -3288,7 +3314,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const addRow = `<div class="row"><input class="inp up" id="addT" list="tickers" placeholder="Ticker, e.g. MSFT" size="16" autocomplete="off"><input class="inp" id="addQ" placeholder="Shares, $ amount or %; add @ price" size="26"><button class="btn sec" id="addB">Add holding</button><button class="lnk" id="addBond">Add a government bond</button><span class="grow"></span>${b.rows.length ? '<button class="lnk" id="clearB">Remove all holdings</button>' : ""}</div>`;
     const tmx = App.targetMix(), mix = { ladder: tmx.ladder, e: tmx.e, b: tmx.ladder + tmx.b, c: tmx.c }, cr = App.clientRisk();
     if (!b.rows.length) {
-      root.innerHTML = head + U.kpis([{ l: "Cash", v: U.usd(b.cash) }, { l: "Holdings", v: "0" }, { l: "Client risk level", v: x(`${cr.score} of 10`, App.riskExplain(cr.vol, cr.score, "the client plan, January 2027")), s: `${A.riskLabel(cr.score)}; up to ${cr.hiScore} fits` }])
+      root.innerHTML = head + U.kpis([{ l: "Cash", v: U.usd(b.cash) }, { l: "Holdings", v: "0" }, { l: "Client risk level", v: x(`${cr.score} of 100`, App.riskExplain(cr.vol, cr.score, "the client plan, January 2027")), s: `${A.riskLabel(cr.score)}; up to ${cr.hiScore} fits` }])
         + U.panel("", U.empty("Add the team's holdings", "Copy the positions table from WInS (Open Positions) and paste it here, or add holdings one at a time. Everything is saved in this browser; use Data & import to share a workspace file with teammates.", `<button class="btn" id="pasteB2">Paste from WInS</button><button class="btn sec" data-go="PORT" data-tab="target">See the target portfolio</button><label class="btn sec">Open a saved workspace<input type="file" id="wsOpen2" accept=".json" hidden></label>`) + `<div style="max-width:760px;margin:0 auto 8px">${addRow}</div>`)
         + U.panel("Target mix", `<p class="help">The WInS account mirrors Year 2 of Laura's plan (IPS §15): the Treasury ladder for the ten payments plus the growth sleeve at 65% equity, 33% bonds and 2% cash.</p><div class="kvs"><div><span>Treasury ladder</span><b>${pc(mix.ladder, 1)}</b></div><div><span>Equity</span><b>${pc(mix.e, 1)}</b></div><div><span>Bond funds</span><b>${pc(mix.b - mix.ladder, 1)}</b></div><div><span>Cash</span><b>${pc(mix.c, 1)}</b></div></div><p class="help">The Target portfolio tab lists the tickers and dollar amounts, and the Trades page turns them into orders.</p>`);
       bindPort(root, b); return;
@@ -3302,7 +3328,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const kp = [
       { l: "Portfolio value", v: U.usd(b.nav), s: `${U.spct(b.nav / pf.capital - 1, 2)} since start` },
       { l: "Cash", v: U.usd(b.cash), s: `${pc(b.cashW, 1)} of the portfolio`, cls: b.cash < 0 ? "bad" : "" },
-      { l: "Risk score", v: an.ok ? x(`${score} of 10`, App.riskExplain(an.exVol, score, "the portfolio")) : "—", s: an.ok ? `${A.riskLabel(score)}; client ${cr.score}${fit === "above" ? ", above it" : ""}` : "", cls: fit === "above" ? "bad" : "" },
+      { l: "Risk score", v: an.ok ? x(`${score} of 100`, App.riskExplain(an.exVol, score, "the portfolio")) : "—", s: an.ok ? `${A.riskLabel(score)}; client ${cr.score}${fit === "above" ? ", above it" : ""}` : "", cls: fit === "above" ? "bad" : "" },
       { l: "Equity · bonds · cash", v: `${pc(eqW, 0)} · ${pc(byClass.Bonds, 0)} · ${pc(byClass.Cash, 0)}`, s: `target: ${pc(mix.e, 0)} · ${pc(mix.b, 0)} · ${pc(mix.c, 0)}` },
     ];
     if (an.ok) kp.push({ l: "Volatility", v: x(pc(an.P.vol, 1), App.ex.vol(an)), s: "per year" }, { l: `One-day loss, ${Math.round(st.varConf * 100)}% VaR`, v: x(U.usd(an.var.normal.var * b.nav), varE(an, b.nav)), s: `${pc(an.var.normal.var)} of value` });
@@ -3404,7 +3430,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     ], T.rungs, { foot: `<tr class="tot"><td colspan="2">Treasury rungs</td><td class="n">${pc(T.rungs.reduce((s, r) => s + r.w, 0), 1)}</td><td class="n">${U.usd(T.rungs.reduce((s, r) => s + r.w * nav, 0))}</td><td colspan="4"></td></tr>` }) : `<p class="help" style="padding:0 18px">No bonds in this target.</p>`;
     const picks = App.state.research.rows.filter((r) => r.rating === "Buy" && r.type === "Stock");
     root.innerHTML = head + U.kpis([
-      { l: "Target risk score", v: x(`${ps.score} of 10`, App.riskExplain(ps.vol, ps.score, "the target portfolio")), s: `${A.riskLabel(ps.score)}; client ${cr.score}${fit === "above" ? ", above it" : ""}`, cls: fit === "above" ? "bad" : "" },
+      { l: "Target risk score", v: x(`${ps.score} of 100`, App.riskExplain(ps.vol, ps.score, "the target portfolio")), s: `${A.riskLabel(ps.score)}; client ${cr.score}${fit === "above" ? ", above it" : ""}`, cls: fit === "above" ? "bad" : "" },
       { l: "Expected return", v: pc(ps.ret, 1), s: `volatility ${pc(ps.vol, 1)}, Sharpe ${isFinite(ps.sharpe) ? ps.sharpe.toFixed(2) : "—"}` },
       { l: "Equity · bonds · cash", v: `${pc(cls.Equity, 0)} · ${pc(cls.Bonds, 0)} · ${pc(cashT, 0)}` },
       { l: "Lines", v: String(T.lines.length + T.rungs.length), s: `${T.rungs.length} bonds, built from ${srcName.split(",")[0]}` },
@@ -3497,10 +3523,10 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
 
   // ======================= RISK =======================
   V.RISK = function (root) {
-    const an = App.analysis();
+    const an = App.book().rows.length ? App.analysis() : App.targetAnalysis();
     if (!an.ok) return App.noData(root, an);
     const tab = App.tab("RISK", "summary");
-    root.innerHTML = `<div class="ph"><div><h1>Risk</h1><p>${App.winNote(an)}. Click any underlined number to see how it is calculated.</p></div></div>
+    root.innerHTML = `<div class="ph"><div><h1>Risk</h1><p>${an.planned ? "<b>No holdings yet: these are the figures for the target portfolio</b>, the account the order ticket builds (Treasury rungs, funds and stocks at their IPS weights). Once the WInS positions are entered on Holdings, this page measures them instead. " : ""}${App.winNote(an)}. Click any underlined number to see how it is calculated.</p></div></div>
       ${U.tabs("RISK", [["summary", "Summary"], ["var", "Value at Risk"], ["beta", "Beta"], ["corr", "Correlation"], ["stress", "Stress tests"]], tab)}<div id="rt"></div>`;
     const el = U.$("#rt");
     ({ summary: riskSummary, var: riskVar, beta: riskBeta, corr: riskCorr, stress: riskStress }[tab] || riskSummary)(el, an);
@@ -3511,7 +3537,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const kv = (lab, val, e) => `<div><span>${lab}</span><b>${e ? x(val, e) : val}</b></div>`;
     const score = A.riskScore(an.exVol), cr = App.clientRisk(), fit = App.fit(score);
     el.innerHTML = U.kpis([
-      { l: "Risk score", v: x(`${score} of 10`, App.riskExplain(an.exVol, score, "the portfolio")), s: `${A.riskLabel(score)}; client ${cr.score}${fit === "above" ? ", above it" : ""}`, cls: fit === "above" ? "bad" : "" },
+      { l: "Risk score", v: x(`${score} of 100`, App.riskExplain(an.exVol, score, "the portfolio")), s: `${A.riskLabel(score)}; client ${cr.score}${fit === "above" ? ", above it" : ""}`, cls: fit === "above" ? "bad" : "" },
       { l: "Volatility", v: x(pc(an.P.vol), App.ex.vol(an)), s: "per year" },
       { l: "Sharpe ratio", v: x(an.P.sharpe.toFixed(2), App.ex.sharpe(an)), s: `±${(1.96 * an.P.seSharpe).toFixed(2)} at 95%` },
       { l: `Beta to ${st.market}`, v: x(an.regP.beta.toFixed(2), App.ex.beta(an)), s: `R² ${an.regP.r2.toFixed(2)}` },
@@ -3935,7 +3961,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const msE = { title: "Maximum Sharpe portfolio", value: `Sharpe ratio ${stats.msr.sharpe.toFixed(3)}`, def: "The mix with the highest return above cash per unit of volatility, within the position limit and any sector or bond limits.", formula: "maximise (wᵀμ − r_f) / √(wᵀΣw)\nsubject to Σw = 1 and 0 ≤ wᵢ ≤ limit", subst: `Expected return ${pc(stats.msr.ret)}, volatility ${pc(stats.msr.vol)}, r_f ${pc(st.rf)}`, refs: "Markowitz (1952); Sharpe (1964); Tobin (1958)." };
     const gmvE = { title: "Lowest-risk portfolio", value: `volatility ${pc(stats.gmv.vol)}`, def: "The fully invested mix with the lowest volatility. It needs no return forecasts, which makes it the most dependable point on the frontier.", formula: "minimise wᵀΣw subject to Σw = 1 and 0 ≤ wᵢ ≤ limit", subst: `Volatility ${pc(stats.gmv.vol)}, expected return ${pc(stats.gmv.ret)}` };
     const top = (w) => tickers.map((t, i) => [t, w[i]]).filter(([, v]) => v > 0.005).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([t, v]) => `${t} ${pc(v, 0)}`).join(", ");
-    const lvT = r.levels.length ? U.table([{ h: "Risk score", f: (l) => `${App.riskTag(l.s)} ${A.riskLabel(l.s)}${l.s === cr.score ? ` ${U.tag("Client")}` : ""}${l.reach ? "" : ' <span class="muted sm">(most this set can reach)</span>'}` }, { h: "Volatility", n: 1, f: (l) => pc(l.stats.vol, 1) }, { h: "Expected return", n: 1, f: (l) => `<b>${pc(l.stats.ret, 1)}</b>` }, { h: "Sharpe", n: 1, f: (l) => l.stats.sharpe.toFixed(2) }, { h: "Equity · bonds", n: 1, f: (l) => `${pc(l.eq, 0)} · ${pc(l.fi, 0)}` }, { h: "Largest holdings", f: (l) => `<span class="muted" style="white-space:normal">${top(l.w)}</span>` }, { h: "", f: (l, i) => `<button class="lnk" data-lvl="${i}">Use as target</button>` }], r.levels) : '<p class="help" style="padding:0 18px">Even the lowest-risk mix of these securities is above every band edge.</p>';
+    const lvT = r.levels.length ? U.table([{ h: "Risk score", f: (l) => `<span class="rsk r${l.s}">${10 * l.s - 9}–${10 * l.s}</span> ${A.riskLabel(10 * l.s)}${l.s === A.riskLevel(cr.score) ? ` ${U.tag(`Client ${cr.score}`)}` : ""}${l.reach ? "" : ' <span class="muted sm">(most this set can reach)</span>'}` }, { h: "Volatility", n: 1, f: (l) => pc(l.stats.vol, 1) }, { h: "Expected return", n: 1, f: (l) => `<b>${pc(l.stats.ret, 1)}</b>` }, { h: "Sharpe", n: 1, f: (l) => l.stats.sharpe.toFixed(2) }, { h: "Equity · bonds", n: 1, f: (l) => `${pc(l.eq, 0)} · ${pc(l.fi, 0)}` }, { h: "Largest holdings", f: (l) => `<span class="muted" style="white-space:normal">${top(l.w)}</span>` }, { h: "", f: (l, i) => `<button class="lnk" data-lvl="${i}">Use as target</button>` }], r.levels) : '<p class="help" style="padding:0 18px">Even the lowest-risk mix of these securities is above every band edge.</p>';
     root.innerHTML = head + U.panel("Securities and limits", settings)
       + U.kpis([{ l: "Max Sharpe", v: x(stats.msr.sharpe.toFixed(2), msE), s: `${pc(stats.msr.ret, 1)} return, risk score ${A.riskScore(stats.msr.vol)}` }, { l: "Lowest risk", v: x(pc(stats.gmv.vol, 1), gmvE), s: `${pc(stats.gmv.ret, 1)} expected return` }, { l: "Current holdings", v: stats.cur ? stats.cur.sharpe.toFixed(2) : "—", s: stats.cur ? `${pc(stats.cur.ret, 1)} return, ${pc(stats.cur.vol, 1)} volatility` : "not held" }, { l: "Equal risk", v: stats.erc.sharpe.toFixed(2), s: r.ercViol > 1e-6 ? "breaks the position limit" : `${pc(stats.erc.vol, 1)} volatility` }, { l: "Returns from", v: { fwd: "Forward-looking", capm: "CAPM", bl: "Black-Litterman", team: "Team forecasts", hist: "Past returns" }[o.mu], s: o.mu === "bl" ? `${r.views.length} view${r.views.length === 1 ? "" : "s"}` : o.mu === "fwd" ? "yields for bonds, CAPM for stocks" : "" }])
       + U.panel("Weights", wT + `<div class="row" style="padding:0 18px 4px"><span class="help">Turn into trades:</span><button class="btn sec small" data-send="msr">Max Sharpe</button><button class="btn sec small" data-send="gmv">Lowest risk</button><button class="btn sec small" data-send="erc">Equal risk</button><span class="grow"></span><button class="lnk" data-tgt="msr">Max Sharpe as the target portfolio</button></div>`, { flush: true, sub: "Markowitz weights for each objective", acts: `<button class="lnk" data-csv="weights">CSV</button>` })
@@ -4156,7 +4182,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
   // Plain-text facts for each order, the start of its Trading Note.
   App.orderFacts = function (o, label) {
     if (o.bond) return `Buy ${o.units} bonds ($${U.num(o.units * 1000, 0)} face) of the ${o.name}${o.cusip ? `, CUSIP ${o.cusip}` : ""}, at about ${isFinite(o.clean) ? o.clean.toFixed(2) : "—"} per 100 (${U.usd(o.cost)} with accrued interest); yield ${o.bi ? pc(o.bi.y, 2) : "—"}, modified duration ${o.bi ? o.bi.mod.toFixed(1) : "—"}; role: funding reliability, one rung of the operating-reserve ladder, held to maturity`;
-    return [`${o.side} ${Math.abs(o.d)} ${o.t} at about ${U.usd(o.px, 2)} (${U.usd(Math.abs(o.val))})`, `weight ${pc(o.cur * o.px / (o.navAt || 1), 1)} → ${pc(o.w1, 1)} of the account`, o.info.cls === "EQ" ? `${o.info.sector} sector` : o.info.name || "", isFinite(o.vol) ? `risk score ${A.riskScore(o.vol)} of 10 (volatility ${pc(o.vol, 0)})` : "", o.a ? `beta ${o.a.beta.toFixed(2)}, correlation with the portfolio ${o.a.corrP.toFixed(2)}` : "", `role: ${o.role.toLowerCase()}`, `why now: ${o.why}`, `moves the portfolio to the ${label}`, o.intl ? "international order: clears at the end of the local trading day, and currency moves affect its value" : ""].filter(Boolean).join("; ");
+    return [`${o.side} ${Math.abs(o.d)} ${o.t} at about ${U.usd(o.px, 2)} (${U.usd(Math.abs(o.val))})`, `weight ${pc(o.cur * o.px / (o.navAt || 1), 1)} → ${pc(o.w1, 1)} of the account`, o.info.cls === "EQ" ? `${o.info.sector} sector` : o.info.name || "", isFinite(o.vol) ? `risk score ${A.riskScore(o.vol)} of 100 (volatility ${pc(o.vol, 0)})` : "", o.a ? `beta ${o.a.beta.toFixed(2)}, correlation with the portfolio ${o.a.corrP.toFixed(2)}` : "", `role: ${o.role.toLowerCase()}`, `why now: ${o.why}`, `moves the portfolio to the ${label}`, o.intl ? "international order: clears at the end of the local trading day, and currency moves affect its value" : ""].filter(Boolean).join("; ");
   };
 
   // Record an order as placed: the trade log gets its Trading Note facts and the holdings here follow.
@@ -4213,7 +4239,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     ], holds) : "";
     el.innerHTML = `<div class="verdict ${verdict.k}"><div><div class="vh">${verdict.h}</div><p>${U.esc(verdict.t)}</p><p class="help">${hoursTxt}${nowTxt}${noBond ? ` <b class="warn">${noBond}</b>` : ""}</p></div>${Z.nOrd ? `<div class="vb"><button class="btn" id="placeAll">Mark all as placed</button><button class="btn sec" id="copyOrders">Copy the order list</button></div>` : ""}</div>
       ${U.kpis([{ l: "Orders", v: String(Z.nOrd), s: `${steps.filter((s) => s.k !== "sell").reduce((n, s) => n + s.rows.length, 0)} buys, ${(steps.find((s) => s.k === "sell") || { rows: [] }).rows.length} sells` }, { l: "Cash after trading", v: U.usd(post), cls: post < -0.005 ? "bad" : "", s: post < -0.005 ? "not enough cash: lower the buys" : fees ? `after ${U.usd(fees)} of fees` : `${pc(nav > 0 ? post / nav : NaN, 1)} of the account` }, { l: "Trades left after these", v: String(R.maxTrades - App.state.trade.log.length - Z.nOrd), s: `of ${R.maxTrades} for the competition` }, { l: "Sleeve B equity", v: isFinite(Z.eqNow) ? pc(Z.eqNow, 1) : "—", s: `target ${pc(Z.eqT, 1)}${Z.glide ? " after the glide step" : ""}, band ±${(Z.band * 100).toFixed(0)} pts`, cls: Z.bandHit ? "bad" : "" }])}
-      ${ticket ? U.panel("Order ticket", ticket + `<p class="help" style="padding:0 18px">${stale ? "Share counts use the last close in the data where no WInS price is typed; <b>type today's WInS price in the Price box before placing</b> and the count updates. " : ""}Click <b>Placed</b> after each order goes into WInS: it goes into the trade log with its Trading Note facts and the holdings here follow. Paste the WInS positions on Holdings once the fills are in.</p>`, { flush: true, sub: `in this order, to the ${label}`, acts: `<button class="lnk" data-csv="orders">Download CSV</button>` }) : ""}
+      ${ticket ? U.panel("Order ticket", `<details class="more" style="margin:0 18px 12px"><summary>Paste today's WInS prices for many securities at once</summary><p class="help">One per line: a ticker or a Treasury's CUSIP, then its price (Treasuries per 100 of face), e.g. <code>VEA 61.52</code> or <code>91282CFV8 95.95</code>. Spaces, tabs, commas or $ signs are fine.</p><textarea class="inp" id="pxPaste" rows="4" placeholder="VEA 61.52&#10;MSFT 510.20&#10;91282CFV8 95.95"></textarea><div class="row"><button class="btn sec small" id="pxGo">Use these prices</button></div></details>` + ticket + `<p class="help" style="padding:0 18px">${stale ? "Share counts use the last close in the data where no WInS price is typed; <b>type today's WInS price in the Price box before placing</b> and the count updates. " : ""}Click <b>Placed</b> after each order goes into WInS: it goes into the trade log with its Trading Note facts and the holdings here follow. Paste the WInS positions on Holdings once the fills are in.</p>`, { flush: true, sub: `in this order, to the ${label}`, acts: `<button class="lnk" data-csv="orders">Download CSV</button>` }) : ""}
       ${holdTbl ? U.panel("No trade needed", holdTbl, { flush: true, sub: "held positions the rules leave alone" }) : ""}
       ${U.panel("Settings for these orders", `<div class="ctl" style="margin:0"><span class="lbl">Trade to</span>${srcSeg}${src === "tgt" ? "" : `<span class="lbl">Keep in cash</span><span class="inpw" style="display:inline-flex;align-items:center;gap:6px"><input class="inp num sm" id="cashPct" value="${((T.cashPct ?? 0.02) * 100).toFixed(1)}" size="4">%</span>`}</div>
         <div class="ctl" style="margin:10px 0 0"><span class="lbl">Rules</span>${U.seg("omode", [["ips", "IPS rules (recommended)"], ["all", "Everything to target"]], Z.mode)}<span class="lbl">Band</span><span class="inpw" style="display:inline-flex;align-items:center;gap:6px">±<input class="inp num sm" id="oBand" value="${(Z.band * 100).toFixed(0)}" size="2"> points</span><span class="lbl">Minimum trade</span><span class="inpw" style="display:inline-flex;align-items:center;gap:6px">$<input class="inp num sm" id="oMin" value="${Z.minT}" size="5"></span><span class="lbl">Fee per trade</span><span class="inpw" style="display:inline-flex;align-items:center;gap:6px">$<input class="inp num sm" id="fee" value="${T.fee || 0}" size="4"></span></div>
@@ -4228,6 +4254,15 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const num = (id, f) => { const inp = U.$(id); if (inp) inp.onchange = (e) => { const v = parseFloat(String(e.target.value).replace(/[$,]/g, "")); if (isFinite(v) && v >= 0) { f(v); App.changed("ui"); } else U.toast("Enter a number", "err"); }; };
     num("#fee", (v) => (T.fee = v)); num("#oMin", (v) => (T.minTrade = v)); num("#oBand", (v) => (T.band = Math.max(0.5, v) / 100));
     const ms = el.querySelector("[data-seg=omode]"); if (ms) ms.addEventListener("click", (e) => { const bt = e.target.closest("button"); if (bt) { T.mode = bt.dataset.v; App.changed("ui"); } });
+    const pg = U.$("#pxGo"); if (pg) pg.onclick = () => {
+      const byCusip = new Map((App.target().rungs || []).filter((r) => r.cusip).map((r) => [r.cusip.toUpperCase(), App.rungTicker(r)])), set = [], bad = [];
+      for (const line of U.$("#pxPaste").value.split(/\n/)) {
+        const m = line.trim().match(/^([A-Za-z0-9.\-]+)[\s,:;\t]+\$?\s*([\d,]*\.?\d+)/); if (!m) { if (line.trim()) bad.push(line.trim()); continue; }
+        const k = m[1].toUpperCase(), p = parseFloat(m[2].replace(/,/g, "")), t = byCusip.get(k) || k;
+        if (p > 0) { App.setPrice(t, p); set.push(k); } else bad.push(line.trim());
+      }
+      App.changed("all"); U.toast(set.length ? `Prices set for ${set.length}: ${set.join(", ")}${bad.length ? ` · not read: ${bad.length} line${bad.length > 1 ? "s" : ""}` : ""}` : "No prices read: use one line per security, e.g. VEA 61.52", set.length ? "" : "err");
+    };
     el.querySelectorAll("[data-opx]").forEach((inp) => inp.addEventListener("change", () => { const v = parseFloat(inp.value.replace(/[$,]/g, "")); App.setPrice(inp.dataset.opx, v > 0 ? v : 0); App.changed("all"); }));
     el.querySelectorAll("[data-bpx]").forEach((inp) => inp.addEventListener("change", () => { const v = parseFloat(inp.value.replace(/[$,]/g, "")); App.setPrice(inp.dataset.bpx, v > 0 ? v : 0); App.changed("ui"); }));
     el.querySelectorAll("[data-cpf]").forEach((bt) => (bt.onclick = () => U.copy(App.orderFacts(all[+bt.dataset.cpf], label))));
@@ -4392,7 +4427,7 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
   const pctIn = (s) => { const t = String(s ?? "").replace(/[,\s]/g, ""); if (!t) return null; const v = parseFloat(t.replace(/[%+]/g, "")); if (!isFinite(v)) return null; return /%/.test(t) || Math.abs(v) >= 1 || !/\./.test(t) ? v / 100 : v; };
   // The sizer's settings, shared by the research list's suggestions.
   // Cash paid out keeps the IPS cash reserve (2% of Sleeve B).
-  App.sizeOpts = function () { const z = App.state.size, R = App.state.rules, cr = App.clientRisk(); return { base: z.base, fund: z.rep ? "rep" : z.fund, rep: z.rep || "", aim: z.aim || "ips", cap: z.cap > 0 ? z.cap : null, vmax: z.vmax === 0 ? Infinity : z.vmax > 0 ? z.vmax : A.riskBand(cr.hiScore).hi, mu: z.mu, keep: App.targetCash() }; };
+  App.sizeOpts = function () { const z = App.state.size, R = App.state.rules, cr = App.clientRisk(); return { base: z.base, fund: z.rep ? "rep" : z.fund, rep: z.rep || "", aim: z.aim || "ips", cap: z.cap > 0 ? z.cap : null, vmax: z.vmax === 0 ? Infinity : z.vmax > 0 ? z.vmax : A.riskVol(cr.hiScore), mu: z.mu, keep: App.targetCash() }; };
   App.researchStats = function (r) {
     const so = App.sizeOpts(), key = `rs:${r.t}:${so.base}:${so.mu}:${so.cap}:${so.vmax}:${so.aim}`; if (App.cache[key]) return App.cache[key];
     const st = App.settings(), q = D.periodsPerYear[st.freq], rfP = st.rf / q, out = { has: D.has(r.t) };
@@ -4557,18 +4592,23 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
     const pxBox = t && D.has(t) ? `<span class="lbl">${pxCcy === "USD" ? "WInS price" : `WInS price in US$ (from ${pxCcy})`}</span><input class="inp num sm" id="szPx" value="${typedPx ? App.state.px[t].p : ""}" placeholder="${isFinite(D.lastPrice(t)) && D.lastPrice(t) > 0 ? D.lastPrice(t).toFixed(2) : "type it"}" size="8" title="Today's price from the WInS quote page: the share count uses it">` : "";
     const bkPeers = t && D.has(t) ? App.target().lines.filter((l) => l.t !== t && l.w > 0 && App.bucketOf(l.t) === App.bucketOf(t) && App.bucketOf(t) !== "none") : [];
     const repSel = bkPeers.length ? `<span class="lbl">Replaces</span><select class="inp sm" id="szRep"><option value="">nothing (an addition)</option>${bkPeers.map((l) => `<option value="${l.t}" ${z.rep === l.t ? "selected" : ""}>${l.t} (${pc(l.w, 2)})</option>`).join("")}</select>` : "";
-    const ctl = `<div class="ctl"><span class="lbl">Security</span><input class="inp up" id="szT" list="tickers" value="${U.esc(t)}" size="12" autocomplete="off">${pxBox}<span class="lbl">Starting from</span>${U.seg("szBase", [["cur", "Current holdings"], ["tgt", "Target portfolio"], ["opt", "Optimiser mix"]], z.base)}<span class="lbl">Pay with</span>${U.seg("szFund", [["class", "Its IPS bucket"], ["cash", "Cash"], ["all", "All holdings"]], z.rep ? "" : z.fund)}${repSel}</div>
-      <div class="ctl"><span class="lbl">Aim</span>${U.seg("szAim", [["ips", "IPS size (recommended)"], ["sharpe", "Best return per unit of risk"], ["return", "Most return within the limits"]], aim)}<span class="lbl">Size limit</span>${U.seg("szCap", [["", `IPS: stock ${pc(App.stockCap(), 1)}, fund ${pc(R.teamMax, 0)}`], [String(R.teamMax), `${pc(R.teamMax, 0)} of the account`], [String(R.posLimit), `${pc(R.posLimit, 0)} of the account`]], capV > 0 ? String(capV) : "")}<span class="lbl">Risk ceiling</span>${U.seg("szV", [["", `Client level (score ${cr.hiScore})`], ["0", "None"]], z.vmax === 0 ? "0" : "")}<span class="lbl">Returns</span>${U.seg("szMu", [["fwd", "Forward-looking"], ["team", "Team forecasts"], ["capm", "CAPM"], ["hist", "Past"]], z.mu)}</div>`;
+    // What differs from the IPS defaults, so a changed setting is never hidden in the folded panel.
+    const changed = [aim !== "ips" && "aim", z.base !== "cur" && "starting point", !z.rep && z.fund !== "class" && "funding", z.cap > 0 && "size limit", z.vmax === 0 && "risk ceiling", z.mu !== "fwd" && "expected returns"].filter(Boolean);
+    const ctl = `<div class="ctl"><span class="lbl">Security</span><input class="inp up" id="szT" list="tickers" value="${U.esc(t)}" size="12" autocomplete="off">${pxBox}${repSel}</div>
+      <details class="more szadv" ${App.state.ui.szAdv ? "open" : ""}><summary>Advanced settings${changed.length ? ` <b class="warn">(changed: ${changed.join(", ")})</b>` : " (all at the IPS defaults)"}</summary>
+      <div class="ctl"><span class="lbl">Starting from</span>${U.seg("szBase", [["cur", "Current holdings"], ["tgt", "Target portfolio"], ["opt", "Optimiser mix"]], z.base)}<span class="lbl">Pay with</span>${U.seg("szFund", [["class", "Its IPS bucket"], ["cash", "Cash"], ["all", "All holdings"]], z.rep ? "" : z.fund)}</div>
+      <div class="ctl"><span class="lbl">Aim</span>${U.seg("szAim", [["ips", "IPS size (recommended)"], ["sharpe", "Best return per unit of risk"], ["return", "Most return within the limits"]], aim)}<span class="lbl">Size limit</span>${U.seg("szCap", [["", `IPS: stock ${pc(App.stockCap(), 1)}, fund ${pc(R.teamMax, 0)}`], [String(R.teamMax), `${pc(R.teamMax, 0)} of the account`], [String(R.posLimit), `${pc(R.posLimit, 0)} of the account`]], capV > 0 ? String(capV) : "")}<span class="lbl">Risk ceiling</span>${U.seg("szV", [["", `Client level (up to ${cr.hiScore} of 100)`], ["0", "None"]], z.vmax === 0 ? "0" : "")}<span class="lbl">Returns</span>${U.seg("szMu", [["fwd", "Forward-looking"], ["team", "Team forecasts"], ["capm", "CAPM"], ["hist", "Past"]], z.mu)}</div><p class="help" style="margin:0">The defaults follow the IPS, the client-aligned plan: size from its IPS weight, paid for from its own bucket, within the IPS limits and the client's risk level.</p></details>`;
     const head = `<div class="ph"><div><h1>Position sizer</h1><p>How much of a security to buy or sell, and whether the trade meets every rule. By default the amount is the weight the IPS gives it (its share of its IPS bucket: U.S., international or emerging equity, 1-3 year Treasuries, TIPS or short credit), paid for from the same bucket so Sleeve B's mix stays on target; every competition and IPS rule is checked in the Requirements table. The Sharpe-ratio aims are there for comparison.</p></div></div>`;
     if (!r.ok) {
       // No price history (most stocks outside the S&P 500, any international stock): pick its market here and it
       // goes on the research list with a stand-in, so it can be sized straight away.
       const noData = t && !D.has(t) && !App.researchRow(t);
-      const add = noData ? `<span class="lbl">Market</span><select class="inp sm" id="szEx">${App.EXCH.filter((e) => e[6]).map((e) => `<option value="${e[0]}">${U.esc(e[1])}${e[2] ? ` · ${U.esc(e[2])}` : ""}</option>`).join("")}</select><select class="inp sm" id="szTy"><option>Stock</option><option>ETF</option></select><button class="btn" id="szNew">Size ${U.esc(t)}</button>` : "";
+      const add = noData ? `<span class="lbl">Market</span><select class="inp sm" id="szEx">${App.EXCH.filter((e) => e[6]).map((e) => `<option value="${e[0]}">${U.esc(e[1])}${e[2] ? ` · ${U.esc(e[2])}` : ""}</option>`).join("")}</select><select class="inp sm" id="szTy"><option>Stock</option><option>ETF</option></select><select class="inp sm" id="szSec"><option value="">Sector…</option>${App.SECTORS.map((x) => `<option>${x}</option>`).join("")}</select><button class="btn" id="szNew">Size ${U.esc(t)}</button>` : "";
       root.innerHTML = head + U.panel("", ctl) + U.panel("", U.empty(r.empty ? "Choose a security" : noData ? `${U.esc(t)} is not in the price data` : "Cannot size this", noData ? `Choose the market WInS lists it on (the exchange on its WInS quote page, e.g. Toronto for a stock priced in C$). It goes on the research list with a stand-in for its risk, and the sizer gives the amount and checks every rule. Then type its WInS price, converted to US dollars, for the share count.` : U.esc(r.error), add)) + `<div id="rankBox"></div>`;
-      const nb = U.$("#szNew"); if (nb) nb.onclick = () => { const exch = U.$("#szEx").value, type = U.$("#szTy").value; App.state.research.rows.push({ t, name: t, type, exch, rating: "Research", view: "Sized from the Position sizer", added: App.today(), src: "Position sizer" }); App.changed("all"); U.toast(`${t} added to the research list (${(App.exch(exch) || [])[1] || exch}): rate it there once researched`); };
+      const nb = U.$("#szNew"); if (nb) nb.onclick = () => { const exch = U.$("#szEx").value, type = U.$("#szTy").value, sector = type === "Stock" ? U.$("#szSec").value : ""; App.state.research.rows.push({ t, name: t, type, exch, sector, rating: "Research", view: "Sized from the Position sizer", added: App.today(), src: "Position sizer" }); App.changed("all"); U.toast(`${t} added to the research list (${(App.exch(exch) || [])[1] || exch}): rate it there once researched`); };
       bindSize(root); rankLater(o); return;
     }
+    const cost = isFinite(r.shares) && r.shares ? Math.abs(r.shares * r.price) : Math.abs(r.dollars); // what the whole shares cost
     const res = r.res, a = r.w1 - r.held, buy = a > 0.0005, sell = a < -0.0005, st = App.settings(), fails = r.fails, warns = r.checks.filter((c) => c.k === "WARN"), blocked = fails.length > 0 && buy;
     const recTxt = blocked || (aim === "ips" && !buy && !sell && r.held < 0.0005) ? "Do not buy" : buy ? (isFinite(r.shares) ? `Buy ${Math.abs(r.shares).toLocaleString()} shares` : `Buy about ${U.usd(r.dollars)}`) : sell ? (isFinite(r.shares) ? `Sell ${Math.abs(r.shares).toLocaleString()} shares` : `Sell about ${U.usd(-r.dollars)}`) : "Hold as is";
     const fundTxt = r.rep ? `selling ${r.rep}` : { cash: "cash", class: `the rest of its IPS bucket (${App.BUCKETS[r.bucket] || ""}), pro rata`, all: "all other holdings, pro rata" }[r.fund];
@@ -4579,19 +4619,23 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
 a* = ${isFinite(res.aStar) ? pc(res.aStar, 2) : "n/a"}\nallowed range ${pc(res.lo, 2)} to ${pc(res.hi, 2)} → a = ${pc(a, 2)} (${whyTxt})\nweight ${pc(r.wk, 2)} → ${pc(r.w1, 2)} of a ${U.usd(r.B.nav)} portfolio`, notes: `${r.fundNote || ""} Expected returns: ${App.MU_NAMES[z.mu]}. ${R.shortOK ? "" : "Short selling is not allowed, so the weight cannot go below zero."} The Sharpe optimum is usually larger than the size limits allow, so this aim tends to land on a limit; the IPS size is the recommended aim.`, refs: "Sharpe (1966); Elton, Gruber, Brown & Goetzmann, Modern Portfolio Theory and Investment Analysis." };
     const b = r.before, af = r.after, fitA = App.fit(af.score);
     // The order exactly as the WInS order screen asks for it: symbol, action, shares, order type, duration.
-    const wins = (buy || sell) && !blocked ? `<div class="sm" style="flex:1 1 100%">${isFinite(r.shares) && r.shares ? `<b>In WInS:</b> Symbol <b>${U.esc(t)}</b> · Action <b>${buy ? "Buy" : "Sell"}</b> · <b>${U.num(Math.abs(r.shares), 0)}</b> shares · Order type <b>Market</b> · Duration <b>Good for Day</b> · Estimated Order Total about <b>${U.usd(Math.abs(r.shares) * r.price, 2)}</b>${typedPx ? "" : " (at the last close in the data: type today's WInS price above first)"}` : `<b>In WInS:</b> type today's WInS price above to get the number of shares.`}</div>` : "";
+    const hasSh = isFinite(r.shares) && r.shares, side = buy ? "Buy" : "Sell", rr0 = App.researchRow(t);
+    const orderTxt = hasSh ? `${t} · ${side} · ${Math.abs(r.shares)} shares · Market · Good for Day · about ${U.usd(Math.abs(r.shares) * r.price, 2)}` : "";
+    // The reason WInS asks for in each trade's note: what, why this size, the client's risk and the rules checked.
+    const noteTxt = `${side} ${hasSh ? Math.abs(r.shares) + " shares of " : ""}${t}${r.info.name && r.info.name !== t ? ` (${r.info.name})` : ""}${isFinite(r.price) ? ` at about ${U.usd(r.price, 2)}` : ""}: ${U.usd(cost)}, ${pc(r.held, 2)} to ${pc(r.w1, 2)} of the account (its IPS weight; whole shares round down). Role: ${App.BUCKETS[r.bucket] || "growth"} in Sleeve B, the facility growth sleeve (IPS 8.3). Size: ${r.slot ? r.slot.why : whyTxt}. Risk: ${t} scores ${r.score} of 100 on its own; the portfolio goes from ${b.score} to ${af.score}, against the client's level of ${cr.score} (fits up to ${cr.hiScore}). Rules: ${fails.length ? `fails ${fails.map((c) => c.rule).join(", ")}` : "every hard rule passes"} (one stock at most 10% of Sleeve B, no holding above 20% of the account, $5 minimum price, equity within 3 points of target, 2% cash reserve, no short selling or margin).${rr0 && rr0.view ? ` View: ${rr0.view}.` : ""}${rr0 && rr0.risks ? ` Key risks: ${rr0.risks}.` : ""} WInS results are not added to Laura's projections.`;
+    const wins = (buy || sell) && !blocked ? `<div class="szorder">${hasSh ? `<span><span class="lbl">WInS order</span> Symbol <b>${U.esc(t)}</b> · <b>${side}</b> · <b>${U.num(Math.abs(r.shares), 0)}</b> shares · <b>Market</b> · <b>Good for Day</b> · about <b>${U.usd(Math.abs(r.shares) * r.price, 2)}</b>${typedPx ? "" : ' <span class="warn">(last close in the data: type today\'s WInS price above)</span>'}</span>` : `<span><span class="lbl">WInS order</span> type today's WInS price above for the number of shares.</span>`}<span class="row" style="margin:0">${hasSh ? '<button class="btn sec small" id="szCopyO">Copy order</button>' : ""}<button class="btn sec small" id="szCopyN">Copy trade note</button></span></div>` : "";
     const rank = { FAIL: 0, WARN: 1, PASS: 2 };
     const checks = U.panel(`Requirements: ${fails.length ? `${fails.length} fail` : "every hard rule passes"}${warns.length ? `, ${warns.length} to check` : ""}`, U.table([{ h: "", f: (c) => U.status(c.k) }, { h: "Rule", f: (c) => `<b>${U.esc(c.rule)}</b>` }, { h: "This trade", f: (c) => `<span style="white-space:normal;display:block;min-width:260px">${U.esc(c.detail)}</span>` }, { h: "Source", f: (c) => `<span class="muted">${U.esc(c.src)}</span>` }], r.checks.slice().sort((p, q) => rank[p.k] - rank[q.k])), { flush: true, sub: "The competition rules, the IPS and the WInS Implementation Plan. Fail: do not place the order. Check: allowed, but say why in the Trading Note." });
     root.innerHTML = head + U.panel("", ctl)
       + U.kpis([
-        { l: `Risk score of ${t}`, v: x(`${r.score} of 10`, App.riskExplain(r.vol, r.score, t)), s: `${A.riskLabel(r.score)}; volatility ${pc(r.vol, 0)}` },
-        { l: "Recommendation", v: x(recTxt, recE), s: blocked ? `fails: ${fails.map((c) => c.rule).join("; ")}` : buy || sell ? `${U.usd(Math.abs(r.dollars))}: ${pc(r.held, 2)} → ${pc(r.w1, 2)} of the account` : `stays at ${pc(r.held, 2)}${aim === "ips" && r.slot && r.slot.own > 0 ? " (its IPS weight)" : ""}`, cls: blocked ? "bad" : buy ? "good" : "" },
+        { l: `Risk score of ${t}`, v: x(`${r.score} of 100`, App.riskExplain(r.vol, r.score, t)), s: `${A.riskLabel(r.score)}; volatility ${pc(r.vol, 0)}` },
+        { l: "Recommendation", v: x(recTxt, recE), s: blocked ? `fails: ${fails.map((c) => c.rule).join("; ")}` : buy || sell ? `${U.usd(cost)}: ${pc(r.held, 2)} → ${pc(r.w1, 2)} of the account` : `stays at ${pc(r.held, 2)}${aim === "ips" && r.slot && r.slot.own > 0 ? " (its IPS weight)" : ""}`, cls: blocked ? "bad" : buy ? "good" : "" },
         { l: "Portfolio risk score", v: `${b.score} → ${af.score}`, s: `client ${cr.score}${fitA === "above" ? "; above it after" : ""}`, cls: fitA === "above" ? "bad" : "" },
         { l: "Sharpe ratio", v: `${isFinite(b.sharpe) ? b.sharpe.toFixed(2) : "—"} → ${isFinite(af.sharpe) ? af.sharpe.toFixed(2) : "—"}`, s: `volatility ${pc(b.vol, 1)} → ${pc(af.vol, 1)}` },
         { l: "Expected return", v: `${pc(b.ret, 2)} → ${pc(af.ret, 2)}`, s: `${U.spct(af.ret - b.ret, 2).replace("%", " points")}: ${U.usd((af.ret - b.ret) * r.B.nav)} a year` },
       ])
       + (blocked ? `<div class="note bad szrec"><span><b>Do not buy ${t}</b>: it fails ${fails.map((c) => `<b>${U.esc(c.rule)}</b> (${U.esc(c.detail)})`).join("; ")}</span></div>`
-        : buy || sell ? `<div class="note szrec"><span><b>${recTxt} of ${t}</b>${isFinite(r.shares) ? ` (${U.usd(Math.abs(r.dollars))} at ${typedPx ? "the WInS price typed above" : `the last close in the data, ${U.usd(r.price, 2)}: type today's WInS price above for the exact count`})` : ""}: from ${pc(r.held, 2)} to ${pc(r.w1, 2)} of the account${r.fresh ? ", opened from cash (no positions yet; the rest of the target is bought from the order ticket)" : `, paid for from ${fundTxt}`}. ${aim === "ips" && r.slot ? `Why this amount: ${U.esc(r.slot.why)}. ` : ""}${fails.length ? `<b class="neg">Fails: ${fails.map((c) => U.esc(c.rule)).join("; ")}.</b> ` : warns.length ? `${warns.length} point${warns.length > 1 ? "s" : ""} to explain in the Trading Note (Requirements, below). ` : "Every rule passes. "}Add it to the target and the Trades page turns it into orders, with any trims that pay for it.</span><button class="btn" id="szAdd">Add to the target and plan the order</button>${wins}</div>`
+        : buy || sell ? `<div class="note szrec"><span><b>${recTxt} of ${t}</b>${isFinite(r.shares) ? ` (${U.usd(cost)} at ${typedPx ? "the WInS price typed above" : `the last close in the data, ${U.usd(r.price, 2)}: type today's WInS price above for the exact count`})` : ""}: from ${pc(r.held, 2)} to ${pc(r.w1, 2)} of the account${r.fresh ? ", opened from cash (no positions yet; the rest of the target is bought from the order ticket)" : `, paid for from ${fundTxt}`}. ${aim === "ips" && r.slot ? `Why this amount: ${U.esc(r.slot.why)}. ` : ""}${fails.length ? `<b class="neg">Fails: ${fails.map((c) => U.esc(c.rule)).join("; ")}.</b> ` : warns.length ? `${warns.length} point${warns.length > 1 ? "s" : ""} to explain in the Trading Note (Requirements, below). ` : "Every rule passes. "}Add it to the target and the Trades page turns it into orders, with any trims that pay for it.</span><button class="btn" id="szAdd">Add to the target and plan the order</button>${wins}</div>`
         : aim === "ips" && r.slot && r.held < 0.0005 ? `<div class="note bad szrec"><span><b>Do not buy ${t}</b>: ${fails.length ? `it fails ${fails.map((c) => `<b>${U.esc(c.rule)}</b> (${U.esc(c.detail)})`).join("; ")}` : res.why !== "ips" && r.slot.w > 0 ? `the IPS size is ${pc(r.slot.w, 2)} of the account, but ${U.esc(whyTxt)} leaves no room: pay for it from its IPS bucket, or choose what it replaces` : U.esc(r.slot.why)}.</span></div>`
         : aim === "ips" && r.slot ? `<div class="note szrec"><span><b>Hold ${t} as is</b>: ${pc(r.held, 2)} of the account, ${U.esc(r.slot.why)}.</span></div>` : "")
       + checks
@@ -4607,7 +4651,7 @@ a* = ${isFinite(res.aStar) ? pc(res.aStar, 2) : "n/a"}\nallowed range ${pc(res.l
           <div><span>What sets the amount</span><b style="white-space:normal">${U.esc(whyTxt)}</b></div>
           ${aim === "ips" ? `<div><span>Best Sharpe ratio, for comparison</span><b style="white-space:normal">${U.esc(optTxt)}</b></div>` : ""}</div>
           <p class="help">${r.SR_k > r.corr * b.sharpe ? `${t} earns more per unit of risk than its correlation with the portfolio costs, so some of it improves the mix.` : `${t} does not earn enough per unit of risk to make up for its correlation with the portfolio, so adding it lowers the Sharpe ratio.`} ${D.isSynth(t) ? `Its history is a stand-in (${U.esc(r.info.proxy || "")}); import its prices for exact figures.` : ""} ${!isFinite(r.price) ? "Enter its WInS price (Holdings or Trades) to get a share count." : ""} ${r.info.cls === "EQ" && r.price > 0 && r.price < R.minPrice ? `<b class="neg">Below the $${R.minPrice} minimum.</b>` : ""} ${App.researchRow(t) && App.researchRow(t).rating === "Short" ? '<b class="neg">Rated Short: short selling is not allowed, so do not hold it.</b>' : ""}</p>`)}
-        ${U.panel("The risk-score scale", U.table([{ h: "Score", f: (l) => App.riskTag(l[0]) }, { h: "Level", f: (l) => l[1] }, { h: "Volatility", n: 1, f: (l) => { const bd = A.riskBand(l[0]); return `${pc(bd.lo, 0)}${isFinite(bd.hi) ? "–" + pc(bd.hi, 0) : "+"}`; } }, { h: "Typical of", f: (l) => `<span class="muted">${l[2]}</span>` }, { h: "", f: (l) => [l[0] === r.score ? U.tag(t) : "", l[0] === af.score ? U.tag("Portfolio", "grey") : "", l[0] === cr.score ? U.tag("Client", "grey") : ""].join(" ") }], A.RISK_LEVELS), { flush: true })}</div>`
+        ${U.panel("The risk-score scale", U.table([{ h: "Score", f: (l) => `<span class="rsk r${l[0]}">${10 * l[0] - 9}–${10 * l[0]}</span>` }, { h: "Level", f: (l) => l[1] }, { h: "Volatility", n: 1, f: (l) => { const bd = A.riskBand(l[0]); return `${pc(bd.lo, 0)}${isFinite(bd.hi) ? "–" + pc(bd.hi, 0) : "+"}`; } }, { h: "Typical of", f: (l) => `<span class="muted">${l[2]}</span>` }, { h: "", f: (l) => [l[0] === A.riskLevel(r.score) ? U.tag(`${t} ${r.score}`) : "", l[0] === A.riskLevel(af.score) ? U.tag(`Portfolio ${af.score}`, "grey") : "", l[0] === A.riskLevel(cr.score) ? U.tag(`Client ${cr.score}`, "grey") : ""].join(" ") }], A.RISK_LEVELS), { flush: true })}</div>`
       + `<div id="rankBox"></div>`;
     const th = C.theme(), gx = r.grid.map((g) => r.wk + g.a);
     const mid = (gx[0] + gx[gx.length - 1]) / 2, marks = [{ x: r.wk, label: Math.abs(r.w1 - r.wk) < 1e-4 ? "now = recommended" : "now", dash: "4 3", left: r.wk > mid }].concat(Math.abs(r.w1 - r.wk) < 1e-4 ? [] : [{ x: r.w1, label: "recommended", color: th.s[1], left: r.w1 > mid, row: 1 }]);
@@ -4615,6 +4659,8 @@ a* = ${isFinite(res.aStar) ? pc(res.aStar, 2) : "n/a"}\nallowed range ${pc(res.l
     const edges = A.RISK_EDGES.filter((e) => e > Math.min(...r.grid.map((g) => g.vol)) * 0.9 && e < Math.max(...r.grid.map((g) => g.vol)) * 1.1);
     C.lines(U.$("#chSzV"), { x: gx, xType: "num", xFmt: (v) => pc(v, 1), series: [{ name: "Portfolio volatility", y: r.grid.map((g) => g.vol), color: th.s[2] }].concat(edges.map((e) => ({ name: `score ${A.riskScore(e)} starts`, y: gx.map(() => e), color: th.ink3, dash: "3 4", width: 1 }))), marks, yFmt: (v) => pc(v, 1), h: 240, legend: false });
     bindSize(root); rankLater(o);
+    const co = U.$("#szCopyO"); if (co) co.onclick = () => U.copy(orderTxt);
+    const cn = U.$("#szCopyN"); if (cn) cn.onclick = () => U.copy(noteTxt);
     const sa = U.$("#szAdd"); if (sa) sa.onclick = () => { if (fails.length && buy && !confirm(`${t} fails: ${fails.map((c) => c.rule).join("; ")}. Add it to the target anyway?`)) return; const d = App.addToTarget(t, r.w1, r.rep ? `rep:${r.rep}` : r.fund); if (Math.abs(d) < 1e-6 && App.target().lines.some((l) => l.t === t)) { U.toast(`${t} is already in the target at ${pc(r.w1, 2)}: here is its order`); return App.go("TRADE", { tab: "orders" }); } if (Math.abs(d) < 1e-6) return U.toast(`Nothing to change: ${r.fund === "cash" ? "no cash left in the target" : "nothing in the target to pay for it"}`, "err"); App.changed("all"); U.toast(`${t} is now ${pc(r.wk + d, 2)} of the target; here are the orders`); App.go("TRADE", { tab: "orders" }); };
   };
   function bindSize(root) {
@@ -4622,6 +4668,7 @@ a* = ${isFinite(res.aStar) ? pc(res.aStar, 2) : "n/a"}\nallowed range ${pc(res.l
     const tIn = U.$("#szT"); if (tIn) tIn.addEventListener("change", () => { z.t = tIn.value.trim().toUpperCase(); z.rep = ""; App.changed("ui"); });
     const seg = (name, fn) => { const sg = root.querySelector(`[data-seg=${name}]`); if (sg) sg.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { fn(b.dataset.v); App.changed("ui"); } }); };
     seg("szBase", (v) => (z.base = v)); seg("szFund", (v) => { z.fund = v; z.rep = ""; });
+    const adv = root.querySelector(".szadv"); if (adv) adv.addEventListener("toggle", () => { App.state.ui.szAdv = adv.open; });
     const rp = U.$("#szRep"); if (rp) rp.addEventListener("change", () => { z.rep = rp.value; App.changed("ui"); });
     const px = U.$("#szPx"); if (px) px.addEventListener("change", () => { const v = parseFloat(px.value.replace(/[$,\s]/g, "")); App.setPrice(z.t, v > 0 ? v : 0); App.changed("all"); }); seg("szAim", (v) => (z.aim = v)); seg("szCap", (v) => (z.cap = v ? +v : null)); seg("szV", (v) => (z.vmax = v === "0" ? 0 : null)); seg("szMu", (v) => (z.mu = v));
   }
