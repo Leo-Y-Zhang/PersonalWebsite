@@ -1,0 +1,62 @@
+name: Wharton model prices
+
+# Every weekday after the U.S. close: swap the latest daily closes into wharton/index.html (the
+# team's copy of the Wharton portfolio model), check that the page still loads and sizes a trade,
+# commit it and republish the site. Run it by hand from the Actions tab for prices on demand. No
+# token is needed: the workflow only writes to this repository. The model itself is copied here
+# from the WhartonInvestmentChallenge repository whenever it changes.
+
+on:
+  schedule:
+    - cron: "45 22 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: wharton-prices
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Refresh the model's prices
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 pandas==3.0.5 yfinance lxml requests playwright==1.56.0
+      - run: python -m playwright install --with-deps chromium
+      - name: The page's price snapshot reads and writes back unchanged
+        run: python3 tools/wharton/update_page.py --selftest
+      - name: Download the latest closes into the page (checked in a browser before it is kept)
+        run: python3 tools/wharton/update_page.py
+      - name: Commit and republish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898599+github-actions[bot]@users.noreply.github.com"
+          git add wharton/index.html
+          if git diff --cached --quiet; then echo "Prices unchanged"; exit 0; fi
+          as_of=$(grep -o '"asOf":"[0-9-]*"' wharton/index.html | head -1 | cut -d'"' -f4)
+          git commit -q -m "Wharton model: prices to $as_of"
+          if ! git push -q origin HEAD:main; then
+            git fetch -q origin main
+            # A new copy of the model pushed meanwhile wins (it carries the model's own prices); anything else is rebased onto.
+            if git diff --quiet HEAD~1 origin/main -- wharton/index.html; then
+              git rebase -q origin/main && git push -q origin HEAD:main
+            else
+              echo "::notice::wharton/index.html changed during the run (a new copy of the model): kept as pushed; the next run refreshes its prices."
+              exit 0
+            fi
+          fi
+          # A push made with this workflow's token does not always start a Pages build: ask for one.
+          curl -sS -o /dev/null -w "Pages build requested: HTTP %{http_code}\n" -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/pages/builds" || echo "::warning::The Pages build request failed; the site updates on the next push."
