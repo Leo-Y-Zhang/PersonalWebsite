@@ -300,6 +300,8 @@ blockquote.quote { margin: 0 0 6px; padding: 8px 14px; border-left: 3px solid va
   .bar-r .lbl2 { display: none; }
   #view { padding: 16px 14px 40px; }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat .v { white-space: normal; overflow: visible; font-size: 19px; line-height: 1.25; }
+  .stat .s { white-space: normal; }
   .stat { border-bottom: 1px solid var(--line); }
   .docs { grid-template-columns: 1fr; }
   .dl { grid-template-columns: 90px minmax(0, 1fr); }
@@ -3096,6 +3098,9 @@ details.szadv { margin: 10px 0 0; }
   // from (or given back to) the funding lines pro rata: the rest of its IPS bucket (else its asset class),
   // one line it replaces ("rep:TICKER"), all other lines, or cash, as the Position sizer assumed. Treasury rungs are never used to fund. Returns the change.
   App.addToTarget = function (t, w1, fund) {
+    // Into an empty target it would be the only line, and the order ticket would sell everything else: the
+    // target is rebuilt from the IPS table first.
+    if (!App.target().lines.some((l) => l.w > 0) && !App.target().rungs.length) { App.state.target = App.buildTarget("ips"); App.syncSynth(); U.toast("The target portfolio was empty: rebuilt from the IPS table first"); }
     const T = App.target(), line = T.lines.find((l) => l.t === t), w0 = line ? line.w : 0, cls = App.classOf(t);
     const bk = App.bucketOf(t), rep = /^rep:/.test(fund || "") ? fund.slice(4) : "", others = T.lines.filter((l) => l.t !== t && l.w > 0);
     let pool = fund === "cash" ? [] : rep ? others.filter((l) => l.t === rep) : fund === "all" ? others : others.filter((l) => App.bucketOf(l.t) === bk && bk !== "none");
@@ -3198,7 +3203,7 @@ details.szadv { margin: 10px 0 0; }
       if (r.ok && r.ports.msr) { const bonds = b.rows.filter((z) => z.bond && z.w > 0), inv = Math.max(0, 1 - bonds.reduce((s, z) => s + z.w, 0)) * (1 - (App.state.trade.cashPct ?? 0.02)); bonds.forEach((z) => w.set(z.t, z.w)); r.tickers.forEach((t, i) => { if (r.ports.msr[i] > 1e-6) w.set(t, (w.get(t) || 0) + r.ports.msr[i] * inv); }); return done("the Optimiser's maximum-Sharpe mix"); }
     }
     fromTarget();
-    if (!w.size) return ipsTable("the target portfolio has nothing with price history in it (it is empty), so the sizer measures the IPS table; rebuild the target on Trades › Target portfolio");
+    if (!w.size) return ipsTable("the target portfolio has nothing with price history in it (it is empty), so the sizer measures the IPS table; rebuild the target on Holdings › Target portfolio (Start from: IPS table)");
     return done(kind === "tgt" ? "the target portfolio" : kind === "opt" ? "the target portfolio (the Optimiser has no result yet)" : "the target portfolio (no holdings entered yet)");
   };
   // Size limits. IPS §15: no single Sleeve B security above 10% of Sleeve B, applied to single stocks
@@ -3572,15 +3577,18 @@ details.szadv { margin: 10px 0 0; }
     const ps = App.portStats(wMap), cashT = App.targetCash(T), fit = App.fit(ps.score);
     const cls = { Equity: 0, Bonds: 0, Other: 0 }; lines.forEach((l) => { const c = l.rung ? "Bonds" : App.classOf(l.t); cls[c === "Equity" || c === "Real estate" ? "Equity" : c === "Bonds" ? "Bonds" : "Other"] += l.w; });
     const held = (t) => b.rows.filter((r) => r.t === t).reduce((s, r) => s + (isFinite(r.val) ? r.val : 0), 0);
+    // Target dollars and orders exactly as the order ticket works them out (Sleeve B scaled to its actual value
+    // once the rungs are held, whole shares, the minimum trade and the band), so the two pages never disagree.
+    const Z = (App.state.trade.source || "tgt") === "tgt" ? App.orderPlan() : null, zl = new Map(Z && Z.ok ? Z.lines.map((o) => [o.t, o]) : []);
     const heldBond = (mat) => b.rows.filter((r) => r.bond && String(r.mat) === mat.slice(0, 4)).reduce((s, r) => s + r.val, 0);
     const srcName = { plan: "the client plan, January 2027", ips: "the IPS table (IPS §15; WInS Implementation Plan §3)", holdings: "the current holdings", opt: "the Optimiser", custom: "team edits" }[T.src] || T.src;
     const lt = U.table([
       { h: "Line", f: (l) => { const i = D.info(l.t) || {}; return `<span class="sec">${l.t}${D.has(l.t) ? "" : ` ${U.tag("No price data", "bad")}`}</span><span class="nm">${U.esc(i.name || "Add it to the research list")}${D.isSynth(l.t) ? " · history from " + U.esc(i.proxy || "") : ""}</span>`; } },
       { h: "Role", f: (l) => `<span class="muted" style="white-space:normal">${U.esc(l.role || App.classOf(l.t))}</span>` },
       { h: "Target", n: 1, f: (l, i) => `<input class="inp num sm" style="width:64px" data-tw="${i}" value="${(l.w * 100).toFixed(2)}">%` },
-      { h: "Target $", n: 1, f: (l) => U.usd(l.w * nav) },
+      { h: "Target $", n: 1, f: (l) => U.usd(zl.has(l.t) ? zl.get(l.t).tgt : l.w * nav) },
       { h: "Held $", n: 1, f: (l) => U.usd(held(l.t)) },
-      { h: "To trade", n: 1, f: (l) => { const d = l.w * nav - held(l.t); return `<b class="${Math.abs(d) < 1 ? "muted" : d > 0 ? "pos" : "neg"}">${d > 0 ? "+" : ""}${U.usd(d)}</b>`; } },
+      { h: "Order", n: 1, f: (l) => { const o = zl.get(l.t); if (!o) { const d = l.w * nav - held(l.t); return `<b class="${Math.abs(d) < 1 ? "muted" : d > 0 ? "pos" : "neg"}">${d > 0 ? "+" : ""}${U.usd(d)}</b>`; } if (o.kind === "price") return '<span class="warn">price needed</span>'; if (o.d && o.kind !== "hold" && o.kind !== "wait") return `<b class="${o.d > 0 ? "pos" : "neg"}">${o.d > 0 ? "Buy" : "Sell"} ${U.num(Math.abs(o.d), 0)}</b><span class="nm">${U.usd(Math.abs(o.val))}</span>`; return `<span class="muted" title="${U.esc(o.why || "")}">none</span><span class="nm" style="white-space:normal;max-width:160px">${U.esc((o.why || "").replace(/:.*$/, ""))}</span>`; }, tip: "What the order ticket (Trades) will do with this line today" },
       { h: "Risk", n: 1, f: (l) => { const v = D.has(l.t) ? D.recentVol(l.t) : NaN; return App.riskTag(A.riskScore(v)); }, tip: "Risk score from three years of daily volatility" },
       { h: "", f: (l, i) => `<button class="lnk" data-size="${l.t}">Size</button> <button class="icon" data-tdel="${i}" aria-label="Remove">✕</button>` },
     ], T.lines, { foot: `<tr><td colspan="2">Cash</td><td class="n">${pc(cashT, 2)}</td><td class="n">${U.usd(cashT * nav)}</td><td class="n">${U.usd(b.cash)}</td><td colspan="3"></td></tr>` });
@@ -3887,7 +3895,7 @@ details.szadv { margin: 10px 0 0; }
     ];
     const today = new Date().toISOString().slice(0, 10), nextI = App.DEADLINES.findIndex(([d]) => d >= today);
     const days = (d) => Math.round((Date.parse(d) - Date.parse(today)) / 864e5);
-    const dl = App.DEADLINES.map(([d, t, n], i) => `<div class="dl ${d < today ? "past" : ""} ${i === nextI ? "next" : ""}"><span class="d">${U.date(d)}</span><span><b>${t}</b>${n ? `<span class="nm" style="max-width:none;white-space:normal">${n}</span>` : ""}</span><span class="left">${d < today ? "done" : days(d) === 0 ? "today" : days(d) + " days"}</span></div>`).join("");
+    const dl = App.DEADLINES.map(([d, t, n], i) => `<div class="dl ${d < today ? "past" : ""} ${i === nextI ? "next" : ""}"><span class="d">${U.date(d)}</span><span><b>${t}</b>${n ? `<span class="nm" style="max-width:none;white-space:normal">${n}</span>` : ""}</span><span class="left">${d < today ? "done" : days(d) === 0 ? "today" : days(d) === 1 ? "tomorrow" : days(d) + " days"}</span></div>`).join("");
     const checks = b.rows.length ? PRT.Rules.check() : [], fails = checks.filter((c) => c.s === "FAIL").length, tm = App.targetMix(), cr = App.clientRisk(), an = b.rows.length ? App.analysis() : { ok: false }, wsc = an.ok ? A.riskScore(an.exVol) : NaN;
     const wins = b.rows.length ? `<div class="kvs" style="grid-template-columns:1fr"><div><span>Value</span><b>${U.usd(b.nav)}</b></div><div><span>Holdings</span><b>${b.rows.length}</b></div><div><span>Risk score (client ${cr.score})</span><b>${isFinite(wsc) ? App.riskTag(wsc, true) : "—"}</b></div><div><span>Rule checks</span><b class="${fails ? "neg" : "pos"}">${fails ? fails + " failing" : "all passing"}</b></div><div><span>Cash</span><b>${U.usd(b.cash)}</b></div><div><span>Trades logged</span><b>${App.state.trade.log.length} of ${App.state.rules.maxTrades}</b></div></div><div class="row"><button class="btn sec" data-go="PORT">Open holdings</button><button class="btn sec" data-go="RISK">See risk</button></div>`
       : `<p class="help">No holdings entered yet. The target mirrors Year 2 of the plan (IPS §15): about <b>${pc(tm.ladder, 1)} Treasury ladder, ${pc(tm.e, 1)} equity, ${pc(tm.b, 1)} bond funds and ${pc(tm.c, 1)} cash</b>. The client's risk level is ${cr.score} (${A.riskLabel(cr.score)}).</p><div class="row"><button class="btn" data-go="PORT" data-tab="target">See the target portfolio</button><button class="btn sec" data-go="PORT">Add WInS holdings</button></div>`;
@@ -4258,8 +4266,12 @@ details.szadv { margin: 10px 0 0; }
     const T = App.state.trade, b = App.book(), an = b.rows.length ? App.analysis() : { ok: false }, src = T.source || "tgt", R = App.state.rules, today = App.today();
     const nav = b.rows.length ? b.nav : App.state.pf.capital, minT = Math.max(0, +T.minTrade || 0), band = T.band > 0 ? T.band : 0.03, mode = T.mode === "all" ? "all" : "ips";
     let target = {}, rungs = [], label, tgtCashW = 0, glide = null;
+    // An empty target (every line removed, or built from holdings before any were entered) would read as
+    // "sell everything": the ticket then stops and says to rebuild the target instead.
+    let emptyTarget = false;
     if (src === "tgt") {
       const TG = App.target(); TG.lines.forEach((l) => (target[l.t] = (target[l.t] || 0) + l.w)); rungs = TG.rungs; label = "target portfolio"; tgtCashW = App.targetCash(TG);
+      emptyTarget = !TG.lines.some((l) => l.w > 0) && !TG.rungs.length;
       if (T.glideDate && today >= T.glideDate && T.glideStep > 0) {
         const tk = Object.keys(target), sb = tk.reduce((s, t) => s + target[t], 0) + tgtCashW, ef = tk.filter((t) => eqLike(t) && isFund(t)), bf = tk.filter((t) => App.classOf(t) === "Bonds");
         const sE = ef.reduce((s, t) => s + target[t], 0), sBd = bf.reduce((s, t) => s + target[t], 0), move = T.glideStep * sb;
@@ -4298,6 +4310,7 @@ details.szadv { margin: 10px 0 0; }
     const drift = eqNow - eqT, bandHit = built && !blind && (Math.abs(drift) > band || (glideDue && drift > 0.005));
     const rebWhy = mode === "all" ? "rebalance: everything back to target" : glide && drift > 0 ? `glide step: Sleeve B equity ${pc(eqNow, 1)} → ${pc(eqT, 1)}` : `rebalance: Sleeve B equity ${pc(eqNow, 1)} against ${pc(eqT, 1)} (band ±${(band * 100).toFixed(0)} points)`;
     for (const o of lines) {
+      if (emptyTarget) { o.kind = "hold"; o.why = "the target portfolio is empty: rebuild it before trading"; continue; }
       if (!o.ok) { o.kind = "price"; o.why = o.cur ? "enter its WInS price to value it" : `buy about ${U.usd(o.tgt)}: type its WInS price for the share count`; continue; }
       const dd = o.tsh - o.cur, w0 = nav > 0 ? o.held / nav : 0;
       if (o.tw > 0 && !o.cur) { o.d = o.tsh; o.kind = o.d > 0 ? "build" : "hold"; o.why = o.d > 0 ? "not held yet: opens the position" : `its target (${U.usd(o.tgt)}) is less than one share`; }
@@ -4305,7 +4318,7 @@ details.szadv { margin: 10px 0 0; }
       else if (!blind && w0 > R.posLimit + 1e-9 && dd < 0) { o.d = dd; o.kind = "cap"; o.why = `${pc(w0, 1)} of the account, above the ${pc(R.posLimit, 0)} limit: trim to target`; }
       else if (!blind && !o.fund && o.eq && sbNow > 0 && o.held > 0.1 * sbNow + 1e-6 && dd < 0) { o.d = dd; o.kind = "cap"; o.why = `${pc(o.held / sbNow, 1)} of Sleeve B, above the IPS limit of 10% for one stock: trim to target`; }
       else if (dd && (mode === "all" || bandHit) && Math.abs(dd * o.px) >= minT) { o.d = dd; o.kind = "rebal"; o.why = rebWhy; }
-      else { o.kind = "hold"; o.why = !dd ? "at target" : Math.abs(dd * o.px) < minT ? `${U.usd(Math.abs(dd * o.px))} off target, under the ${U.usd(minT)} minimum trade` : !built ? "already held; rebalanced only once the build is complete" : blind ? `rebalancing waits for the WInS price of ${unpriced.map((z) => z.t).join(", ")}` : `${U.usd(Math.abs(dd * o.px))} off target; Sleeve B equity is inside the ±${(band * 100).toFixed(0)}-point band`; }
+      else { o.kind = "hold"; o.why = !dd ? (Math.abs(o.held - o.tgt) >= 1 ? `at target in whole shares (${U.num(o.cur, 0)} × ${U.usd(o.px, 2)})` : "at target") : Math.abs(dd * o.px) < minT ? `${U.usd(Math.abs(dd * o.px))} off target, under the ${U.usd(minT)} minimum trade` : !built ? "already held; rebalanced only once the build is complete" : blind ? `rebalancing waits for the WInS price of ${unpriced.map((z) => z.t).join(", ")}` : `${U.usd(Math.abs(dd * o.px))} off target; Sleeve B equity is inside the ±${(band * 100).toFixed(0)}-point band`; }
       const opp = o.d > 0 ? "Sell" : "Buy";
       if (o.d && logged.has(o.t) && logged.get(o.t).has(opp)) { o.kind = "wait"; o.why = `${opp === "Buy" ? "bought" : "sold"} today: trading it back the same day is day trading. Place it on the next trading day.`; }
     }
@@ -4365,6 +4378,7 @@ details.szadv { margin: 10px 0 0; }
     let verdict;
     if (today > R.to) verdict = { k: "done", h: "Trading has ended", t: "The WInS portfolio is frozen. Export the trade log for the Final Report." };
     else if (nOrd) verdict = { k: "go", h: `Trade: ${nOrd} order${nOrd > 1 ? "s" : ""}`, t: `${why.join("; ")}.`.replace(/^./, (c) => c.toUpperCase()) + (needPx ? ` Type the WInS price for the ${needPx} marked "price needed" to get their quantities.` : "") };
+    else if (emptyTarget) verdict = { k: "hold", h: "The target portfolio is empty", t: "Nothing is traded until there is a target: an empty one would mean selling everything. On Holdings › Target portfolio, choose Start from: IPS table (recommended) to rebuild it, then come back here." };
     else if (blind) verdict = { k: "hold", h: "Price needed", t: `Type the WInS price of ${unpriced.map((z) => z.t).join(", ")} (Holdings, or the price box here): without it the account's value is incomplete, so whether Sleeve B is off its mix cannot be worked out.` };
     else if (waits.length) verdict = { k: "hold", h: "Nothing to place today", t: `${waits.map((o) => `${o.side} ${Math.abs(o.d)} ${o.t}`).join(", ")} must wait for the next trading day: ${[...new Set(waits.map((o) => (o.why.startsWith("waits for cash") ? "the cash comes from a sale that has to wait" : "the security was already traded the other way today, and the rules forbid day trading")))].join("; ")}.` };
     else verdict = { k: "hold", h: "No trades needed", t: `${!b.rows.length ? "Nothing to do." : bandHit ? `Sleeve B equity is ${pc(eqNow, 1)} against ${pc(eqT, 1)}, outside the ±${(band * 100).toFixed(0)}-point band, but every change is under the ${U.usd(minT)} minimum trade.` : `Every holding is where the IPS wants it${isFinite(eqNow) ? ` (Sleeve B equity ${pc(eqNow, 1)} against ${pc(eqT, 1)}, band ±${(band * 100).toFixed(0)} points)` : ""}.`} Next check: ${wday(nextCheck)} ${U.date(nextCheck)}, after pasting the WInS positions on Holdings.` };
@@ -4423,7 +4437,7 @@ details.szadv { margin: 10px 0 0; }
     const hoursTxt = clock.open ? `U.S. market hours: 9:30 a.m.–4 p.m. New York time${clock.sameZone ? "" : ` = <b>${clock.open}–${clock.close}</b> your time (${U.esc(clock.here)})`}.` : "U.S. market hours: 9:30 a.m.–4 p.m. New York time.";
     const nowTxt = clock.weekend ? " Markets are closed today (weekend)." : clock.state === "open" ? " The market is open now." : clock.state === "before" ? " The market has not opened yet." : " The market has closed for today; orders placed now fill at the next open.";
     const noBond = App.NO_BOND_DAYS[clock.ymd];
-    const cal = App.TRADE_CAL.map(([d0, d1, h, n]) => { const past = d1 < Z.today, now = d0 <= Z.today && Z.today <= d1; return `<div class="dl ${past ? "past" : ""} ${now ? "next" : ""}"><span class="d">${d0 === d1 ? `${wday(d0)} ${U.date(d0)}` : `${U.date(d0).replace(/ \d{4}$/, "")} – ${U.date(d1)}`}</span><span><b>${h}</b><span class="nm" style="max-width:none;white-space:normal">${n}</span></span><span class="left">${past ? "done" : now ? "now" : Math.round((Date.parse(d0) - Date.parse(Z.today)) / 864e5) + " days"}</span></div>`; }).join("");
+    const cal = App.TRADE_CAL.map(([d0, d1, h, n]) => { const past = d1 < Z.today, now = d0 <= Z.today && Z.today <= d1; return `<div class="dl ${past ? "past" : ""} ${now ? "next" : ""}"><span class="d">${d0 === d1 ? `${wday(d0)} ${U.date(d0)}` : `${U.date(d0).replace(/ \d{4}$/, "")} – ${U.date(d1)}`}</span><span><b>${h}</b><span class="nm" style="max-width:none;white-space:normal">${n}</span></span><span class="left">${past ? "done" : now ? "now" : ((n) => (n === 1 ? "tomorrow" : `${n} days`))(Math.round((Date.parse(d0) - Date.parse(Z.today)) / 864e5))}</span></div>`; }).join("");
     const holdTbl = holds.length ? U.table([
       { h: "Security", f: (o) => `<span class="sec">${U.esc(o.bond ? o.name.replace(/ \(for the .*\)$/, "") : o.t)}</span>` },
       { h: "Held", n: 1, f: (o) => U.usd(o.held) },
@@ -4530,7 +4544,7 @@ details.szadv { margin: 10px 0 0; }
         "",
         `**Date:** ${U.date(e.d)}, Week ${week(e.d)}. **Action:** ${e.side.toLowerCase()} ${qty} ${ladder ? "of the " : ""}${t}${e.px ? ` at ${e.px}${ladder ? " per 100" : ""}` : ""}${e.amt ? ` (${U.usd(e.amt)})` : ""}. **Sleeve and IPS:** ${ladder ? "Sleeve A; IPS 8.2, 9, 15" : `Sleeve B${bk && App.BUCKETS[bk] ? ` (${App.BUCKETS[bk]})` : ""}; IPS 8.3, 13, 15`}. **Role:** ${e.role || "Growth"}.`,
         "",
-        `**Thesis.** ${String(e.reason || "").trim() || "[why this security, in two sentences, and how it serves the strategy]"}${e.research ? ` Research: ${e.research}` : ""}`,
+        `**Thesis.** ${((x) => (x && !/[.!?]$/.test(x) ? x + "." : x))(String(e.reason || "").trim()) || "[why this security, in two sentences, and how it serves the strategy]"}${e.research ? ` Research: ${e.research}` : ""}`,
         "",
         `**Dashboard after the trade.** [from the WInS fills on ${U.date(e.d)}: liability present value; ladder market value and DV01 against the liability's; funded ratio; Sleeve B weights against target; largest position.] Client risk level ${cr.score} of 100 (fits up to ${cr.hiScore})${isFinite(sc) ? `; ${t} on its own scores ${sc} of 100 (volatility ${pc(vol, 0)})` : ""}.`,
         "",
