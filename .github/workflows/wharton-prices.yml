@@ -1,10 +1,11 @@
 name: Wharton model prices
 
 # Every weekday after the U.S. close: swap the latest daily closes into wharton/index.html (the
-# team's copy of the Wharton portfolio model), check that the page still loads and sizes a trade,
-# commit it and republish the site. Run it by hand from the Actions tab for prices on demand. No
-# token is needed: the workflow only writes to this repository. The model itself is copied here
-# from the WhartonInvestmentChallenge repository whenever it changes.
+# team's locked copy of the Wharton portfolio model: the model is encrypted, the prices are not),
+# check that the page still loads, commit it and republish the site. Run it by hand from the Actions
+# tab for prices on demand. No token or passphrase is needed: the workflow only writes to this
+# repository. The model itself is locked and copied here from the WhartonInvestmentChallenge
+# repository whenever it changes.
 
 on:
   schedule:
