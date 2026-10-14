@@ -1,16 +1,17 @@
 """Refresh the prices inside wharton/index.html, the team's copy of the Wharton portfolio model.
 
-The page is a self-contained build of PortfolioModel.html from the (private) WhartonInvestmentChallenge
-repository, with the price history embedded as `window.PRT_DATA={...};`. This script swaps in the
-latest daily closes without touching anything else on the page, so the team's link stays current
-without a token for the private repository. It is run by .github/workflows/wharton-prices.yml.
+The page is a locked, self-contained build of PortfolioModel.html from the (private)
+WhartonInvestmentChallenge repository: the model is encrypted and opens only with the team passphrase,
+and the price history is embedded readably as `window.PRT_DATA={...};`. This script swaps in the latest
+daily closes without touching anything else on the page, so the team's link stays current without the
+passphrase or a token for the private repository. It is run by .github/workflows/wharton-prices.yml.
 
 make_data.py and refresh_prices.py next to this file are copies of portfolio-model/tools/ in that
 repository; keep them in step when they change there.
 
   python3 tools/wharton/update_page.py                 # refresh wharton/index.html in place
   python3 tools/wharton/update_page.py --selftest      # extract and re-insert the data (no network)
-  python3 tools/wharton/update_page.py --check-only    # load the page in Chromium and check it renders
+  python3 tools/wharton/update_page.py --check-only    # load the page in Chromium and check it works
 """
 import argparse, pathlib, sys, tempfile
 
@@ -35,7 +36,9 @@ def as_of(data_js):
 
 
 def check_page(path):
-    """Load the page in headless Chromium: it must render, decode its data and report no errors."""
+    """Load the page in headless Chromium with no errors. A locked page (the usual case) must show its
+    lock form and hold a readable price snapshot; a plain one must render, decode its data and size a trade.
+    The locked model itself is checked on the same prices by the private repository's daily run."""
     from playwright.sync_api import sync_playwright
     errors = []
     with sync_playwright() as p:
@@ -44,6 +47,14 @@ def check_page(path):
         pg.on("pageerror", lambda e: errors.append(str(e)))
         pg.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         pg.goto(pathlib.Path(path).resolve().as_uri())
+        if pg.query_selector("#sealed"):
+            pg.wait_for_selector("#lock:not([hidden])", timeout=30000)
+            info = pg.evaluate("() => { const t = document.getElementById('prt-data').textContent, d = JSON.parse(t.slice(t.indexOf('=') + 1).trim().replace(/;$/, '')); return { asOf: d.asOf, n: d.rows.length }; }")
+            b.close()
+            if errors:
+                raise SystemExit(f"the locked page did not work: {'; '.join(errors)}")
+            print(f"locked page loads and asks for the passphrase; prices to {info['asOf']}, {info['n']} securities")
+            return info
         pg.wait_for_selector(".ph h1", timeout=30000)
         info = pg.evaluate("() => ({ asOf: PRT.D.asOf, n: PRT.D.meta.size, title: document.querySelector('.ph h1').textContent })")
         pg.fill("#cmd", "MSFT")
