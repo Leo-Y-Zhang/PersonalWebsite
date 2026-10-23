@@ -146,9 +146,16 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 <body>
 
 <header class="mast">
-  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Monogram: L dot Z">
-    <rect width="64" height="64" rx="8" fill="#0b57a4"/>
-    <text x="32" y="42" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#fdfdfb" text-anchor="middle">L&#183;Z</text>
+  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Mark: the colouring R R B B R R B B of 1 to 8, which has no three-term progression in one colour">
+    <title>RRBBRRBB: the colouring of 1 to 8 that shows W(3,3) &gt; 8</title>
+    <rect x="2" y="18" width="12" height="12" rx="2" class="m1"/>
+    <rect x="18" y="18" width="12" height="12" rx="2" class="m1"/>
+    <rect x="34" y="18" width="12" height="12" rx="2" class="m2"/>
+    <rect x="50" y="18" width="12" height="12" rx="2" class="m2"/>
+    <rect x="2" y="34" width="12" height="12" rx="2" class="m1"/>
+    <rect x="18" y="34" width="12" height="12" rx="2" class="m1"/>
+    <rect x="34" y="34" width="12" height="12" rx="2" class="m2"/>
+    <rect x="50" y="34" width="12" height="12" rx="2" class="m2"/>
   </svg>
   <div class="ident">
     <h1>Leo Y. Zhang</h1>
