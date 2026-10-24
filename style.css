@@ -17,17 +17,19 @@
 }
 
 :root {
-  --bg: #fbfaf7;
+  --bg: #f8f9fb;
   --ink: #16181d;
   --muted: #5c6373;
   --navy: #0b57a4;
   --ochre: #a8730d;
   --ochre-ink: #8e610b; /* ochre as text: 4.8:1 on the panel, where --ochre is 3.6:1 */
-  --rule: #e3e0d8;
-  --panel: #f2f0ea;
+  --rule: #dfe4ea;
+  --panel: #eef1f5;
   --cell: 13px;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Palatino: the face many mathematics papers are set in (mathpazo). System copies only. */
+  --serif: "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, Georgia, serif;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -108,9 +110,7 @@ nav {
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   margin-bottom: 2.25rem;
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.03em;
+  font-size: 0.9rem;
 }
 nav a { color: var(--muted); text-decoration: none; }
 nav a:hover, nav a:focus-visible { color: var(--navy); text-decoration: underline; }
@@ -226,11 +226,8 @@ h3 {
   vertical-align: baseline;
 }
 .seqs thead th {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--muted);
   border-bottom-width: 1.5px;
 }
@@ -291,10 +288,8 @@ h3 {
 
 .news { margin: 0; }
 .news dt {
-  font-family: var(--mono);
-  font-size: 0.76rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 0.84rem;
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
   margin: 1.05rem 0 0.2rem;
 }
@@ -353,3 +348,12 @@ footer p { margin: 0; }
   :root { --cell: 11px; }
   .cert { padding: 0.9rem; }
 }
+
+/* ---------- type and mark (23 Oct 2026) ---------- */
+
+h1, h2, h3 { font-family: var(--serif); }
+h1 { font-weight: 700; letter-spacing: 0; }
+h2 { font-weight: 700; font-size: 1.36rem; letter-spacing: 0; }
+h3 { font-weight: 700; font-size: 1.06rem; }
+.portrait .m1 { fill: var(--navy); }
+.portrait .m2 { fill: var(--ochre); }
