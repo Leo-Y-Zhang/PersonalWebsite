@@ -36,7 +36,7 @@
 <div class="page-intro"><h1>Project notes</h1><p class="deck">The projects and the evidence behind their results.</p></div>
 
 <section class="catalogue-section" id="glance" aria-labelledby="glance-h"><h2 id="glance-h">At a glance</h2><div class="section-content">
-  <p>There are <strong>36 public repositories</strong> and <strong>174 accepted OEIS terms across 21 sequences</strong>. The OEIS figure was re-derived on 3 November 2026. Over 3,700 automated tests were measured across the two main systems on 26 August 2026. The <a href="index.html#mathematics">mathematics is on the home page</a>, with the certificate.</p>
+  <p>There are <strong>36 public repositories</strong> and <strong>174 accepted OEIS terms across 21 sequences</strong>. Both figures were re-derived on 3 November 2026. The <a href="index.html#mathematics">mathematics is on the home page</a>, with the certificate.</p>
 </div></section>
 
 <section class="catalogue-section" id="selected-notes" aria-labelledby="selected-notes-h"><h2 id="selected-notes-h">Selected projects</h2><div class="section-content">
@@ -51,7 +51,7 @@
 
     <dt><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a> <span class="lang">C++</span></dt>
     <dd>A Scrabble engine in C++ using the standard library: move generation, Monte Carlo simulation, endgame solving
-    and self-play training, with every shortcut checked against brute force.
+    and self-play training, with its search shortcuts checked against brute force on sampled positions.
     Its strength is measured, not asserted: logged matches under a neutral
     referee against the strongest public engines, MAGPIE and Macondo, with the
     opponents pinned to recorded versions and the results and their limits in
@@ -75,11 +75,12 @@
     document is generated from the system, never typed.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a> <span class="lang">Python, Raspberry Pi</span></dt>
-    <dd>Climate early warnings from a two-person team: twenty sensing nodes scoring flood and heat risk 0&ndash;100
+    <dd>Climate early warnings from a two-person team: twenty London nodes scored for flood, heat, smog and storm risk 0&ndash;100
     in real time on one Raspberry Pi, an explainable anomaly model, and honest
     data-source provenance &mdash; a reading is labelled <em>hardware</em> only
-    when a physical sensor produced it. 236 automated tests (6 October 2026) and a one-command
-    judge validation passing 5/5 (26 August 2026).</dd>
+    when a physical sensor produced it. A replay of London&rsquo;s July 2021 flash flood
+    shows what the public weather grid missed. 461 automated tests and a one-command
+    judge validation passing 5/5 (3 November 2026).</dd>
   </dl>
 </div></section>
 
@@ -101,8 +102,8 @@
   <p>Each of these exists to make a claim checkable rather than to assert it.</p>
   <dl class="projects">
     <dt><a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a> <span class="lang">Rust</span></dt>
-    <dd>An RV32IM RISC-V interpreter, tested against the architecture's official
-    compliance vectors.</dd>
+    <dd>An RV32IM RISC-V interpreter, checked three independent ways: hand-written
+    specification cases, a second implementation, and real compiled programs.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a> <span class="lang">Lean 4</span></dt>
     <dd>A machine-checked proof-checker development: the soundness argument
@@ -123,10 +124,9 @@
     re-derived by different code before they are trusted.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a> <span class="lang">Python</span></dt>
-    <dd>A classical-cipher solver run on forty published National Cipher
-    Challenge ciphertexts: all twenty-two with a published answer solved, the
-    other eighteen recorded as unverified rather than solved, and none labelled
-    strong while wrong.</dd>
+    <dd>A classical-cipher toolkit: fifteen cipher types, an English language
+    model and ranked candidate decryptions, with confidence labels capped
+    where its own measurements show a short ciphertext cannot be trusted.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a> <span class="lang">Python</span></dt>
     <dd>A reverse-mode autograd engine and a small GPT on top;
@@ -143,7 +143,7 @@
 
     <dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a> <span class="lang">Python</span></dt>
     <dd>A teaching quantum-circuit compiler whose optimisations and SWAP routing
-    are proved correct by exact unitary equivalence.</dd>
+    are checked by exact unitary comparison on small circuits.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a> <span class="lang">Python</span></dt>
     <dd>An offline mate-in-N generator; a bundled chess engine re-proves
@@ -156,7 +156,7 @@
     <dd>Melting, freezing and boiling from one enthalpy conservation law, benchmarked against the analytic Stefan solution; <a href="https://leo-y-zhang.github.io/MeltSim/">runs in the browser</a>.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a> <span class="lang">Python</span></dt>
-    <dd>2-colour Rado numbers for <span class="m">x<sub>1</sub><sup>2</sup>+&hellip;+x<sub>n</sub><sup>2</sup> = z<sup>2</sup></span>, carried from a(30) to a(60) with DRAT-certified refutations.</dd>
+    <dd>2-colour Rado numbers for <span class="m">x<sub>1</sub><sup>2</sup>+&hellip;+x<sub>n</sub><sup>2</sup> = z<sup>2</sup></span>, thirty new terms, a(31) to a(60), with DRAT-certified refutations.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a> <span class="lang">Python</span></dt>
     <dd>Finds OEIS sequences that stopped where a brute force ran out of patience, then extends them, each gated on reproducing every published term first.</dd>
