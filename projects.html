@@ -46,12 +46,12 @@
 
 <section id="glance" aria-labelledby="glance-h">
   <h2 id="glance-h">At a glance</h2>
-  <p><strong>48 public repositories</strong>, with continuous integration on 47
-  of them &middot; <strong>174 accepted OEIS terms</strong> across
+  <p><strong>33 public repositories</strong> &middot;
+  <strong>174 accepted OEIS terms</strong> across
   21 sequences &middot; <strong>one live production web application</strong>
   &middot; over <strong>3,700 automated tests</strong> measured across the two
-  flagship systems. Repository figures re-derived from the live sources on 6 October
-  2026 and the OEIS figure on 2 September 2026; the test counts were measured on 26 August 2026. The
+  flagship systems. The OEIS figure was re-derived on 2 September 2026; the test
+  counts were measured on 26 August 2026. The
   <a href="index.html#research">research itself is on the home page</a>, with
   the certificate to prove it.</p>
 </section>
@@ -66,13 +66,6 @@
     re-derives every published value from scratch before it is quoted &mdash;
     the five new mixed van der Waerden values ride on it. The full
     story is <a href="index.html#research">on the home page</a>.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/Osmium">Osmium</a> <span class="lang">Rust</span></dt>
-    <dd>An x86_64 operating system from scratch, closed at v0.6.0: BIOS and UEFI
-    boot, preemptive scheduling of ring-3 programs in isolated address spaces
-    &mdash; a crashing program dies alone &mdash; a shell, and a RAM-only
-    filesystem. A CI boot test proves the privacy claims: no network stack
-    exists, freed memory is zeroed, nothing reaches the disk.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ScrabbleEngine">Tilefish</a> <span class="lang">C++</span></dt>
     <dd>A championship-style Scrabble engine in one C++ file using only the
@@ -187,22 +180,12 @@
     <dd>Splits a reported LLM benchmark score into measured capability and
     measured artifact, with exact Shapley attribution.</dd>
 
-    <dt><a href="https://github.com/Leo-Y-Zhang/ProjectSentinel">ProjectSentinel</a> <span class="lang">Python</span></dt>
-    <dd>A pitch-book generator where no figure is typed by hand: a CI gate
-    checks every tagged figure against a tested model and fails if it finds
-    nothing to check. The content is deliberately fictional; the pattern is the
-    product.</dd>
-
     <dt><a href="https://github.com/Leo-Y-Zhang/Understudy">Understudy</a> <span class="lang">TypeScript</span></dt>
     <dd>An AI interview simulator, v1 live.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a> <span class="lang">Python</span></dt>
     <dd>An offline mate-in-N generator; a bundled from-scratch engine re-proves
     every puzzle before it is emitted.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/TerminalAgent">TerminalAgent</a> <span class="lang">TypeScript</span></dt>
-    <dd>A terminal coding assistant with per-turn checkpoints and an
-    <span class="m">/undo</span> that refuses when it cannot restore.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a> <span class="lang">Rust</span></dt>
     <dd>An independent DRAT and LRAT proof checker with no dependencies, and a <a href="https://leo-y-zhang.github.io/Refute/">browser playground</a> where proof files never leave the tab.</dd>
@@ -228,38 +211,8 @@
     <dt><a href="https://github.com/Leo-Y-Zhang/PalindromicVDW">PalindromicVDW</a> <span class="lang">Python</span></dt>
     <dd>Palindromic mixed van der Waerden numbers as SAT, with the same measured account of its limits.</dd>
 
-    <dt><a href="https://github.com/Leo-Y-Zhang/IaCScanner">IaCScanner</a> <span class="lang">Python</span></dt>
-    <dd>A read-only, offline infrastructure-as-code scanner for Terraform, Kubernetes, Actions and Dockerfiles, with SARIF output.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/DocRedact">DocRedact</a> <span class="lang">Python</span></dt>
-    <dd>A local-first document redaction CLI: validator-driven detection, consistent tokens, and no network access.</dd>
-
     <dt><a href="https://github.com/Leo-Y-Zhang/SuiteAudit">SuiteAudit</a> <span class="lang">Python</span></dt>
     <dd>Finds the tests that cannot fail: tests that would stay green whatever the code did.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/FireTurret">FireTurret</a> <span class="lang">Python</span></dt>
-    <dd>A camera-guided fire-suppression turret demonstrator that corrects its aim by watching where the water lands; simulation only, with the safety case written down.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/TradingEngineResearch">TradingEngineResearch</a> <span class="lang">Python</span></dt>
-    <dd>The research core of a systematic trading platform: a pre-registered alpha search across five data sources whose honest result was negative.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/FilingsLab">FilingsLab</a> <span class="lang">Python &middot; TypeScript</span></dt>
-    <dd>Backtests the disclosure delay in political and insider trades, trading only once a filing is public.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/BacktestAudit">BacktestAudit</a> <span class="lang">Python</span></dt>
-    <dd>Reports how much of a backtest's apparent edge survives luck, non-normal returns and multiple testing.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/HawkesDiffusion">HawkesDiffusion</a> <span class="lang">Python</span></dt>
-    <dd>Cross-exciting Hawkes processes fitted to market event streams, with the identification failures reported rather than hidden.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/ImpliedDensity">ImpliedDensity</a> <span class="lang">Python</span></dt>
-    <dd>Risk-neutral densities from option prices via Breeden&ndash;Litzenberger, and where the method breaks.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/PredictionArbitrage">PredictionArbitrage</a> <span class="lang">Python</span></dt>
-    <dd>Arbitrage detection in prediction markets, every reported number rendered from the results file.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/FinanceEngine">FinanceEngine</a> <span class="lang">Python</span></dt>
-    <dd>A UK personal-finance answer engine that answers only with a named, dated citation, and otherwise says so.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a> <span class="lang">Python</span></dt>
     <dd>Scans Greek dactylic hexameter and reports only what the metre itself settles.</dd>
@@ -270,14 +223,8 @@
     <dt><a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a> <span class="lang">Python</span></dt>
     <dd>A geometric permutation test for whether a political boundary bends a city&rsquo;s road network.</dd>
 
-    <dt><a href="https://github.com/Leo-Y-Zhang/InformaticsOlympiad2025">InformaticsOlympiad2025</a> <span class="lang">Python</span></dt>
-    <dd>British Informatics Olympiad 2025 Round One solutions, with brute-force checkers for the written answers.</dd>
-
     <dt><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a> <span class="lang">JavaScript</span></dt>
     <dd>Renders vertical chess videos to MP4 entirely on the local machine, with no external assets.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/MacBookHomelab">MacBookHomelab</a> <span class="lang">Docker &middot; Shell</span></dt>
-    <dd>A 2015 MacBook Air turned into a modular home server: one Compose file per service, reachable only over Tailscale.</dd>
   </dl>
 </section>
 
