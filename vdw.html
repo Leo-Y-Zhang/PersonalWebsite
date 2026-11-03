@@ -3,51 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leo Y. Zhang &mdash; Van der Waerden numbers</title>
-<meta name="description" content="A maintained, verifiable reference for five mixed van der Waerden families: every known term, every new term with its certificate, every claim labelled by its kind of evidence.">
-<meta property="og:title" content="Leo Y. Zhang &mdash; Van der Waerden numbers">
-<meta property="og:description" content="A maintained, verifiable reference for five mixed van der Waerden families.">
+<title>Leo Y. Zhang — Van der Waerden numbers</title>
+<meta name="description" content="Known terms, colourings and checked upper bounds for five mixed van der Waerden families.">
+<link rel="canonical" href="https://leo-y-zhang.github.io/PersonalWebsite/vdw.html">
+<meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1420" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="avatar.png">
+<link rel="stylesheet" href="style.css">
+<meta property="og:title" content="Leo Y. Zhang — Van der Waerden numbers">
+<meta property="og:description" content="Known terms, colourings and checked upper bounds for five mixed van der Waerden families.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/vdw.html">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css">
-<style>
-  .seqdef { font-style: italic; margin: 0.2em 0 0.6em; }
-</style>
+<meta property="og:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Leo Y. Zhang: combinatorics, game engines and software">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Leo Y. Zhang — Van der Waerden numbers">
+<meta name="twitter:description" content="Known terms, colourings and checked upper bounds for five mixed van der Waerden families.">
+<meta name="twitter:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
 </head>
 <body>
-
-<header class="mast">
-  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Mark: the colouring R R B B R R B B of 1 to 8, which has no three-term progression in one colour">
-    <title>RRBBRRBB: the colouring of 1 to 8 that shows W(3,3) &gt; 8</title>
-    <rect x="2" y="18" width="12" height="12" rx="2" class="m1"/>
-    <rect x="18" y="18" width="12" height="12" rx="2" class="m1"/>
-    <rect x="34" y="18" width="12" height="12" rx="2" class="m2"/>
-    <rect x="50" y="18" width="12" height="12" rx="2" class="m2"/>
-    <rect x="2" y="34" width="12" height="12" rx="2" class="m1"/>
-    <rect x="18" y="34" width="12" height="12" rx="2" class="m1"/>
-    <rect x="34" y="34" width="12" height="12" rx="2" class="m2"/>
-    <rect x="50" y="34" width="12" height="12" rx="2" class="m2"/>
-  </svg>
-  <div class="ident">
-    <h1>Leo Y. Zhang</h1>
-    <p class="role">Mixed van der Waerden numbers &mdash; a maintained reference</p>
-    <p class="affil">Sixth-form student, United Kingdom</p>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt="Eight-cell colouring mark" decoding="async" loading="lazy"><span>Leo Y. Zhang</span></a>
+  <nav aria-label="Main navigation">
+    <a href="index.html#work">Work</a> <a href="index.html#mathematics">Mathematics</a> <a href="index.html#try-it">Try it</a> <a href="index.html#index">Index</a> <a href="index.html#about">About</a> <a href="index.html#contact">Contact</a> <a href="vdw.html">vdW numbers</a>
+  </nav>
 </header>
+<main id="main">
+<div class="page-intro"><h1>Van der Waerden numbers</h1><p class="deck">A reference for five mixed families, with certificates and proof provenance.</p></div>
 
-<nav aria-label="Sections">
-  <a href="index.html">Home</a>
-  <a href="projects.html">Projects</a>
-  <a href="#tables">Tables</a>
-  <a href="#verify">Verify it</a>
-  <a href="#references">References</a>
-</nav>
 
-<main>
-
-<section id="about-page" aria-labelledby="aboutp-h">
-  <h2 id="aboutp-h">What this page is</h2>
+<section class="catalogue-section" id="about-page" aria-labelledby="aboutp-h"><h2 id="aboutp-h">What this page is</h2><div class="section-content">
   <p>For years the community's reference tables for van der Waerden data were
   maintained by Tanbir Ahmed, whose computations produced many of the values
   below; his pages have since gone offline. This page keeps a maintained,
@@ -61,7 +50,7 @@
     <li><strong>Upper bounds are labelled honestly.</strong> All five new
     refutations have been reduced to formally checked proof objects:
     23,851 per-cube DRAT proofs across the five families, each replayed to
-    <span class="m">s&nbsp;VERIFIED</span> by drat-trim, plus a checked proof
+    <samp>s&nbsp;VERIFIED</samp> by drat-trim, plus a checked proof
     for each family that its cube set is exhaustive. The tables label every
     upper bound by the evidence behind it rather than dressing a verdict as a
     proof.</li>
@@ -70,13 +59,13 @@
   b-files in <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
   by <a href="https://github.com/Leo-Y-Zhang/PersonalWebsite/blob/main/tools/build_vdw_page.py">a script that refuses to build the page
   if the two sources disagree</a> &mdash; last regenerated 26 August 2026.</p>
-</section>
+</div></section>
 
-<section id="tables" aria-labelledby="tables-h">
-  <h2 id="tables-h">The five families</h2>
+<section class="catalogue-section" id="tables" aria-labelledby="tables-h"><h2 id="tables-h">The five families</h2><div class="section-content">
 
   <h3><a href="https://oeis.org/A217058">A217058</a></h3>
   <p class="seqdef">Van der Waerden numbers <span class="m">w(</span>j+2; t<sub>0</sub>,t<sub>1</sub>,&hellip;,t<sub>j-1</sub>, 3, 4<span class="m">)</span> with t<sub>0</sub> = t<sub>1</sub> = &hellip; = t<sub>j-1</sub> = 2.</p>
+  <div class="table-scroll" role="region" aria-label="A217058 values" tabindex="0">
   <table class="seqs">
     <caption>All known terms, as recorded by the OEIS.</caption>
     <thead>
@@ -150,9 +139,11 @@
       </tr>
     </tbody>
   </table>
+  </div>
 
   <h3><a href="https://oeis.org/A217005">A217005</a></h3>
   <p class="seqdef">Van der Waerden numbers <span class="m">w(</span>j+2; t<sub>0</sub>,t<sub>1</sub>,&hellip;,t<sub>j-1</sub>, 3, 3<span class="m">)</span> with t<sub>0</sub> = t<sub>1</sub> = &hellip; = t<sub>j-1</sub> = 2.</p>
+  <div class="table-scroll" role="region" aria-label="A217005 values" tabindex="0">
   <table class="seqs">
     <caption>All known terms, as recorded by the OEIS.</caption>
     <thead>
@@ -261,9 +252,11 @@
       </tr>
     </tbody>
   </table>
+  </div>
 
   <h3><a href="https://oeis.org/A217007">A217007</a></h3>
   <p class="seqdef">Van der Waerden numbers <span class="m">w(</span>j+2; t<sub>0</sub>,t<sub>1</sub>,&hellip;,t<sub>j-1</sub>, 4, 4<span class="m">)</span> with t<sub>0</sub> = t<sub>1</sub> = &hellip; = t<sub>j-1</sub> = 2.</p>
+  <div class="table-scroll" role="region" aria-label="A217007 values" tabindex="0">
   <table class="seqs">
     <caption>All known terms, as recorded by the OEIS.</caption>
     <thead>
@@ -312,9 +305,11 @@
       </tr>
     </tbody>
   </table>
+  </div>
 
   <h3><a href="https://oeis.org/A217236">A217236</a></h3>
   <p class="seqdef">Van der Waerden numbers <span class="m">w(</span>j+2; t<sub>0</sub>,t<sub>1</sub>,&hellip;,t<sub>j-1</sub>, 4, 5<span class="m">)</span> with t<sub>0</sub> = t<sub>1</sub> = &hellip; = t<sub>j-1</sub> = 2.</p>
+  <div class="table-scroll" role="region" aria-label="A217236 values" tabindex="0">
   <table class="seqs">
     <caption>All known terms, as recorded by the OEIS.</caption>
     <thead>
@@ -348,9 +343,11 @@
       </tr>
     </tbody>
   </table>
+  </div>
 
   <h3><a href="https://oeis.org/A217059">A217059</a></h3>
   <p class="seqdef">Van der Waerden numbers <span class="m">w(</span>j+2; t<sub>0</sub>,t<sub>1</sub>,&hellip;,t<sub>j-1</sub>, 3, 5<span class="m">)</span> with t<sub>0</sub> = t<sub>1</sub> = &hellip; = t<sub>j-1</sub> = 2.</p>
+  <div class="table-scroll" role="region" aria-label="A217059 values" tabindex="0">
   <table class="seqs">
     <caption>All known terms, as recorded by the OEIS.</caption>
     <thead>
@@ -409,22 +406,21 @@
       </tr>
     </tbody>
   </table>
-</section>
+  </div>
+</div></section>
 
-<section id="verify" aria-labelledby="verify-h">
-  <h2 id="verify-h">Verify it yourself</h2>
+<section class="catalogue-section" id="verify" aria-labelledby="verify-h"><h2 id="verify-h">Verify it yourself</h2><div class="section-content">
   <p>No claim on this page asks for trust. The witness colourings check in
   milliseconds with
   <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/verify_certificate.py">verify_certificate.py</a>; the whole
-  repository re-derives every published value from scratch under
-  <span class="m">verify_all.py</span>, in CI; and the DRAT machinery &mdash;
+  repository re-derives every published value independently under
+  <code>verify_all.py</code>, in CI; and the DRAT machinery &mdash;
   including the measured cost of each proof and why colour symmetry had to
   come out of the cube set before the equal-target families could be
   certified &mdash; is documented in <a href="https://github.com/Leo-Y-Zhang/MathRecords/blob/main/vdw/DRAT.md">DRAT.md</a>.</p>
-</section>
+</div></section>
 
-<section id="references" aria-labelledby="refs-h">
-  <h2 id="refs-h">References</h2>
+<section class="catalogue-section" id="references" aria-labelledby="refs-h"><h2 id="refs-h">References</h2><div class="section-content">
   <ul class="halves">
     <li>T. Ahmed, <em>Some new van der Waerden numbers and some van der
     Waerden-type numbers</em>, Integers 9 (2009); and
@@ -438,16 +434,15 @@
     <li><em>Five new mixed van der Waerden numbers</em> &mdash; the write-up of
     the 2026 terms, with the encoding, the certificates and an explicit account
     of which claims rest on which kind of evidence:
-    <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">MathRecords/paper</a>.</li>
+    <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">Write-up</a>.</li>
   </ul>
-</section>
+</div></section>
+
 
 </main>
-
-<footer>
-  <p>Leo Y. Zhang &middot; generated 26 August 2026 from the OEIS and the MathRecords
-  b-files by a build that fails if its sources disagree.</p>
+<footer class="site-footer">
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek. Both fonts use the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 3 November 2026.</p>
+  <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
-
 </body>
 </html>

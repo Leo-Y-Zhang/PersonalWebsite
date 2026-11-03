@@ -3,61 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leo Y. Zhang &mdash; Projects</title>
-<meta name="description" content="The complete project portfolio: verified systems, published combinatorics, and production software.">
-<meta property="og:title" content="Leo Y. Zhang &mdash; Projects">
-<meta property="og:description" content="The complete project portfolio: verified systems, published combinatorics, and production software.">
+<title>Leo Y. Zhang — Project notes</title>
+<meta name="description" content="Long-form notes on combinatorics, games, systems and other projects.">
+<link rel="canonical" href="https://leo-y-zhang.github.io/PersonalWebsite/projects.html">
+<meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1420" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="avatar.png">
+<link rel="stylesheet" href="style.css">
+<meta property="og:title" content="Leo Y. Zhang — Project notes">
+<meta property="og:description" content="Long-form notes on combinatorics, games, systems and other projects.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/projects.html">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css">
+<meta property="og:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Leo Y. Zhang: combinatorics, game engines and software">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Leo Y. Zhang — Project notes">
+<meta name="twitter:description" content="Long-form notes on combinatorics, games, systems and other projects.">
+<meta name="twitter:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
 </head>
 <body>
-
-<header class="mast">
-  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Mark: the colouring R R B B R R B B of 1 to 8, which has no three-term progression in one colour">
-    <title>RRBBRRBB: the colouring of 1 to 8 that shows W(3,3) &gt; 8</title>
-    <rect x="2" y="18" width="12" height="12" rx="2" class="m1"/>
-    <rect x="18" y="18" width="12" height="12" rx="2" class="m1"/>
-    <rect x="34" y="18" width="12" height="12" rx="2" class="m2"/>
-    <rect x="50" y="18" width="12" height="12" rx="2" class="m2"/>
-    <rect x="2" y="34" width="12" height="12" rx="2" class="m1"/>
-    <rect x="18" y="34" width="12" height="12" rx="2" class="m1"/>
-    <rect x="34" y="34" width="12" height="12" rx="2" class="m2"/>
-    <rect x="50" y="34" width="12" height="12" rx="2" class="m2"/>
-  </svg>
-  <div class="ident">
-    <h1>Leo Y. Zhang</h1>
-    <p class="role">Projects &mdash; the complete portfolio</p>
-    <p class="affil">Sixth-form student, United Kingdom</p>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt="Eight-cell colouring mark" decoding="async" loading="lazy"><span>Leo Y. Zhang</span></a>
+  <nav aria-label="Main navigation">
+    <a href="index.html#work">Work</a> <a href="index.html#mathematics">Mathematics</a> <a href="index.html#try-it">Try it</a> <a href="index.html#index">Index</a> <a href="index.html#about">About</a> <a href="index.html#contact">Contact</a> <a href="vdw.html">vdW numbers</a>
+  </nav>
 </header>
+<main id="main">
+<div class="page-intro"><h1>Project notes</h1><p class="deck">The projects and the evidence behind their results.</p></div>
 
-<nav aria-label="Sections">
-  <a href="index.html">Home</a>
-  <a href="#flagships">Flagships</a>
-  <a href="#team">Team</a>
-  <a href="#index-all">Everything</a>
-  <a href="#method">Method</a>
-  <a href="vdw.html">vdW numbers</a>
-</nav>
+<section class="catalogue-section" id="glance" aria-labelledby="glance-h"><h2 id="glance-h">At a glance</h2><div class="section-content">
+  <p>There are <strong>33 public repositories</strong> and <strong>174 accepted OEIS terms across 21 sequences</strong>. The OEIS figure was re-derived on 3 November 2026. Over 3,700 automated tests were measured across the two main systems on 26 August 2026. The <a href="index.html#mathematics">mathematics is on the home page</a>, with the certificate.</p>
+</div></section>
 
-<main>
-
-<section id="glance" aria-labelledby="glance-h">
-  <h2 id="glance-h">At a glance</h2>
-  <p><strong>33 public repositories</strong> &middot;
-  <strong>174 accepted OEIS terms</strong> across
-  21 sequences &middot; <strong>one live production web application</strong>
-  &middot; over <strong>3,700 automated tests</strong> measured across the two
-  flagship systems. The OEIS figure was re-derived on 2 September 2026; the test
-  counts were measured on 26 August 2026. The
-  <a href="index.html#research">research itself is on the home page</a>, with
-  the certificate to prove it.</p>
-</section>
-
-<section id="flagships" aria-labelledby="flagships-h">
-  <h2 id="flagships-h">Flagships</h2>
+<section class="catalogue-section" id="selected-notes" aria-labelledby="selected-notes-h"><h2 id="selected-notes-h">Selected projects</h2><div class="section-content">
 
   <dl class="projects">
     <dt><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a> <span class="lang">Python</span></dt>
@@ -65,26 +47,24 @@
     a verification gate (<span class="m">verify_all.py</span>, in CI) that
     re-derives every published value from scratch before it is quoted &mdash;
     the five new mixed van der Waerden values ride on it. The full
-    story is <a href="index.html#research">on the home page</a>.</dd>
+    story is <a href="index.html#mathematics">on the home page</a>.</dd>
 
-    <dt><a href="https://github.com/Leo-Y-Zhang/ScrabbleEngine">Tilefish</a> <span class="lang">C++</span></dt>
-    <dd>A championship-style Scrabble engine in one C++ file using only the
-    standard library: move generation, Monte Carlo simulation, endgame solving
+    <dt><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a> <span class="lang">C++</span></dt>
+    <dd>A Scrabble engine in C++ using the standard library: move generation, Monte Carlo simulation, endgame solving
     and self-play training, with every shortcut checked against brute force.
     Its strength is measured, not asserted: logged matches under a neutral
     referee against the strongest public engines, MAGPIE and Macondo, with the
     opponents pinned to recorded versions and the results and their limits in
-    the repository. <a href="https://leo-y-zhang.github.io/ScrabbleEngine/">Play it in the browser</a>.</dd>
+    the repository. <a href="https://leo-y-zhang.github.io/TileFish/">Play it in the browser</a>.</dd>
 
-    <dt>Production web application <span class="lang">TypeScript &middot; PostgreSQL &middot; private</span></dt>
-    <dd>A live product with real users, designed, built, deployed and maintained
-    solo: row-level security, versioned migrations, staged deployments behind a
+    <dt>Production web application <span class="lang">TypeScript, PostgreSQL, private</span></dt>
+    <dd>A live product with real users: row-level security, versioned migrations, staged deployments behind a
     manual production gate, and roughly 980 unit plus 85 end-to-end browser
     tests. The repository is private because it holds operational configuration,
     and the product is not named here; details on request.</dd>
 
-    <dt>Systematic trading research platform <span class="lang">Python &middot; private</span></dt>
-    <dd>Institutional-grade engineering around an honest research core: an
+    <dt>Systematic trading research platform <span class="lang">Python, private</span></dt>
+    <dd>A research platform with an
     immutable hash-chained event ledger, broker reconciliation with
     operator-gated resolution, a latched kill-switch battery, a supervised
     paper-trading deployment, and a browser operations terminal &mdash;
@@ -94,42 +74,35 @@
     most fail: results are pre-registered before they run, and the status
     document is generated from the system, never typed.</dd>
 
-    <dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a> <span class="lang">Python &middot; Raspberry Pi</span></dt>
-    <dd>Decentralised climate early-warning, built as the software lead of a
-    two-person team: twenty sensing nodes scoring flood and heat risk 0&ndash;100
+    <dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a> <span class="lang">Python, Raspberry Pi</span></dt>
+    <dd>Climate early warnings from a two-person team: twenty sensing nodes scoring flood and heat risk 0&ndash;100
     in real time on one Raspberry Pi, an explainable anomaly model, and honest
     data-source provenance &mdash; a reading is labelled <em>hardware</em> only
     when a physical sensor produced it. 236 automated tests (6 October 2026) and a one-command
     judge validation passing 5/5 (26 August 2026).</dd>
   </dl>
-</section>
+</div></section>
 
-<section id="team" aria-labelledby="team-h">
-  <h2 id="team-h">Team &amp; competitions</h2>
+<section class="catalogue-section" id="team" aria-labelledby="team-h"><h2 id="team-h">Team &amp; competitions</h2><div class="section-content">
   <dl class="projects">
     <dt><a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">EndeavourRacing</a> <span class="lang">TypeScript</span></dt>
     <dd>The team's three web applications for STEM Racing 2026: public site,
     lap-timing and driver-performance tool, and a project, risk and budget
     dashboard.</dd>
 
-    <dt>Wharton Global High School Investment Competition <span class="lang">2026&ndash;27</span></dt>
-    <dd>Entered as part of a team; the trading round runs September to December
-    2026.</dd>
-
     <dt>Independent research manuscript <span class="lang">June 2026</span></dt>
     <dd>Sixty-two pages on network structure in equity markets: the framework is
     validated on synthetic data, and the empirical validation is specified but
     deliberately not yet claimed.</dd>
   </dl>
-</section>
+</div></section>
 
-<section id="index-all" aria-labelledby="index-h">
-  <h2 id="index-h">Everything else, one line each</h2>
+<section class="catalogue-section" id="index-all" aria-labelledby="index-h"><h2 id="index-h">Everything else, one line each</h2><div class="section-content">
   <p>Each of these exists to make a claim checkable rather than to assert it.</p>
   <dl class="projects">
     <dt><a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a> <span class="lang">Rust</span></dt>
     <dd>An RV32IM RISC-V interpreter, tested against the architecture's official
-    compliance vectors rather than hand-written cases.</dd>
+    compliance vectors.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a> <span class="lang">Lean 4</span></dt>
     <dd>A machine-checked proof-checker development: the soundness argument
@@ -156,7 +129,7 @@
     strong while wrong.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a> <span class="lang">Python</span></dt>
-    <dd>A reverse-mode autograd engine and a small GPT on top, from scratch;
+    <dd>A reverse-mode autograd engine and a small GPT on top;
     every gradient is checked against finite differences.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a> <span class="lang">TypeScript</span></dt>
@@ -184,7 +157,7 @@
     <dd>An AI interview simulator, v1 live.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a> <span class="lang">Python</span></dt>
-    <dd>An offline mate-in-N generator; a bundled from-scratch engine re-proves
+    <dd>An offline mate-in-N generator; a bundled chess engine re-proves
     every puzzle before it is emitted.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a> <span class="lang">Rust</span></dt>
@@ -226,37 +199,19 @@
     <dt><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a> <span class="lang">JavaScript</span></dt>
     <dd>Renders vertical chess videos to MP4 entirely on the local machine, with no external assets.</dd>
   </dl>
-</section>
+</div></section>
 
-<section id="method" aria-labelledby="method-h">
-  <h2 id="method-h">Method</h2>
-  <p>The through-line: claims are cheap, verification is the work.</p>
-  <ul class="halves">
-    <li><strong>Tests that were seen to fail.</strong> New behaviour starts with
-    a failing test; a test never observed failing is decoration. Mutation
-    testing guards the safety-critical paths.</li>
-    <li><strong>Generated, never typed.</strong> Documents that quote numbers are
-    derived from the systems they describe, with drift gates that fail when
-    document and code disagree.</li>
-    <li><strong>Pre-registration.</strong> Research declares hypotheses and
-    thresholds before it runs; a result that fails its gate is published as a
-    failure, not re-tuned until it passes.</li>
-    <li><strong>Security as a floor.</strong> Secret scanning on every commit
-    across every repository, dependency auditing, and periodic security
-    sweeps with adversarial verification of every finding.</li>
-    <li><strong>Honest limits.</strong> Solver verdicts are not proofs, a private
-    repository's figures are dated measurements, and unfinished work is
-    labelled unfinished.</li>
-  </ul>
+<section class="catalogue-section" id="method" aria-labelledby="method-h">
+<h2 id="method-h">Checks and evidence</h2>
+<div class="section-content">
+<ul class="halves"><li>Mutation testing checks the safety-critical paths.</li><li>Generated documents quote numbers from the systems they describe, with checks that fail when document and code disagree.</li><li>Research declares hypotheses and thresholds before it runs.</li><li>Repositories use secret scanning and dependency auditing.</li><li>Solver verdicts and proof certificates carry separate labels.</li><li>Private repository figures are dated measurements, and unfinished work is labelled unfinished.</li></ul>
+</div>
 </section>
 
 </main>
-
-<footer>
-  <p>Leo Y. Zhang &middot; figures dated 26 August 2026 unless stated otherwise
-  &middot; every public claim on this page is reproducible from the linked
-  source.</p>
+<footer class="site-footer">
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek. Both fonts use the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 3 November 2026.</p>
+  <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
-
 </body>
 </html>
