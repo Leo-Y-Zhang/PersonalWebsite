@@ -211,7 +211,7 @@ thead { color: var(--slate); }
 .range-list dd { margin: 0; max-width: 66ch; }
 ul { padding-left: 1.2rem; margin: 0 0 1.5rem; max-width: 66ch; }
 li { margin-bottom: 0.65rem; }
-.demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.25rem; }
+.demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 1.75rem; }
 .demo { display: block; text-decoration: none; }
 .demo h3 { font-size: 1.3rem; text-decoration: underline; text-underline-offset: 0.18em; margin: 0.8rem 0 0.4rem; }
 .demo:hover h3 { text-decoration-thickness: 2px; }
@@ -273,3 +273,5 @@ li { margin-bottom: 0.65rem; }
   .cells .c1 { background: #222; print-color-adjust: exact; }
   .cells .c2 { background: #aaa; print-color-adjust: exact; }
 }
+
+.work-entry.text-only .work-copy { grid-column: 1 / -1; grid-row: auto; max-width: 68ch; }
