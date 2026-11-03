@@ -4,128 +4,49 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leo Y. Zhang</title>
-<meta name="description" content="Mixed van der Waerden numbers, and software that proves its own results.">
+<meta name="description" content="Combinatorics, game engines and software that checks its own answers.">
+<link rel="canonical" href="https://leo-y-zhang.github.io/PersonalWebsite/">
+<meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1420" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="avatar.png">
+<link rel="stylesheet" href="style.css">
 <meta property="og:title" content="Leo Y. Zhang">
-<meta property="og:description" content="Mixed van der Waerden numbers, and software that proves its own results.">
+<meta property="og:description" content="Combinatorics, game engines and software that checks its own answers.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css">
+<meta property="og:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Leo Y. Zhang: combinatorics, game engines and software">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Leo Y. Zhang">
+<meta name="twitter:description" content="Combinatorics, game engines and software that checks its own answers.">
+<meta name="twitter:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Leo Y. Zhang", "url": "https://leo-y-zhang.github.io/PersonalWebsite/", "sameAs": "https://github.com/Leo-Y-Zhang"}</script>
 </head>
 <body>
-
-<header class="mast">
-  <svg class="portrait" viewBox="0 0 64 64" role="img" aria-label="Mark: the colouring R R B B R R B B of 1 to 8, which has no three-term progression in one colour">
-    <title>RRBBRRBB: the colouring of 1 to 8 that shows W(3,3) &gt; 8</title>
-    <rect x="2" y="18" width="12" height="12" rx="2" class="m1"/>
-    <rect x="18" y="18" width="12" height="12" rx="2" class="m1"/>
-    <rect x="34" y="18" width="12" height="12" rx="2" class="m2"/>
-    <rect x="50" y="18" width="12" height="12" rx="2" class="m2"/>
-    <rect x="2" y="34" width="12" height="12" rx="2" class="m1"/>
-    <rect x="18" y="34" width="12" height="12" rx="2" class="m1"/>
-    <rect x="34" y="34" width="12" height="12" rx="2" class="m2"/>
-    <rect x="50" y="34" width="12" height="12" rx="2" class="m2"/>
-  </svg>
-  <div class="ident">
-    <h1>Leo Y. Zhang</h1>
-    <p class="role">Mixed van der Waerden numbers &middot; verification-first software</p>
-    <p class="affil">Sixth-form student, United Kingdom</p>
-  </div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt="Eight-cell colouring mark" decoding="async" loading="lazy"><span>Leo Y. Zhang</span></a>
+  <nav aria-label="Main navigation">
+    <a href="#work">Work</a> <a href="#mathematics">Mathematics</a> <a href="#try-it">Try it</a> <a href="#index">Index</a> <a href="#about">About</a> <a href="#contact">Contact</a> <a href="vdw.html">vdW numbers</a>
+  </nav>
 </header>
-
-<nav aria-label="Sections">
-  <a href="#about">About</a>
-  <a href="#news">News</a>
-  <a href="#research">Research</a>
-  <a href="#interests">Interests</a>
-  <a href="#contributions">Contributions</a>
-  <a href="#paper">Paper</a>
-  <a href="#software">Software</a>
-  <a href="projects.html">Projects</a>
-  <a href="vdw.html">vdW numbers</a>
-  <a href="#contact">Contact</a>
-</nav>
-
-<main>
-
-<section id="about" aria-labelledby="about-h">
-  <h2 id="about-h">About</h2>
-  <p>I am a sixth-form student in the United Kingdom, working on exact values in
-  Ramsey-type combinatorics and on software built around a single idea: a result
-  is worth what its verification is worth. Where a claim can be made checkable by
-  someone who does not trust me, I make it checkable.</p>
-
-  <ul class="glance">
-    <li><strong>174</strong> accepted OEIS terms across <strong>21</strong> sequences</li>
-    <li><strong>23,851</strong> per-cube DRAT proofs, every one replayed by drat-trim</li>
-    <li><strong>5</strong> new mixed van der Waerden numbers, in sequences unmoved since 2012</li>
-  </ul>
-  <p class="asof">OEIS figure re-derived from the live database on 2 September 2026
-  by <a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">a script that fails if the
-  number has moved</a>, rather than typed from memory.</p>
-</section>
-
-<section id="news" aria-labelledby="news-h">
-  <h2 id="news-h">News</h2>
-  <dl class="news">
-    <dt>2 Sep 2026</dt>
-    <dd><a href="https://oeis.org/A337114">A337114</a> published: a(25) to a(36),
-      twelve terms appended beneath the previous author's last value. The total
-      is now 174 accepted terms across 21 sequences.</dd>
-
-    <dt>1 Sep 2026</dt>
-    <dd>All five upper bounds are now machine-checked. The equal-target
-      families had resisted: the cube generator dropped colour-permutation
-      images, which is sound for searching but is not a refutation, so the
-      per-cube proofs never covered those branches. Taking colour symmetry out
-      of the cube set closed it, and the total stands at 23,851 per-cube DRAT
-      proofs across the five families.</dd>
-    <dd>Three more sequences published &mdash;
-      <a href="https://oeis.org/A325556">A325556</a>,
-      <a href="https://oeis.org/A347414">A347414</a> and
-      <a href="https://oeis.org/A353403">A353403</a>.
-      That takes the total to 162 accepted terms across 20 sequences.</dd>
-
-    <dt>31 Aug 2026</dt>
-    <dd>Seventy-one terms approved in one day across
-      <a href="https://oeis.org/A319381">A319381</a>,
-      <a href="https://oeis.org/A323586">A323586</a> and
-      <a href="https://oeis.org/A325555">A325555</a> &mdash; sequences whose
-      published range had stopped where a brute force ran out of patience.</dd>
-
-    <dt>Aug 2026</dt>
-    <dd><em>Five new mixed van der Waerden numbers, with machine-checked upper
-      bounds</em> is being prepared for submission to <em>Experimental
-      Mathematics</em>.</dd>
-
-    <dt>4 Aug 2026</dt>
-    <dd>The headline upper bound stopped resting on a solver's word:
-      <span class="m">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;=&nbsp;57</span>
-      reduced to 4,487 per-cube DRAT proofs, all replayed to
-      <span class="m">s VERIFIED</span>, with a checked proof that the cube set
-      is exhaustive.</dd>
-  </dl>
-</section>
-
-<section id="research" aria-labelledby="research-h">
-  <h2 id="research-h">Research</h2>
-
-  <p>My main line is <strong>mixed van der Waerden numbers</strong>
-  <span class="m">w(j+r;&nbsp;2<sup>j</sup>,&nbsp;t<sub>1</sub>&hellip;t<sub>r</sub>)</span>
-  &mdash; families whose OEIS entries had stood unchanged since Tanbir Ahmed's
-  work in 2012. Each new term needs two independent halves, and they are not
-  equally trustworthy:</p>
-
-  <ul class="halves">
-    <li><strong>The lower bound is a certificate.</strong> A colouring of
-    <span class="m">[1,n]</span> with the required property. You read the string,
-    apply the definition, and you are done &mdash; no solver, and no trust in me.</li>
-    <li><strong>The upper bound asserts that no colouring exists.</strong> That is
-    only as good as the SAT encoding behind it, so it is the half where the real
-    work sits, and where I say so plainly.</li>
-  </ul>
-
-  <figure class="cert">
+<main id="main">
+<div class="hero">
+<h1>Leo Y. Zhang</h1>
+<p class="deck">Combinatorics, game engines and software that checks its own answers.</p>
+<p class="location">Sixth-form student, United Kingdom.</p>
+<figure class="plate hero-plate"><img src="assets/img/tilefish.webp" width="1440" height="900" alt="Tilefish daily Scrabble puzzle with the rack EEILOSV" decoding="async" loading="eager"><figcaption>Tilefish, the Scrabble engine below, on its daily puzzle for 3 November 2026: find the best move for the rack EEILOSV.</figcaption></figure>
+</div><section class="catalogue-section" id="work" aria-labelledby="work-h">
+<h2 id="work-h">Selected work</h2>
+<div class="section-content">
+<article class="work-entry" aria-labelledby="tilefish-h"><div class="work-copy"><h3 id="tilefish-h">Tilefish</h3><p>A Scrabble engine in C++ that runs in the browser. It generates moves with a GADDAG and chooses among the best candidates by Monte Carlo simulation. It searches the endgame exactly once the bag is empty.</p><p class="links"><a href="https://leo-y-zhang.github.io/TileFish/">Play Tilefish</a> <a href="https://github.com/Leo-Y-Zhang/TileFish">Source</a></p></div><div class="work-visual"><div class="table-scroll" role="region" aria-label="Tilefish match results" tabindex="0"><table class="results"><caption>Logged match results</caption><tbody>
+<tr><th scope="row">Against MAGPIE, CSW24, neutral referee</th><td>Won 57.1% of 760 games</td></tr>
+<tr><th scope="row">Against Macondo at BestBot’s settings, 60 s a move</th><td>48.6% of 832 games</td></tr>
+</tbody></table></div></div></article>
+<article class="work-entry certificate-entry" aria-labelledby="mathrecords-h"><div class="work-copy"><h3 id="mathrecords-h">MathRecords</h3><p>Five new mixed van der Waerden numbers, found with a SAT solver and accepted into the OEIS in August 2026: A217058 a(12) = 57, A217005 a(19) = 52, A217007 a(7) = 68, A217236 a(4) = 84 and A217059 a(9) = 74.</p><p>Each lower bound is a colouring anyone can check by hand. Each upper bound was checked with DRAT proofs: 23,851 per-cube proofs replayed by drat-trim.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/MathRecords">Source</a> <a href="vdw.html">All the vdW values</a></p></div><div class="work-visual"><figure class="cert">
     <div class="cells" role="img" aria-label="The 56-cell certificate colouring for OEIS A217058: navy cells are class one, ochre cells are class two, hollow cells are wildcards.">
     <i class="c2" style="--i:0" title="position 1: class 2"></i>
     <i class="w" style="--i:1" title="position 2: wildcard"></i>
@@ -184,6 +105,7 @@
     <i class="c1" style="--i:54" title="position 55: class 1"></i>
     <i class="c2" style="--i:55" title="position 56: class 2"></i>
     </div>
+    <div class="cell-labels"><span>1</span><span>56</span></div>
     <figcaption>
       <span class="claim">w(14;&nbsp;2<sup>12</sup>,&nbsp;3,&nbsp;4)&nbsp;&gt;&nbsp;56.</span>
       The lower-bound certificate for <a href="https://oeis.org/A217058">A217058</a>&nbsp;a(12)&nbsp;=&nbsp;57:
@@ -191,83 +113,46 @@
       progression, <span class="k2">ochre</span> never carrying four, twelve
       wildcards. Checkable by hand, or by the standard-library script below.
     </figcaption>
-  </figure>
-
-  <h3 id="check">Check it yourself</h3>
-  <p>You should not take the figure above on trust, and you do not have to. This
-  reads the colouring back out of the page you are looking at and re-derives the
-  property from the definition &mdash; it enumerates the arithmetic progressions
-  itself rather than comparing the page against a second copy of my answer. No
-  dependencies, standard library only, about a second to run:</p>
-
-  <pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/PersonalWebsite
-python PersonalWebsite/tools/verify_certificate.py</code></pre>
-
-  <p>It prints the two classes it found, confirms every position in
-  <span class="m">[1,56]</span> is coloured exactly once, and exits non-zero if
-  the page is wrong. If I ever edit the figure and break the claim, this fails
-  in continuous integration before you see it.</p>
+  </figure></div><div class="work-check"><h4>Check it yourself</h4><p>This command reads the colouring from this page and checks its arithmetic progressions. It uses only the Python standard library.</p><pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/PersonalWebsite
+python PersonalWebsite/tools/verify_certificate.py</code></pre></div></article>
+<article class="work-entry" aria-labelledby="climatemesh-h"><div class="work-copy"><h3 id="climatemesh-h">ClimateMesh</h3><p>A Raspberry Pi sensor network gives explainable early warnings of floods, heat, smog and storms. A team of two built it for the PA Raspberry Pi Competition 2026. Every panel says where its data came from: a physical sensor, a live API, a recorded event or a simulation.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/climatemesh.webp" width="1600" height="1000" alt="ClimateMesh flood warning dashboard and map of London sensor nodes" decoding="async" loading="lazy"><figcaption>The ClimateMesh dashboard replaying a flood scenario across twenty London nodes.</figcaption></figure></div></article>
+<article class="work-entry" aria-labelledby="greekscansion-h"><div class="work-copy"><h3 id="greekscansion-h">GreekScansion</h3><p>GreekScansion scans Classical Greek dactylic hexameter. It claims only what the metre settles, reporting unique, ambiguous or unscannable rather than guessing.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/GreekScansion">Source</a></p></div><div class="work-visual"><figure class="plate"><div class="type-plate"><p lang="grc">ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ</p><pre><samp>2  unique  -??-uu-?u?uu-??-?  DDDDD|</samp></pre><p class="caption">- heavy, u light, ? not settled by the spelling</p></div><figcaption>GreekScansion on Odyssey 1.1. The spelling settles some syllables and leaves others open; the metre forces the rest, so the line has exactly one reading: five dactyls.</figcaption></figure></div></article>
+<article class="work-entry" aria-labelledby="endeavourracing-h"><div class="work-copy"><h3 id="endeavourracing-h">EndeavourRacing</h3><p>Three web applications support a STEM Racing team. They provide the website, a lap-time prediction game and a project, risk and budget dashboard.</p><p class="links"><a href="https://leo-y-zhang.github.io/EndeavourRacing/website/">Visit the site</a> <a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/endeavour.webp" width="1440" height="900" alt="EndeavourRacing team website" decoding="async" loading="lazy"><figcaption>The EndeavourRacing website.</figcaption></figure></div></article>
+<article class="work-entry" aria-labelledby="oeisheadroom-h"><div class="work-copy"><h3 id="oeisheadroom-h">OEISHeadroom</h3><p>OEISHeadroom finds OEIS sequences that stopped early because a brute-force search got slow, and extends them. 123 new terms across these seven sequences were accepted between 31 August and 2 September 2026. Each program first reproduces every published term.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">Source</a></p></div><div class="work-visual"><table class="sequence-list"><caption>Seven extended sequences</caption><thead><tr><th scope="col">OEIS sequence</th></tr></thead><tbody><tr><td><a href="https://oeis.org/A319381">A319381</a></td></tr><tr><td><a href="https://oeis.org/A323586">A323586</a></td></tr><tr><td><a href="https://oeis.org/A325555">A325555</a></td></tr><tr><td><a href="https://oeis.org/A325556">A325556</a></td></tr><tr><td><a href="https://oeis.org/A347414">A347414</a></td></tr><tr><td><a href="https://oeis.org/A353403">A353403</a></td></tr><tr><td><a href="https://oeis.org/A337114">A337114</a></td></tr></tbody></table></div></article>
+</div>
 </section>
-
-<section id="interests" aria-labelledby="interests-h">
-  <h2 id="interests-h">Research interests</h2>
-  <p>The directions I want to work in, and where each one currently stands for
-  me. I have listed what exists rather than what I intend, so the difference
-  between the two is visible.</p>
-
-  <ol class="interests">
-    <li>
-      <h3>Exact values in Ramsey-type combinatorics</h3>
-      <p>Van der Waerden and related numbers, where the object of study is a
-      single integer nobody knows. The appeal is that progress is unambiguous:
-      a bound either holds or it does not.</p>
-      <p class="standing">Five new terms computed; all five published by the
-      OEIS, the last approved 13 August 2026.</p>
-    </li>
-    <li>
-      <h3>SAT encodings and proof certificates</h3>
-      <p>An unsatisfiability result is a mathematical claim resting entirely on
-      an encoding. I am interested in the gap between "the solver said UNSAT"
-      and "this has been proved" &mdash; DRAT-style proof objects, independent
-      checkers, and symmetry breaking that is justified rather than assumed.</p>
-      <p class="standing">Upper bounds reduced to machine-checked proof objects
-      where stated; where not, said so.</p>
-    </li>
-    <li>
-      <h3>Counting on structured graphs</h3>
-      <p>Independence, domination and connected domination on board graphs.
-      A change of coordinates can collapse an exponential count into a frontier
-      dynamic program &mdash; the bishop graph is a rook graph rotated, which
-      turns <span class="m">O(2<sup>n&sup2;/2</sup>)</span> into a DP over
-      <span class="m">O(n)</span> classes per side.</p>
-      <p class="standing">Fourteen new terms across seven sequences, all
-      published by the OEIS, the last on 15 August 2026.</p>
-    </li>
-    <li>
-      <h3>Verification of algorithms, not just of code</h3>
-      <p>Deterministic simulation testing, machine-checked invariants, and
-      exact equivalence rather than sampled agreement: safety properties checked
-      after every step, compiler passes proved by unitary equivalence,
-      gradients checked against finite differences.</p>
-      <p class="standing">The recurring design constraint across everything
-      below.</p>
-    </li>
-    <li>
-      <h3>Honest inference from small samples</h3>
-      <p>Most quantitative claims fail statistically rather than logically.
-      I am interested in default-deny methodology: finite-sample bounds,
-      multiple-testing corrections, and reporting that refuses when the evidence
-      does not reach the bar, instead of reporting a number anyway.</p>
-      <p class="standing">Applied to benchmark scores, quantum measurement
-      claims, and backtested track records.</p>
-    </li>
-  </ol>
+<section class="catalogue-section" id="range" aria-labelledby="range-h">
+<h2 id="range-h">Range</h2>
+<div class="section-content">
+<h3>Languages</h3><dl class="range-list"><dt>C++</dt><dd><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a>.</dd>
+<dt>Rust</dt><dd><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a> (a DRAT and LRAT proof checker), <a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a> (a RISC-V interpreter).</dd>
+<dt>Go</dt><dd><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a> (a linearizability test harness).</dd>
+<dt>Lean 4</dt><dd><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a> (a soundness proof for the RUP and RAT proof rules).</dd>
+<dt>TypeScript</dt><dd><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a>, <a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a>.</dd>
+<dt>JavaScript</dt><dd><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a>, <a href="https://github.com/Leo-Y-Zhang/Understudy">Understudy</a>, <a href="https://github.com/Leo-Y-Zhang/VisionCheckR">VisionCheckR</a>.</dd>
+<dt>Python</dt><dd><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>, <a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a>, <a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a>, <a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a>, <a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a>, <a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a>, <a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a>, <a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a>, <a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a>, <a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a>, <a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a>, <a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a>.</dd></dl><h3>Problems</h3><dl class="range-list"><dt>SAT encodings and proof certificates</dt><dd><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>, <a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a>, <a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a>, <a href="https://github.com/Leo-Y-Zhang/CycleRamsey">CycleRamsey</a>, <a href="https://github.com/Leo-Y-Zhang/PalindromicVDW">PalindromicVDW</a>.</dd>
+<dt>Checking proofs</dt><dd><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a>, <a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a>.</dd>
+<dt>Game search and simulation</dt><dd><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a>, <a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a>.</dd>
+<dt>Interpreters and distributed systems</dt><dd><a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a>, <a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a>, <a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a>.</dd>
+<dt>Machine learning from first principles</dt><dd><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a>.</dd>
+<dt>Physical simulation and rendering</dt><dd><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a>, <a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a>.</dd>
+<dt>Sensors and hardware</dt><dd><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a>.</dd>
+<dt>Languages and ciphers</dt><dd><a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a>, <a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a>, <a href="https://github.com/Leo-Y-Zhang/LiberPrimusAnalysis">LiberPrimusAnalysis</a>.</dd>
+<dt>Statistics</dt><dd><a href="https://github.com/Leo-Y-Zhang/QuantumClaimReferee">QuantumClaimReferee</a>, <a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a>, <a href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a>.</dd>
+<dt>Testing tools</dt><dd><a href="https://github.com/Leo-Y-Zhang/SuiteAudit">SuiteAudit</a>.</dd></dl>
+</div>
 </section>
-
-<section id="contributions" aria-labelledby="contributions-h">
-  <h2 id="contributions-h">Contributions to the OEIS</h2>
-
-  <table class="seqs">
+<section class="catalogue-section" id="mathematics" aria-labelledby="mathematics-h">
+<h2 id="mathematics-h">Mathematics</h2>
+<div class="section-content">
+<p>174 terms across 21 OEIS sequences have been accepted. The figure was re-derived from the live OEIS on 3 November 2026.</p>
+<ul class="math-lines">
+<li>Mixed van der Waerden numbers: 5 terms, <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>.</li>
+<li>2-colour Rado numbers for x₁² + … + xₙ² = z²: <a href="https://oeis.org/A250026">A250026</a> a(31) to a(60), 30 terms, <a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a>.</li>
+<li>Board-graph sequences via a bishop-to-rook rotation: 14 terms in 7 sequences, <a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a>.</li>
+<li>Sequences that stopped where a brute force got slow: 123 terms in 7 sequences, <a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a>.</li>
+</ul>
+<h3>Contributions</h3><div class="table-scroll" role="region" aria-label="Contributions to the OEIS" tabindex="0"><table class="seqs">
     <caption>Status as recorded by the OEIS.</caption>
     <thead>
       <tr><th scope="col">Sequence</th><th scope="col">Term</th><th scope="col">Value</th><th scope="col">Status</th></tr>
@@ -299,149 +184,102 @@ python PersonalWebsite/tools/verify_certificate.py</code></pre>
         <td><span class="ok">published</span> &mdash; credited 13 August 2026</td>
       </tr>
     </tbody>
-  </table>
-
-  <p class="withheld"><strong>Board graphs, same discipline.</strong>
-  The counting line has landed in full: ten further terms across
-  <a href="https://oeis.org/A290719">A290719</a>,
-  <a href="https://oeis.org/A290769">A290769</a> and
-  <a href="https://oeis.org/A291595">A291595</a> (connected induced subgraphs
-  of the black, white and full bishop graphs) and
-  <a href="https://oeis.org/A289145">A289145</a> and
-  <a href="https://oeis.org/A289169">A289169</a> (connected dominating sets),
-  all published on 13 August 2026. An eleventh,
-  <a href="https://oeis.org/A290783">A290783</a>&nbsp;a(10), carries the same
-  count onto the triangular honeycomb bishop graph, where the previous term had
-  stood since 2017; published 14 August 2026. Three more,
-  <a href="https://oeis.org/A381795">A381795</a>&nbsp;a(8)&ndash;a(10), count the
-  connected dominating sets of that same honeycomb graph, an entry that had stood
-  at seven terms since March 2025; published 15 August 2026.</p>
-
-  <p class="withheld"><strong>Thirty-two further terms, same standard of evidence.</strong>
-  <a href="https://oeis.org/A250026">A250026</a>&nbsp;a(31)&ndash;a(60), thirty
-  terms beginning a(31)&nbsp;=&nbsp;41, the 2-colour Rado numbers for
-  <span class="m">x<sub>1</sub><sup>2</sup>+&hellip;+x<sub>n</sub><sup>2</sup>&nbsp;=&nbsp;z<sup>2</sup></span>,
-  and <a href="https://oeis.org/A398541">A398541</a>&nbsp;a(16)&nbsp;=&nbsp;241
-  and a(17)&nbsp;=&nbsp;274, the least <span class="m">k</span> forcing an
-  <span class="m">n</span>-term arithmetic progression whose signed sum is at
-  least 2 in absolute value; published between 13 and 30 August 2026.</p>
-
-  <p class="withheld"><strong>Sequences a brute force had abandoned.</strong>
-  A survey of the OEIS for entries whose published range stops where an
-  exhaustive search ran out of patience rather than where the mathematics gets
-  hard, followed by exact enumeration past them:
-  <a href="https://oeis.org/A319381">A319381</a>&nbsp;a(23)&ndash;a(50) (plane
-  trees), <a href="https://oeis.org/A323586">A323586</a>&nbsp;a(14)&ndash;a(40)
-  (plane partitions with no repeated rows) and
-  <a href="https://oeis.org/A325555">A325555</a>&nbsp;a(26)&ndash;a(41)
-  (necklace compositions with distinct circular differences) &mdash;
-  seventy-one terms, all approved on 31 August 2026. Each is gated on a program
-  that first reproduces every already-published term of its sequence, so exact
-  agreement across the known range is what makes the new range worth reading.
-  One hundred and seventy-four accepted terms across twenty-one sequences in
-  total.</p>
-
+  </table></div>
+<p class="links"><a href="vdw.html">The van der Waerden reference</a> <a href="https://aixiv.online/abs/2610.03288">Soundness of RUP and RAT in Lean 4</a> <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">Write-up</a></p>
+<p class="caption">Ratified’s preprint was published on 31 October 2026.</p>
+</div>
 </section>
-
-<section id="paper" aria-labelledby="paper-h">
-  <h2 id="paper-h">Paper</h2>
-
-  <p class="pub"><strong>Five new mixed van der Waerden numbers, with
-  machine-checked upper bounds.</strong> <span class="venue">Being prepared for
-  submission to <em>Experimental Mathematics</em>.</span>
-  <span class="links">[<a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">paper</a>]
-  [<a href="https://github.com/Leo-Y-Zhang/MathRecords">code and certificates</a>]</span></p>
-
-  <p>Method, encoding, the certificates, and an explicit account of which claims
-  rest on which kind of evidence. The distinction the paper is careful about,
-  because it is the one a reader would otherwise get wrong:</p>
-
-  <ul class="halves">
-    <li><strong>Every upper bound is a proof object.</strong> All five are
-    reduced to per-cube DRAT proofs &mdash; 23,851 in total, each replayed to
-    <span class="m">s VERIFIED</span> by drat-trim against a single formula hash
-    &mdash; and each family carries a separately checked composition proof that
-    its cube set covers the whole assignment tree.</li>
-    <li><strong>The equal-target families were the hard ones.</strong> The cube
-    generator dropped colour-permutation images, which is sound when you are
-    <em>searching</em>, because some other prefix is the image, but it is not a
-    <em>refutation</em>, so the per-cube proofs never covered those branches and
-    <span class="m">[3,3]</span> and <span class="m">[4,4]</span> could not be
-    certified at all. Taking colour symmetry out of the cube set fixes it, and
-    the effect is measured rather than argued: the cube sets are byte-identical
-    with and without it for the differing-target families, and exactly double
-    for the equal-target ones.</li>
-  </ul>
-
-  <p>Across all five families the certification run produced 23,851 per-cube
-  proofs. The tooling, computation and drafting involved substantial AI
-  assistance, disclosed plainly in the paper's Methods section; the verification
-  programme exists so that a reader does not have to take that on trust.</p>
+<section class="catalogue-section" id="try-it" aria-labelledby="try-it-h">
+<h2 id="try-it-h">Try it</h2>
+<div class="section-content">
+<div class="demo-grid"><a class="demo" href="https://leo-y-zhang.github.io/TileFish/"><img src="assets/img/tilefish.webp" width="1440" height="900" alt="Tilefish Scrabble board and rack" decoding="async" loading="lazy"><h3>Tilefish</h3><p>Play a full game or the daily puzzle.</p></a>
+<a class="demo" href="https://leo-y-zhang.github.io/Refute/"><img src="assets/img/refute.webp" width="1440" height="900" alt="Refute browser proof checker" decoding="async" loading="lazy"><h3>Refute</h3><p>Check a DRAT or LRAT proof; files never leave the tab.</p></a>
+<a class="demo" href="https://leo-y-zhang.github.io/MeltSim/"><img src="assets/img/meltsim.webp" width="1440" height="900" alt="MeltSim thermodynamics simulation" decoding="async" loading="lazy"><h3>MeltSim</h3><p>Melt, freeze and boil a block from one enthalpy law.</p></a>
+<a class="demo" href="https://leo-y-zhang.github.io/EndeavourRacing/website/"><img src="assets/img/endeavour.webp" width="1440" height="900" alt="EndeavourRacing team website" decoding="async" loading="lazy"><h3>EndeavourRacing</h3><p>A student motorsport team’s site and lap-time game.</p></a>
+<a class="demo" href="https://leo-y-zhang.github.io/Understudy/"><img src="assets/img/understudy.webp" width="1440" height="900" alt="Understudy interview rehearsal interface" decoding="async" loading="lazy"><h3>Understudy</h3><p>Rehearse an answer with on-device face and speech analysis.</p></a>
+<a class="demo" href="https://leo-y-zhang.github.io/VisionCheckR/"><img src="assets/img/visioncheckr.webp" width="1440" height="900" alt="VisionCheckR vision self-check interface" decoding="async" loading="lazy"><h3>VisionCheckR</h3><p>An offline vision self-check. Not a medical device.</p></a></div>
+</div>
 </section>
-
-<section id="software" aria-labelledby="software-h">
-  <h2 id="software-h">Software</h2>
-  <p>Each of these exists to make a claim checkable rather than to assert it.
-  The <a href="projects.html">full portfolio</a> &mdash; production software,
-  team projects, and everything else &mdash; has its own page.</p>
-  <dl class="projects">
-    <dt><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a> <span class="lang">Python</span></dt>
-    <dd>The van der Waerden work: search, SAT encodings, and a certificate for
-    every lower bound.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a> <span class="lang">Python</span></dt>
-    <dd>A reverse-mode autograd engine and a small GPT on top of it, from
-    scratch. Every gradient is checked against finite differences.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a> <span class="lang">TypeScript</span></dt>
-    <dd>A deterministic Monte Carlo path tracer whose 278 tests validate the
-    rendering physics, not just the code.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a> <span class="lang">Python</span></dt>
-    <dd>Raft consensus under a seeded fault simulator; the five safety
-    properties are checked after every step and any failure replays from its
-    seed.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a> <span class="lang">Go</span></dt>
-    <dd>Drives a real key-value cluster through seeded TCP partitions and
-    machine-checks whether what the clients observed was linearizable; the
-    checker is validated against a brute-force oracle.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a> <span class="lang">Python</span></dt>
-    <dd>A teaching quantum-circuit compiler whose optimisations and SWAP routing
-    are proved correct by exact unitary equivalence.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/QuantumClaimReferee">QuantumClaimReferee</a> <span class="lang">Python</span></dt>
-    <dd>A finite-sample referee for quantum measurement claims: memory-robust
-    CHSH p-values and default-deny verdicts.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a> <span class="lang">Python</span></dt>
-    <dd>Splits a reported LLM benchmark score into measured capability and
-    measured artifact, with Shapley attribution.</dd>
-
-    <dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a> <span class="lang">Python</span></dt>
-    <dd>An offline mate-in-N generator; a bundled from-scratch engine re-proves
-    every puzzle before it is emitted.</dd>
-  </dl>
+<section class="catalogue-section" id="index" aria-labelledby="index-h">
+<h2 id="index-h">Index of work</h2>
+<div class="section-content">
+<div class="index-group"><h3>Mathematics and proof</h3><dl class="repo-index">
+<div><dt><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a></dt><dd>Five new mixed van der Waerden numbers found with a SAT solver, now in the OEIS. Lower bounds come with an explicit colouring; upper bounds were checked with DRAT proofs.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a></dt><dd>Finds OEIS sequences that stopped early because a brute-force search got slow, and extends them. Each program must reproduce every published term first.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a></dt><dd>Thirty new terms of OEIS A250026 (2-colour Rado numbers for x₁² + ... + xₙ² = z²), found with SAT, upper bounds checked with DRAT proofs.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a></dt><dd>New terms for seven OEIS bishop-graph sequences, using the fact that rotating the board 45 degrees turns bishop moves into rook moves.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a></dt><dd>SAT search for N(k,2) (Erdos problem #176, OEIS A398541). Results are re-checked from scratch before anything is claimed.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/BishopVerify">BishopVerify</a></dt><dd>Independent verification for ten new terms of five OEIS bishop-graph sequences: format, structural identities, and a live check against the published record.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/CycleRamsey">CycleRamsey</a></dt><dd>Three-colour cycle Ramsey numbers as SAT: an independent encoding, a solver-free witness checker, and a measured account of where the method stops.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PalindromicVDW">PalindromicVDW</a></dt><dd>Palindromic mixed van der Waerden numbers as SAT: an encoding, an independent checker, and the measured point where a desktop solver stops.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a></dt><dd>A DRAT and LRAT proof checker in Rust with no dependencies, plus a browser version that keeps files on your machine.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a></dt><dd>Machine-checked soundness proof in Lean 4 for the RUP and RAT rules that DRAT proof checkers apply</dd></div>
+</dl></div>
+<div class="index-group"><h3>Games</h3><dl class="repo-index">
+<div><dt><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a></dt><dd>Scrabble engine in C++ that you can play in the browser: Monte Carlo simulation, exact endgames, CSW24 and NWL23. Match logs against other engines included.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a></dt><dd>Generates mate-in-N and tactics puzzles and re-checks every answer with its own chess engine. Pure Python.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a></dt><dd>Offline factory that renders vertical 9:16 chess-edit MP4s from one command: pure Canvas 2D, no ffmpeg, no uploads, no licensed assets.</dd></div>
+</dl></div>
+<div class="index-group"><h3>Systems and machine learning</h3><dl class="repo-index">
+<div><dt><a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a></dt><dd>RISC-V (RV32IM) interpreter in Rust, tested against spec cases, a second implementation and real compiled programs.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a></dt><dd>Raft consensus in a seeded fault simulator: the five safety properties are checked after every step and any failure replays from its seed.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a></dt><dd>Drives a real key-value cluster through seeded TCP partitions and machine-checks the recorded history for linearizability, with a brute-force oracle behind the checker.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a></dt><dd>A small autograd engine and character-level GPT in Python with no ML libraries, with numerical gradient checks.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a></dt><dd>Toy quantum-circuit compiler; each optimisation is checked by comparing unitaries exactly.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a></dt><dd>Zero-dependency, deterministic Monte Carlo path tracer in TypeScript whose 274 tests validate the rendering physics, not just the code.</dd></div>
+</dl></div>
+<div class="index-group"><h3>Language and puzzles</h3><dl class="repo-index">
+<div><dt><a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a></dt><dd>Scans Greek dactylic hexameter. If exactly one legal scansion fits a line it reports it; otherwise it says ambiguous or unscannable.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a></dt><dd>Classical cipher toolkit for the National Cipher Challenge: 15 cipher types, an English language model, ranked candidate decryptions. Works offline.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/LiberPrimusAnalysis">LiberPrimusAnalysis</a></dt><dd>Statistical analysis of the unsolved Cicada 3301 Liber Primus pages, with a log of every approach ruled out.</dd></div>
+</dl></div>
+<div class="index-group"><h3>Science, statistics and tools</h3><dl class="repo-index">
+<div><dt><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a></dt><dd>Interactive browser thermodynamics sandbox: enthalpy-method melting, solidification and boiling, zero runtime dependencies</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a></dt><dd>Raspberry Pi environmental sensing mesh with explainable early-warning risk scoring and provenance-labelled data</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/QuantumClaimReferee">QuantumClaimReferee</a></dt><dd>Finite-sample checks for quantum measurement claims: memory-robust CHSH p-values and conservative verdicts on fidelity and entanglement.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a></dt><dd>Does a removed border still bend a city&#x27;s road network? A geometric permutation test for boundary severance, applied to the Berlin Wall and the Cyprus buffer zone.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/EvalAssay">EvalAssay</a></dt><dd>Splits a reported LLM benchmark score into measured capability and measured artefacts, using exact Shapley attribution.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/SuiteAudit">SuiteAudit</a></dt><dd>Finds tests that cannot fail by reading the test code's syntax tree. No dependencies.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/VisionCheckR">VisionCheckR</a></dt><dd>Privacy-first, offline educational vision self-check that runs entirely in the browser - colour, acuity, astigmatism and contrast screening with a pure, unit-tested scoring core. Not a medical device.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/Understudy">Understudy</a></dt><dd>Interview rehearsal studio in the browser: on-device face + speech analysis, annotated replay, zero data leaves your device.</dd></div>
+</dl></div>
+<div class="index-group"><h3>Team and web</h3><dl class="repo-index">
+<div><dt><a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">EndeavourRacing</a></dt><dd>Single-file web apps for a student motorsport team: the marketing site, a lap-time prediction game, and a project, risk and budget dashboard.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PersonalWebsite">PersonalWebsite</a></dt><dd>Personal site and portfolio: a certificate-strip hero built from a real verified OEIS result, self-hosted type, no trackers.</dd></div>
+</dl></div>
+</div>
 </section>
-
-<section id="contact" aria-labelledby="contact-h">
-  <h2 id="contact-h">Contact</h2>
-  <p>Everything I publish is at
+<section class="catalogue-section" id="recent" aria-labelledby="recent-h">
+<h2 id="recent-h">Recent</h2>
+<div class="section-content">
+<dl class="recent"><dt><time datetime="2026-10-31">31 Oct 2026</time></dt><dd>Ratified’s preprint <a href="https://aixiv.online/abs/2610.03288">published on aiXiv</a>.</dd>
+<dt><time datetime="2026-09-02">2 Sep 2026</time></dt><dd><a href="https://oeis.org/A337114">A337114</a> a(25) to a(36) published, bringing the total to 174 accepted terms across 21 sequences.</dd>
+<dt><time datetime="2026-08-13">13 Aug 2026</time></dt><dd>The last of the five mixed van der Waerden numbers approved.</dd></dl>
+</div>
+</section>
+<section class="catalogue-section" id="about" aria-labelledby="about-h">
+<h2 id="about-h">About</h2>
+<div class="section-content">
+<p>I'm a sixth-form student in the UK. I like combinatorics, chess, Scrabble and Classical Greek, and most of the projects here started from one of those.</p>
+</div>
+</section>
+<section class="catalogue-section" id="contact" aria-labelledby="contact-h">
+<h2 id="contact-h">Contact</h2>
+<div class="section-content">
+<p>Everything I publish is at
   <a href="https://github.com/Leo-Y-Zhang">github.com/Leo-Y-Zhang</a>.
   For anything about the van der Waerden work you can write to me at
   <a href="mailto:academic.submissions26@gmail.com">academic.submissions26@gmail.com</a>,
   or open an issue on
   <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>, which keeps
-  the discussion next to the certificates it concerns.</p>
+  the discussion next to the certificates it concerns.</p><p>or open an issue on any repository at <a href="https://github.com/Leo-Y-Zhang">https://github.com/Leo-Y-Zhang</a>.</p>
+</div>
 </section>
 
 </main>
-
-<footer>
-  <p>Leo Y. Zhang &middot; the certificate above, and every claim on this page, is
-  reproducible from the linked source.</p>
+<footer class="site-footer">
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek. Both fonts use the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 3 November 2026.</p>
+  <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
-
 </body>
 </html>
