@@ -119,7 +119,9 @@ python PersonalWebsite/tools/verify_certificate.py</code></pre></div></article>
 <article class="work-entry" aria-labelledby="greekscansion-h"><div class="work-copy"><h3 id="greekscansion-h">GreekScansion</h3><p>GreekScansion scans Classical Greek dactylic hexameter. It claims only what the metre settles, reporting unique, ambiguous or unscannable rather than guessing.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/GreekScansion">Source</a></p></div><div class="work-visual"><figure class="plate"><div class="type-plate"><p lang="grc">ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ</p><pre><samp>2  unique  -??-uu-?u?uu-??-?  DDDDD|</samp></pre><p class="caption">- heavy, u light, ? not settled by the spelling</p></div><figcaption>GreekScansion on Odyssey 1.1. The spelling settles some syllables and leaves others open; the metre forces the rest, so the line has exactly one reading: five dactyls.</figcaption></figure></div></article>
 <article class="work-entry" aria-labelledby="pitlanetycoon-h"><div class="work-copy"><h3 id="pitlanetycoon-h">Pit Lane Tycoon</h3><p>A Roblox tycoon game written in Luau and built with Rojo. You run a racing team's factory: presses stamp out car parts, a conveyor carries them through the paint shop and wind tunnel to scrutineering, and every part that passes pays for the next machine.</p><p>Twenty-four purchases win the Constructors' trophy and start a new season, which resets the garage and adds 50% to all earnings for good. A pit crew, live server events and a time-trial track round the paddock fill the time between purchases.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/PitLaneTycoon">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/pitlanetycoon.webp" width="1280" height="720" alt="Pit Lane Tycoon paddock with team garages and a pit wall" decoding="async" loading="lazy"><figcaption>The paddock in Pit Lane Tycoon, with a garage for each of the six teams.</figcaption></figure></div></article>
 <article class="work-entry" aria-labelledby="endeavourracing-h"><div class="work-copy"><h3 id="endeavourracing-h">EndeavourRacing</h3><p>Three web applications support a STEM Racing team. They provide the website, a lap-time prediction game and a project, risk and budget dashboard.</p><p class="links"><a href="https://leo-y-zhang.github.io/EndeavourRacing/website/">Visit the site</a> <a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/endeavour.webp" width="1440" height="900" alt="EndeavourRacing team website" decoding="async" loading="lazy"><figcaption>The EndeavourRacing website.</figcaption></figure></div></article>
-<article class="work-entry text-only" aria-labelledby="climatemesh-h"><div class="work-copy"><h3 id="climatemesh-h">ClimateMesh</h3><p>A Raspberry Pi sensor network gives explainable early warnings of floods, heat, smog and storms. A team of two built it for the PA Raspberry Pi Competition 2026. Every panel says where its data came from: a physical sensor, a live API, a recorded event or a simulation.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">Source</a></p></div></article>
+<article class="work-entry" aria-labelledby="climatemesh-h"><div class="work-copy"><h3 id="climatemesh-h">ClimateMesh</h3><p>An early-warning system for floods, heat, smog and storms that runs on one Raspberry Pi, built by a team of two for the PA Raspberry Pi Competition. Twenty nodes across London are scored from 0 to 100, each with a plain-English reason and the actions to take. Every reading says where it came from: a physical sensor, a live API, a recorded event or a simulation.</p><p>In a replay of London’s flash flood of 12 July 2021, the rain gauge at Putney Heath recorded 33.24 mm in one hour, while the public weather grid showed 1.5 mm for the same place.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/climatemesh.webp" width="1440" height="775" alt="ClimateMesh live risk map of twenty London nodes during a simulated flood, with the river and canal nodes at critical" decoding="async" loading="lazy"><figcaption>The live map during a simulated flood. Each circle is a node, coloured by risk band and sized by score; grey lines join neighbours close enough to confirm each other’s readings.</figcaption></figure></div><div class="work-check"><h4>Check it yourself</h4><p>This runs a smoke test, all 461 automated tests, two demo cycles and the evidence export, and prints PASS or FAIL for each step.</p><pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/ClimateMesh
+cd ClimateMesh &amp;&amp; pip install -r requirements.txt
+python scripts/judge_validate.py</code></pre></div></article>
 </div>
 </section>
 <section class="catalogue-section" id="range" aria-labelledby="range-h">
@@ -189,8 +191,20 @@ python PersonalWebsite/tools/verify_certificate.py</code></pre></div></article>
       </tr>
     </tbody>
   </table></div>
-<p class="links"><a href="vdw.html">The van der Waerden reference</a> <a href="https://aixiv.online/abs/2610.03288">Soundness of RUP and RAT in Lean 4</a> <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">Write-up</a></p>
-<p class="caption">Ratified’s preprint was published on 31 October 2026.</p>
+<p class="links"><a href="vdw.html">The van der Waerden reference</a> <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">Write-up</a></p>
+<h3>Preprint</h3>
+<p class="citation">Leo Y. Zhang. <cite>A Dependency-Free Lean 4 Proof that the RUP and RAT Rules of DRAT Checking Are Sound, with an Executable Checker</cite>. aiXiv 2610.03288, 31 October 2026.</p>
+<p class="links"><a href="https://aixiv.online/abs/2610.03288">Read the preprint</a> <a href="https://github.com/Leo-Y-Zhang/Ratified">Lean source</a></p>
+<details class="bibtex"><summary>BibTeX</summary><pre><code>@misc{zhang2026ratified,
+  author       = {Zhang, Leo Y.},
+  title        = {A Dependency-Free {Lean} 4 Proof that the
+                  {RUP} and {RAT} Rules of {DRAT} Checking
+                  Are Sound, with an Executable Checker},
+  year         = {2026},
+  month        = oct,
+  howpublished = {aiXiv preprint 2610.03288},
+  url          = {https://aixiv.online/abs/2610.03288}
+}</code></pre></details>
 </div>
 </section>
 <section class="catalogue-section" id="try-it" aria-labelledby="try-it-h">
@@ -231,7 +245,7 @@ python PersonalWebsite/tools/verify_certificate.py</code></pre></div></article>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a></dt><dd>Drives a real key-value cluster through seeded TCP partitions and machine-checks the recorded history for linearizability, with a brute-force oracle behind the checker.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a></dt><dd>A small autograd engine and character-level GPT in Python with no ML libraries, with numerical gradient checks.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a></dt><dd>Toy quantum-circuit compiler; each optimisation is checked by comparing unitaries exactly.</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a></dt><dd>Zero-dependency, deterministic Monte Carlo path tracer in TypeScript whose 274 tests validate the rendering physics, not just the code.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a></dt><dd>Zero-dependency, deterministic Monte Carlo path tracer in TypeScript whose 278 tests validate the rendering physics, not just the code.</dd></div>
 </dl></div>
 <div class="index-group"><h3>Language and puzzles</h3><dl class="repo-index">
 <div><dt><a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a></dt><dd>Scans Greek dactylic hexameter. If exactly one legal scansion fits a line it reports it; otherwise it says ambiguous or unscannable.</dd></div>
