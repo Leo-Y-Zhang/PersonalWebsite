@@ -275,3 +275,11 @@ li { margin-bottom: 0.65rem; }
 }
 
 .work-entry.text-only .work-copy { grid-column: 1 / -1; grid-row: auto; max-width: 68ch; }
+
+.citation { max-width: 68ch; margin-bottom: 0.4rem; }
+.citation cite { font-style: italic; }
+details.bibtex { margin: 0 0 1rem; max-width: 68ch; }
+details.bibtex summary { cursor: pointer; font-family: "Plex Mono", monospace; font-size: 0.8rem; color: var(--slate); padding: 0.25rem 0; }
+details.bibtex summary:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+details.bibtex pre { margin-top: 0.5rem; white-space: pre; overflow-wrap: normal; }
+@media print, (max-width: 700px) { details.bibtex pre { white-space: pre-wrap; } }
