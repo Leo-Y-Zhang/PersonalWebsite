@@ -238,9 +238,13 @@ def render(writeups: list[dict], index: str, reference: str) -> str:
     platforms = {}
     for entry in writeups:
         platforms.setdefault(entry["platform"], []).append(entry)
-    latest = max(entry["date"] for entry in writeups)
-    summary = (f"{len(writeups)} write-ups across {len(platforms)} "
-               f"{'platform' if len(platforms) == 1 else 'platforms'}, latest {display_date(latest)}")
+    if writeups:
+        latest = max(entry["date"] for entry in writeups)
+        summary = (f"{len(writeups)} write-ups across {len(platforms)} "
+                   f"{'platform' if len(platforms) == 1 else 'platforms'}, latest {display_date(latest)}")
+    else:
+        summary = ("In progress. Write-ups are added here level by level, starting with "
+                   "OverTheWire Bandit and then CyLab Security Academy.")
     body = [head, '<body class="security-page">',
             '<a class="skip-link" href="#main">Skip to content</a>', header,
             '<main id="main">', '<div class="page-intro"><h1>Security write-ups</h1>',
@@ -296,8 +300,8 @@ def main() -> int:
     ap.add_argument("--min", default=10, type=int, dest="minimum")
     ap.add_argument("--link", action="store_true")
     args = ap.parse_args()
-    if args.minimum < 1:
-        ap.error("--min must be at least 1")
+    if args.minimum < 0:
+        ap.error("--min must not be negative")
     try:
         if not args.writeups.is_dir():
             refuse(args.writeups, 1, "write-ups folder does not exist")

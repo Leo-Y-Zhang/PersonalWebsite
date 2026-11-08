@@ -121,6 +121,14 @@ class SecurityPage(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("1 write-ups across 1 platform", self.out.read_text(encoding="utf-8"))
 
+    def test_empty_page_in_progress(self):
+        self.fixtures(0)
+        result = self.run_tool("--min", "0")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        page = self.out.read_text(encoding="utf-8")
+        self.assertIn("In progress.", page)
+        self.assertNotIn("<article>", page)
+
     def test_missing_heading(self):
         path = self.mutate("## What it teaches\nCheck file names carefully.\n", "")
         self.assert_refused(path, 17, "missing heading ## What it teaches")
