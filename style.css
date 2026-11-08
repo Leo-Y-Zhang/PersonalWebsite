@@ -283,3 +283,10 @@ details.bibtex summary { cursor: pointer; font-family: "Plex Mono", monospace; f
 details.bibtex summary:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 details.bibtex pre { margin-top: 0.5rem; white-space: pre; overflow-wrap: normal; }
 @media print, (max-width: 700px) { details.bibtex pre { white-space: pre-wrap; } }
+
+.security-page article { max-width: 66ch; }
+.security-page article + article { margin-top: 2.5rem; padding-top: 2.5rem; border-top: 1px solid var(--hairline); }
+.security-page .writeup-meta { color: var(--slate); font-size: 1rem; }
+.security-page h4 { margin-top: 1.75rem; }
+.security-page h5 { margin: 1.25rem 0 0.75rem; font-size: 1.125rem; font-weight: 500; line-height: 1.15; }
+.security-page ol { padding-left: 1.2rem; margin: 0 0 1.5rem; max-width: 66ch; }
