@@ -82,7 +82,7 @@ class SecurityPage(unittest.TestCase):
         self.assertIn("10 write-ups across 2 platforms, latest 10 November 2026", page)
         self.assertIn("<!-- OWNER: one or two sentences in your own words -->", page)
         self.assertIn('<body class="security-page">', page)
-        self.assertIn("<title>Security write-ups</title>", page)
+        self.assertIn("<title>Security write-ups · Leo Y. Zhang</title>", page)
         index = (self.site / "index.html").read_text(encoding="utf-8")
         # Same navigation and footer; home-page anchors resolve back to index,
         # following the existing vdw.html convention.

@@ -229,7 +229,7 @@ def render(writeups: list[dict], index: str, reference: str) -> str:
     head = block(reference, r"<!doctype html>.*?</head>")
     old_title = re.search(r"<title>(.*?)</title>", head).group(1)
     description = re.search(r'<meta name="description" content="(.*?)">', head).group(1)
-    head = head.replace(old_title, "Security write-ups")
+    head = head.replace(old_title, "Security write-ups · Leo Y. Zhang")
     head = head.replace(description, "Security wargame and CTF level write-ups.")
     head = head.replace("/vdw.html", "/security.html")
     header = block(index, r'<header class="site-header">.*?</header>')

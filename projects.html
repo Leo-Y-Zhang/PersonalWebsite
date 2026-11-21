@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leo Y. Zhang — Project notes</title>
+<title>Project notes · Leo Y. Zhang</title>
 <meta name="description" content="Long-form notes on combinatorics, games, systems and other projects.">
 <link rel="canonical" href="https://leo-y-zhang.github.io/PersonalWebsite/projects.html">
 <meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
@@ -11,7 +11,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="avatar.png">
 <link rel="stylesheet" href="style.css">
-<meta property="og:title" content="Leo Y. Zhang — Project notes">
+<meta property="og:title" content="Project notes · Leo Y. Zhang">
 <meta property="og:description" content="Long-form notes on combinatorics, games, systems and other projects.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/projects.html">
@@ -20,14 +20,14 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Leo Y. Zhang: combinatorics, game engines and software">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Leo Y. Zhang — Project notes">
+<meta name="twitter:title" content="Project notes · Leo Y. Zhang">
 <meta name="twitter:description" content="Long-form notes on combinatorics, games, systems and other projects.">
 <meta name="twitter:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
-  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt="Eight-cell colouring mark" decoding="async" loading="lazy"><span>Leo Y. Zhang</span></a>
+  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt=""><span>Leo Y. Zhang</span></a>
   <nav aria-label="Main navigation">
     <a href="index.html#work">Work</a> <a href="index.html#mathematics">Mathematics</a> <a href="index.html#try-it">Try it</a> <a href="index.html#index">Index</a> <a href="security.html">Security</a> <a href="index.html#about">About</a> <a href="index.html#contact">Contact</a> <a href="vdw.html">vdW numbers</a>
   </nav>
@@ -36,7 +36,7 @@
 <div class="page-intro"><h1>Project notes</h1><p class="deck">The projects and the evidence behind their results.</p></div>
 
 <section class="catalogue-section" id="glance" aria-labelledby="glance-h"><h2 id="glance-h">At a glance</h2><div class="section-content">
-  <p>There are <strong>36 public repositories</strong> and <strong>174 accepted OEIS terms across 21 sequences</strong>. Both figures were re-derived on 3 November 2026. The <a href="index.html#mathematics">mathematics is on the home page</a>, with the certificate.</p>
+  <p>There are <strong>37 public repositories</strong>, not counting forks, and <strong>174 accepted OEIS terms across 21 sequences</strong>. Both figures were re-derived on 21 November 2026. The <a href="index.html#mathematics">mathematics is on the home page</a>, with the certificate.</p>
 </div></section>
 
 <section class="catalogue-section" id="selected-notes" aria-labelledby="selected-notes-h"><h2 id="selected-notes-h">Selected projects</h2><div class="section-content">
@@ -45,39 +45,39 @@
     <dt><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a> <span class="lang">Python</span></dt>
     <dd>The published combinatorics: SAT encodings, DRAT proof certificates, and
     a verification gate (<span class="m">verify_all.py</span>, in CI) that
-    re-derives every published value from scratch before it is quoted &mdash;
-    the five new mixed van der Waerden values ride on it. The full
+    re-derives every published value from scratch before it is quoted.
+    The five new mixed van der Waerden values rest on it. The full
     story is <a href="index.html#mathematics">on the home page</a>.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a> <span class="lang">C++</span></dt>
     <dd>A Scrabble engine in C++ using the standard library: move generation, Monte Carlo simulation, endgame solving
     and self-play training, with its search shortcuts checked against brute force on sampled positions.
-    Its strength is measured, not asserted: logged matches under a neutral
-    referee against the strongest public engines, MAGPIE and Macondo, with the
-    opponents pinned to recorded versions and the results and their limits in
-    the repository. <a href="https://leo-y-zhang.github.io/TileFish/">Play it in the browser</a>.</dd>
+    Its strength comes from logged matches under a neutral referee against the
+    strongest public engines, MAGPIE and Macondo. The opponents are pinned to
+    recorded versions, and the results and their limits are in the repository. <a href="https://leo-y-zhang.github.io/TileFish/">Play it in the browser</a>.</dd>
 
     <dt>Production web application <span class="lang">TypeScript, PostgreSQL, private</span></dt>
-    <dd>A live product with real users: row-level security, versioned migrations, staged deployments behind a
-    manual production gate, and roughly 980 unit plus 85 end-to-end browser
-    tests. The repository is private because it holds operational configuration,
+    <dd>A live web product: row-level security, versioned database migrations,
+    a preview deployment for every pull request and a daily check of the live site.
+    Its main branch passed 1,555 unit tests and 112 end-to-end browser tests
+    on 14 November 2026. The repository is private because it holds operational configuration,
     and the product is not named here; details on request.</dd>
 
     <dt>Systematic trading research platform <span class="lang">Python, private</span></dt>
     <dd>A research platform with an
     immutable hash-chained event ledger, broker reconciliation with
     operator-gated resolution, a latched kill-switch battery, a supervised
-    paper-trading deployment, and a browser operations terminal &mdash;
-    <strong>3,574 automated tests</strong> measured 26 August 2026, with
+    paper-trading deployment and a browser operations terminal. Its main
+    branch passed <strong>3,816 automated tests</strong> on 7 November 2026, with
     mutation testing on the safety-critical seams. Every candidate strategy
     faces deflated-Sharpe and overfitting gates that default to rejection, and
     most fail: results are pre-registered before they run, and the status
-    document is generated from the system, never typed.</dd>
+    document is generated from the system.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a> <span class="lang">Python, Raspberry Pi</span></dt>
     <dd>Climate early warnings from a two-person team: twenty London nodes scored for flood, heat, smog and storm risk 0&ndash;100
-    in real time on one Raspberry Pi, an explainable anomaly model, and honest
-    data-source provenance &mdash; a reading is labelled <em>hardware</em> only
+    in real time on one Raspberry Pi, an explainable anomaly model and
+    data-source provenance: a reading is labelled <em>hardware</em> only
     when a physical sensor produced it. A replay of London&rsquo;s July 2021 flash flood
     shows what the public weather grid missed. 461 automated tests and a one-command
     judge validation passing 5/5 (3 November 2026).</dd>
@@ -86,10 +86,10 @@
 
 <section class="catalogue-section" id="team" aria-labelledby="team-h"><h2 id="team-h">Team &amp; competitions</h2><div class="section-content">
   <dl class="projects">
-    <dt><a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">EndeavourRacing</a> <span class="lang">TypeScript</span></dt>
-    <dd>The team's three web applications for STEM Racing 2026: public site,
-    lap-timing and driver-performance tool, and a project, risk and budget
-    dashboard.</dd>
+    <dt><a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">EndeavourRacing</a> <span class="lang">HTML, JavaScript</span></dt>
+    <dd>The team’s three web applications for STEM Racing 2026: the public site,
+    a lap-time guessing game, and a project, risk and budget dashboard. Each is
+    one self-contained HTML file.</dd>
 
     <dt>Independent research manuscript <span class="lang">June 2026</span></dt>
     <dd>Sixty-two pages on network structure in equity markets: the framework is
@@ -99,15 +99,14 @@
 </div></section>
 
 <section class="catalogue-section" id="index-all" aria-labelledby="index-h"><h2 id="index-h">Everything else, one line each</h2><div class="section-content">
-  <p>Each of these exists to make a claim checkable rather than to assert it.</p>
   <dl class="projects">
     <dt><a href="https://github.com/Leo-Y-Zhang/HartBeat">HartBeat</a> <span class="lang">Rust</span></dt>
     <dd>An RV32IM RISC-V interpreter, checked three independent ways: hand-written
     specification cases, a second implementation, and real compiled programs.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a> <span class="lang">Lean 4</span></dt>
-    <dd>A machine-checked proof-checker development: the soundness argument
-    lives in a proof assistant, not a comment. Written up as a preprint,
+    <dd>A machine-checked soundness proof in Lean 4 for the RUP and RAT rules
+    that DRAT proof checkers apply. Written up as a preprint,
     <a href="https://aixiv.online/abs/2610.03288">aiXiv:2610.03288</a>.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a> <span class="lang">Go</span></dt>
@@ -116,12 +115,12 @@
     brute-force oracle.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a> <span class="lang">Python</span></dt>
-    <dd>The frontier dynamic programs behind the board-graph OEIS terms
-    &mdash; exact counts where brute force is <span class="m">O(2<sup>n&sup2;/2</sup>)</span>.</dd>
+    <dd>The frontier dynamic programs behind the board-graph OEIS terms.
+    They give exact counts where brute force is <span class="m">O(2<sup>n&sup2;/2</sup>)</span>.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/BishopVerify">BishopVerify</a> <span class="lang">Python</span></dt>
-    <dd>An independent verifier for those counts &mdash; the published numbers are
-    re-derived by different code before they are trusted.</dd>
+    <dd>An independent verifier for those counts: different code re-derives
+    the published numbers before they are trusted.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a> <span class="lang">Python</span></dt>
     <dd>A classical-cipher toolkit: fifteen cipher types, an English language
@@ -133,8 +132,8 @@
     every gradient is checked against finite differences.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a> <span class="lang">TypeScript</span></dt>
-    <dd>A deterministic Monte Carlo path tracer whose 278 tests validate the
-    rendering physics, not just the code.</dd>
+    <dd>A deterministic Monte Carlo path tracer. Its 278 tests check the
+    rendering against analytic ground truth.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a> <span class="lang">Python</span></dt>
     <dd>Raft consensus under a seeded fault simulator; the five safety
@@ -177,13 +176,17 @@
     <dd>Scans Greek dactylic hexameter and reports only what the metre itself settles.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/LiberPrimusAnalysis">LiberPrimusAnalysis</a> <span class="lang">Python</span></dt>
-    <dd>Cryptanalysis of the unsolved pages of Cicada 3301&rsquo;s <em>Liber Primus</em>: not solved, but a reproducible toolkit and an exclusion ledger.</dd>
+    <dd>Cryptanalysis of the unsolved pages of Cicada 3301&rsquo;s <em>Liber Primus</em>. The pages are still unsolved; the repository keeps a reproducible toolkit and a log of every approach ruled out.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a> <span class="lang">Python</span></dt>
     <dd>A geometric permutation test for whether a political boundary bends a city&rsquo;s road network.</dd>
 
     <dt><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a> <span class="lang">JavaScript</span></dt>
     <dd>Renders vertical chess videos to MP4 entirely on the local machine, with no external assets.</dd>
+
+    <dt><a href="https://github.com/Leo-Y-Zhang/GuessTheElo">Guess the Elo</a> <span class="lang">JavaScript, Python</span></dt>
+    <dd>Guess the average rating of two players from a real rated Lichess game, against a
+    model that misses by 269 points on average; <a href="https://leo-y-zhang.github.io/GuessTheElo/">play it in the browser</a>.</dd>
   </dl>
 </div></section>
 
@@ -196,7 +199,7 @@
 
 </main>
 <footer class="site-footer">
-  <p>Set in Newsreader by Production Type, with Noto Serif for Greek. Both fonts use the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 3 November 2026.</p>
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek and IBM Plex Mono for code, all under the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 21 November 2026.</p>
   <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
 </body>

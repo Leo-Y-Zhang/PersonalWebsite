@@ -47,8 +47,8 @@ in your own words. When ready to publish, `--link` also adds Security to the
 front-page navigation and `security.html` to the sitemap; repeated runs add
 no duplicates. Without it, only the output file changes.
 
-Fonts are self-hosted in `fonts/`: IBM Plex Mono, under the SIL Open Font
-License 1.1.
+Fonts are self-hosted in `fonts/`: Newsreader, Noto Serif (for Greek) and
+IBM Plex Mono, all under the SIL Open Font License 1.1.
 
 Served by GitHub Pages from the repository root, so a push to `main` is a
 deploy. The live address is the one at the top; it is also on the repository's

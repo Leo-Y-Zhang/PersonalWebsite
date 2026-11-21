@@ -28,7 +28,7 @@
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
-  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt="Eight-cell colouring mark" decoding="async" loading="lazy"><span>Leo Y. Zhang</span></a>
+  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt=""><span>Leo Y. Zhang</span></a>
   <nav aria-label="Main navigation">
     <a href="#work">Work</a> <a href="#mathematics">Mathematics</a> <a href="#try-it">Try it</a> <a href="#index">Index</a> <a href="security.html">Security</a> <a href="#about">About</a> <a href="#contact">Contact</a> <a href="vdw.html">vdW numbers</a>
   </nav>
@@ -37,7 +37,7 @@
 <div class="hero">
 <h1>Leo Y. Zhang</h1>
 <p class="deck">Combinatorics, game engines and software that checks its own answers.</p>
-<figure class="plate hero-plate"><img src="assets/img/tilefish.webp" width="1440" height="900" alt="Tilefish daily Scrabble puzzle with the rack EEILOSV" decoding="async" loading="eager"><figcaption>Tilefish, the Scrabble engine below, on its daily puzzle for 3 November 2026: find the best move for the rack EEILOSV.</figcaption></figure>
+<figure class="plate hero-plate"><img src="assets/img/tilefish.webp" width="1440" height="900" alt="Tilefish daily Scrabble puzzle with the rack EEILOSV" decoding="async" fetchpriority="high"><figcaption>Tilefish, the Scrabble engine below, on its daily puzzle for 3 November 2026: find the best move for the rack EEILOSV.</figcaption></figure>
 </div><section class="catalogue-section" id="work" aria-labelledby="work-h">
 <h2 id="work-h">Selected work</h2>
 <div class="section-content">
@@ -45,7 +45,7 @@
 <tr><th scope="row">Against MAGPIE, CSW24, neutral referee</th><td>Won 57.1% of 760 games</td></tr>
 <tr><th scope="row">Against Macondo at BestBot’s settings, 60 s a move</th><td>48.6% of 832 games</td></tr>
 </tbody></table></div></div></article>
-<article class="work-entry certificate-entry" aria-labelledby="mathrecords-h"><div class="work-copy"><h3 id="mathrecords-h">MathRecords</h3><p>Five new mixed van der Waerden numbers, found with a SAT solver and accepted into the OEIS in August 2026: A217058 a(12) = 57, A217005 a(19) = 52, A217007 a(7) = 68, A217236 a(4) = 84 and A217059 a(9) = 74.</p><p>Each lower bound is a colouring anyone can check by hand. Each upper bound was checked with DRAT proofs: 23,851 per-cube proofs replayed by drat-trim.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/MathRecords">Source</a> <a href="vdw.html">All the vdW values</a></p></div><div class="work-visual"><figure class="cert">
+<article class="work-entry certificate-entry" aria-labelledby="mathrecords-h"><div class="work-copy"><h3 id="mathrecords-h">MathRecords</h3><p>Five new mixed van der Waerden numbers, found with a SAT solver and accepted into the OEIS between 30 July and 13 August 2026: A217058 a(12) = 57, A217005 a(19) = 52, A217007 a(7) = 68, A217236 a(4) = 84 and A217059 a(9) = 74.</p><p>Each lower bound is a colouring anyone can check by hand. Each upper bound was checked with DRAT proofs: 23,851 per-cube proofs replayed by drat-trim.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/MathRecords">Source</a> <a href="vdw.html">The vdW reference</a></p></div><div class="work-visual"><figure class="cert">
     <div class="cells" role="img" aria-label="The 56-cell certificate colouring for OEIS A217058: navy cells are class one, ochre cells are class two, hollow cells are wildcards.">
     <i class="c2" style="--i:0" title="position 1: class 2"></i>
     <i class="w" style="--i:1" title="position 2: wildcard"></i>
@@ -114,11 +114,11 @@
     </figcaption>
   </figure></div><div class="work-check"><h4>Check it yourself</h4><p>This command reads the colouring from this page and checks its arithmetic progressions. It uses only the Python standard library.</p><pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/PersonalWebsite
 python PersonalWebsite/tools/verify_certificate.py</code></pre></div></article>
-<article class="work-entry" aria-labelledby="oeisheadroom-h"><div class="work-copy"><h3 id="oeisheadroom-h">OEISHeadroom</h3><p>OEISHeadroom finds OEIS sequences that stopped early because a brute-force search got slow, and extends them. 123 new terms across these seven sequences were accepted between 31 August and 2 September 2026. Each program first reproduces every published term.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">Source</a></p></div><div class="work-visual"><table class="sequence-list"><caption>Seven extended sequences</caption><thead><tr><th scope="col">OEIS sequence</th></tr></thead><tbody><tr><td><a href="https://oeis.org/A319381">A319381</a></td></tr><tr><td><a href="https://oeis.org/A323586">A323586</a></td></tr><tr><td><a href="https://oeis.org/A325555">A325555</a></td></tr><tr><td><a href="https://oeis.org/A325556">A325556</a></td></tr><tr><td><a href="https://oeis.org/A347414">A347414</a></td></tr><tr><td><a href="https://oeis.org/A353403">A353403</a></td></tr><tr><td><a href="https://oeis.org/A337114">A337114</a></td></tr></tbody></table></div></article>
-<article class="work-entry" aria-labelledby="greekscansion-h"><div class="work-copy"><h3 id="greekscansion-h">GreekScansion</h3><p>GreekScansion scans Classical Greek dactylic hexameter. It claims only what the metre settles, reporting unique, ambiguous or unscannable rather than guessing.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/GreekScansion">Source</a></p></div><div class="work-visual"><figure class="plate"><div class="type-plate"><p lang="grc">ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ</p><pre><samp>2  unique  -??-uu-?u?uu-??-?  DDDDD|</samp></pre><p class="caption">- heavy, u light, ? not settled by the spelling</p></div><figcaption>GreekScansion on Odyssey 1.1. The spelling settles some syllables and leaves others open; the metre forces the rest, so the line has exactly one reading: five dactyls.</figcaption></figure></div></article>
-<article class="work-entry" aria-labelledby="pitlanetycoon-h"><div class="work-copy"><h3 id="pitlanetycoon-h">Pit Lane Tycoon</h3><p>A Roblox tycoon game written in Luau and built with Rojo. You run a racing team's factory: presses stamp out car parts, a conveyor carries them through the paint shop and wind tunnel to scrutineering, and every part that passes pays for the next machine.</p><p>Twenty-four purchases win the Constructors' trophy and start a new season, which resets the garage and adds 50% to all earnings for good. A pit crew, live server events and a time-trial track round the paddock fill the time between purchases.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/PitLaneTycoon">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/pitlanetycoon.webp" width="1280" height="720" alt="Pit Lane Tycoon paddock with team garages and a pit wall" decoding="async" loading="lazy"><figcaption>The paddock in Pit Lane Tycoon, with a garage for each of the six teams.</figcaption></figure></div></article>
+<article class="work-entry" aria-labelledby="oeisheadroom-h"><div class="work-copy"><h3 id="oeisheadroom-h">OEISHeadroom</h3><p>OEISHeadroom finds OEIS sequences that stopped early because a brute-force search got slow, and extends them. 123 new terms across these seven sequences were accepted between 31 August and 2 September 2026. Each program first reproduces every published term.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">Source</a></p></div><div class="work-visual"><table class="sequence-list"><caption>Seven extended sequences, 123 terms, as recorded by the OEIS</caption><thead><tr><th scope="col">Sequence</th><th scope="col">New terms</th><th scope="col">Count</th></tr></thead><tbody><tr><th scope="row"><a href="https://oeis.org/A319381">A319381</a></th><td>a(23) to a(50)</td><td>28</td></tr><tr><th scope="row"><a href="https://oeis.org/A323586">A323586</a></th><td>a(14) to a(40)</td><td>27</td></tr><tr><th scope="row"><a href="https://oeis.org/A325555">A325555</a></th><td>a(26) to a(41)</td><td>16</td></tr><tr><th scope="row"><a href="https://oeis.org/A325556">A325556</a></th><td>a(26) to a(42)</td><td>17</td></tr><tr><th scope="row"><a href="https://oeis.org/A347414">A347414</a></th><td>a(26) to a(38)</td><td>13</td></tr><tr><th scope="row"><a href="https://oeis.org/A353403">A353403</a></th><td>a(18) to a(27)</td><td>10</td></tr><tr><th scope="row"><a href="https://oeis.org/A337114">A337114</a></th><td>a(25) to a(36)</td><td>12</td></tr></tbody></table></div></article>
+<article class="work-entry" aria-labelledby="greekscansion-h"><div class="work-copy"><h3 id="greekscansion-h">GreekScansion</h3><p>GreekScansion scans Classical Greek dactylic hexameter. It claims only what the metre settles: each line is reported as unique, ambiguous or unscannable.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/GreekScansion">Source</a></p></div><div class="work-visual"><figure class="plate"><div class="type-plate"><p lang="grc">ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ</p><pre><samp>2  unique  -??-uu-?u?uu-??-?  DDDDD|</samp></pre><p class="caption">- heavy, u light, ? not settled by the spelling</p></div><figcaption>GreekScansion on Odyssey 1.1. The spelling settles some syllables and leaves others open; the metre forces the rest, so the line has exactly one reading: five dactyls.</figcaption></figure></div></article>
+<article class="work-entry" aria-labelledby="pitlanetycoon-h"><div class="work-copy"><h3 id="pitlanetycoon-h">Pit Lane Tycoon</h3><p>A Roblox tycoon game written in Luau and built with Rojo. You run a racing team’s factory: presses stamp out car parts, a conveyor carries them through the paint shop and wind tunnel to scrutineering, and every part that passes pays for the next machine.</p><p>Twenty-four purchases win the Constructors’ trophy and start a new season, which resets the garage and adds 50% to all earnings for good. A pit crew, live server events and a time-trial track round the paddock fill the time between purchases.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/PitLaneTycoon">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/pitlanetycoon.webp" width="1280" height="720" alt="Pit Lane Tycoon paddock with team garages and a pit wall" decoding="async" loading="lazy"><figcaption>The paddock in Pit Lane Tycoon, with a garage for each of the six teams.</figcaption></figure></div></article>
 <article class="work-entry" aria-labelledby="endeavourracing-h"><div class="work-copy"><h3 id="endeavourracing-h">EndeavourRacing</h3><p>Three web applications support a STEM Racing team. They provide the website, a lap-time prediction game and a project, risk and budget dashboard.</p><p class="links"><a href="https://leo-y-zhang.github.io/EndeavourRacing/website/">Visit the site</a> <a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/endeavour.webp" width="1440" height="900" alt="EndeavourRacing team website" decoding="async" loading="lazy"><figcaption>The EndeavourRacing website.</figcaption></figure></div></article>
-<article class="work-entry" aria-labelledby="climatemesh-h"><div class="work-copy"><h3 id="climatemesh-h">ClimateMesh</h3><p>An early-warning system for floods, heat, smog and storms that runs on one Raspberry Pi, built by a team of two for the PA Raspberry Pi Competition. Twenty nodes across London are scored from 0 to 100, each with a plain-English reason and the actions to take. Every reading says where it came from: a physical sensor, a live API, a recorded event or a simulation.</p><p>In a replay of London’s flash flood of 12 July 2021, the rain gauge at Putney Heath recorded 33.24 mm in one hour, while the public weather grid showed 1.5 mm for the same place.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/climatemesh.webp" width="1440" height="775" alt="ClimateMesh live risk map of twenty London nodes during a simulated flood, with the river and canal nodes at critical" decoding="async" loading="lazy"><figcaption>The live map during a simulated flood. Each circle is a node, coloured by risk band and sized by score; grey lines join neighbours close enough to confirm each other’s readings.</figcaption></figure></div><div class="work-check"><h4>Check it yourself</h4><p>This runs a smoke test, all 461 automated tests, two demo cycles and the evidence export, and prints PASS or FAIL for each step.</p><pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/ClimateMesh
+<article class="work-entry" aria-labelledby="climatemesh-h"><div class="work-copy"><h3 id="climatemesh-h">ClimateMesh</h3><p>An early-warning system for floods, heat, smog and storms that runs on one Raspberry Pi, built by a team of two for the PA Raspberry Pi Competition. Twenty nodes across London are scored from 0 to 100, each with a plain-English reason and the actions to take. Every reading says where it came from: a physical sensor, a live API, a recorded event or a simulation.</p><p>In a replay of London’s flash flood of 12 July 2021, the rain gauge at Putney Heath recorded 33.24 mm in one hour, at 16:00. The public weather grid gave Putney 16.0 mm for the whole day.</p><p class="links"><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">Source</a></p></div><div class="work-visual"><figure class="plate"><img src="assets/img/climatemesh.webp" width="1440" height="775" alt="ClimateMesh live risk map of twenty London nodes during a simulated flood, with the river and canal nodes at critical" decoding="async" loading="lazy"><figcaption>The live map during a simulated flood. Each circle is a node, coloured by risk band and sized by score; grey lines join neighbours close enough to confirm each other’s readings.</figcaption></figure></div><div class="work-check"><h4>Check it yourself</h4><p>This runs a smoke test, all 461 automated tests, two demo cycles and the evidence export, and prints PASS or FAIL for each step.</p><pre class="run"><code>git clone https://github.com/Leo-Y-Zhang/ClimateMesh
 cd ClimateMesh &amp;&amp; pip install -r requirements.txt
 python scripts/judge_validate.py</code></pre></div></article>
 </div>
@@ -132,7 +132,7 @@ python scripts/judge_validate.py</code></pre></div></article>
 <dt>Luau</dt><dd><a href="https://github.com/Leo-Y-Zhang/PitLaneTycoon">Pit Lane Tycoon</a> (a Roblox game).</dd>
 <dt>Lean 4</dt><dd><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a> (a soundness proof for the RUP and RAT proof rules).</dd>
 <dt>TypeScript</dt><dd><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a>, <a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a>.</dd>
-<dt>JavaScript</dt><dd><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a>.</dd>
+<dt>JavaScript</dt><dd><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a>, <a href="https://github.com/Leo-Y-Zhang/GuessTheElo">Guess the Elo</a>.</dd>
 <dt>Python</dt><dd><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>, <a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a>, <a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a>, <a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a>, <a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a>, <a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a>, <a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a>, <a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a>, <a href="https://github.com/Leo-Y-Zhang/CipherTool">CipherTool</a>, <a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a>, <a href="https://github.com/Leo-Y-Zhang/DeterministicRaft">DeterministicRaft</a>, <a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a>.</dd></dl><h3>Problems</h3><dl class="range-list"><dt>SAT encodings and proof certificates</dt><dd><a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>, <a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a>, <a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a>, <a href="https://github.com/Leo-Y-Zhang/CycleRamsey">CycleRamsey</a>, <a href="https://github.com/Leo-Y-Zhang/PalindromicVDW">PalindromicVDW</a>.</dd>
 <dt>Checking proofs</dt><dd><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a>, <a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a>.</dd>
 <dt>Game search and simulation</dt><dd><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a>, <a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a>.</dd>
@@ -150,12 +150,13 @@ python scripts/judge_validate.py</code></pre></div></article>
 <section class="catalogue-section" id="mathematics" aria-labelledby="mathematics-h">
 <h2 id="mathematics-h">Mathematics</h2>
 <div class="section-content">
-<p>174 terms across 21 OEIS sequences have been accepted. The figure was re-derived from the live OEIS on 3 November 2026.</p>
+<p>174 terms across 21 OEIS sequences have been accepted. The figure was re-derived from the live OEIS on 21 November 2026.</p>
 <ul class="math-lines">
 <li>Mixed van der Waerden numbers: 5 terms, <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>.</li>
 <li>2-colour Rado numbers for x₁² + … + xₙ² = z²: <a href="https://oeis.org/A250026">A250026</a> a(31) to a(60), 30 terms, <a href="https://github.com/Leo-Y-Zhang/RadoRecords">RadoRecords</a>.</li>
 <li>Board-graph sequences via a bishop-to-rook rotation: 14 terms in 7 sequences, <a href="https://github.com/Leo-Y-Zhang/GraphRecords">GraphRecords</a>.</li>
 <li>Sequences that stopped where a brute force got slow: 123 terms in 7 sequences, <a href="https://github.com/Leo-Y-Zhang/OEISHeadroom">OEISHeadroom</a>.</li>
+<li>Erdős problem #176: <a href="https://oeis.org/A398541">A398541</a> a(16) and a(17), 2 terms. The search for a(17) is in <a href="https://github.com/Leo-Y-Zhang/DiscrepancyRecords">DiscrepancyRecords</a>.</li>
 </ul>
 <h3>Contributions</h3><div class="table-scroll" role="region" aria-label="Contributions to the OEIS" tabindex="0"><table class="seqs">
     <caption>Status as recorded by the OEIS.</caption>
@@ -166,27 +167,27 @@ python scripts/judge_validate.py</code></pre></div></article>
       <tr>
         <th scope="row"><a href="https://oeis.org/A217058">A217058</a></th>
         <td class="m">a(12)</td><td class="m">57</td>
-        <td><span class="ok">published</span> &mdash; credited 30 July 2026</td>
+        <td>published, credited 30 July 2026</td>
       </tr>
       <tr>
         <th scope="row"><a href="https://oeis.org/A217005">A217005</a></th>
         <td class="m">a(19)</td><td class="m">52</td>
-        <td><span class="ok">published</span> &mdash; credited 7 August 2026</td>
+        <td>published, credited 7 August 2026</td>
       </tr>
       <tr>
         <th scope="row"><a href="https://oeis.org/A217007">A217007</a></th>
         <td class="m">a(7)</td><td class="m">68</td>
-        <td><span class="ok">published</span> &mdash; credited 7 August 2026</td>
+        <td>published, credited 7 August 2026</td>
       </tr>
       <tr>
         <th scope="row"><a href="https://oeis.org/A217236">A217236</a></th>
         <td class="m">a(4)</td><td class="m">84</td>
-        <td><span class="ok">published</span> &mdash; credited 7 August 2026</td>
+        <td>published, credited 7 August 2026</td>
       </tr>
       <tr>
         <th scope="row"><a href="https://oeis.org/A217059">A217059</a></th>
         <td class="m">a(9)</td><td class="m">74</td>
-        <td><span class="ok">published</span> &mdash; credited 13 August 2026</td>
+        <td>published, credited 13 August 2026</td>
       </tr>
     </tbody>
   </table></div>
@@ -229,11 +230,12 @@ python scripts/judge_validate.py</code></pre></div></article>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/CycleRamsey">CycleRamsey</a></dt><dd>Three-colour cycle Ramsey numbers as SAT: an independent encoding, a solver-free witness checker, and a measured account of where the method stops.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/PalindromicVDW">PalindromicVDW</a></dt><dd>Palindromic mixed van der Waerden numbers as SAT: an encoding, an independent checker, and the measured point where a desktop solver stops.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/Refute">Refute</a></dt><dd>A DRAT and LRAT proof checker in Rust with no dependencies, plus a browser version that keeps files on your machine.</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a></dt><dd>Machine-checked soundness proof in Lean 4 for the RUP and RAT rules that DRAT proof checkers apply</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/Ratified">Ratified</a></dt><dd>Machine-checked soundness proof in Lean 4 for the RUP and RAT rules that DRAT proof checkers apply.</dd></div>
 </dl></div>
 <div class="index-group"><h3>Games</h3><dl class="repo-index">
 <div><dt><a href="https://github.com/Leo-Y-Zhang/TileFish">Tilefish</a></dt><dd>Scrabble engine in C++ that you can play in the browser: Monte Carlo simulation, exact endgames, CSW24 and NWL23. Match logs against other engines included.</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/PitLaneTycoon">Pit Lane Tycoon</a></dt><dd>A Roblox tycoon in Luau: build a racing team's factory, win the Constructors' trophy, start a new season.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PitLaneTycoon">Pit Lane Tycoon</a></dt><dd>A Roblox tycoon in Luau: build a racing team’s factory, win the Constructors’ trophy, start a new season.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/GuessTheElo">Guess the Elo</a></dt><dd>Watch a real rated Lichess game with the players’ real clocks, guess their average rating, and compare your guess with a model that misses by 269 points on average.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/ChessPuzzleForge">ChessPuzzleForge</a></dt><dd>Generates mate-in-N and tactics puzzles and re-checks every answer with its own chess engine. Pure Python.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/ChessEditForge">ChessEditForge</a></dt><dd>Offline factory that renders vertical 9:16 chess-edit MP4s from one command: pure Canvas 2D, no ffmpeg, no uploads, no licensed assets.</dd></div>
 </dl></div>
@@ -244,7 +246,7 @@ python scripts/judge_validate.py</code></pre></div></article>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/Splitbrain">Splitbrain</a></dt><dd>Drives a real key-value cluster through seeded TCP partitions and machine-checks the recorded history for linearizability, with a brute-force oracle behind the checker.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/GradForge">GradForge</a></dt><dd>A small autograd engine and character-level GPT in Python with no ML libraries, with numerical gradient checks.</dd></div>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/QuantumCompiler">QuantumCompiler</a></dt><dd>Toy quantum-circuit compiler; each optimisation is checked by comparing unitaries exactly.</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a></dt><dd>Zero-dependency, deterministic Monte Carlo path tracer in TypeScript whose 278 tests validate the rendering physics, not just the code.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PathTracer">PathTracer</a></dt><dd>Zero-dependency, deterministic Monte Carlo path tracer in TypeScript. Its 278 tests check the rendering against analytic ground truth.</dd></div>
 </dl></div>
 <div class="index-group"><h3>Language and puzzles</h3><dl class="repo-index">
 <div><dt><a href="https://github.com/Leo-Y-Zhang/GreekScansion">GreekScansion</a></dt><dd>Scans Greek dactylic hexameter. If exactly one legal scansion fits a line it reports it; otherwise it says ambiguous or unscannable.</dd></div>
@@ -252,25 +254,26 @@ python scripts/judge_validate.py</code></pre></div></article>
 <div><dt><a href="https://github.com/Leo-Y-Zhang/LiberPrimusAnalysis">LiberPrimusAnalysis</a></dt><dd>Statistical analysis of the unsolved Cicada 3301 Liber Primus pages, with a log of every approach ruled out.</dd></div>
 </dl></div>
 <div class="index-group"><h3>Science, statistics and tools</h3><dl class="repo-index">
-<div><dt><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a></dt><dd>Interactive browser thermodynamics sandbox: enthalpy-method melting, solidification and boiling, zero runtime dependencies</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a></dt><dd>Raspberry Pi environmental sensing mesh with explainable early-warning risk scoring and provenance-labelled data</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a></dt><dd>Does a removed border still bend a city&#x27;s road network? A geometric permutation test for boundary severance, applied to the Berlin Wall and the Cyprus buffer zone.</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/SuiteAudit">SuiteAudit</a></dt><dd>Finds tests that cannot fail by reading the test code's syntax tree. No dependencies.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/MeltSim">MeltSim</a></dt><dd>Interactive browser thermodynamics sandbox: enthalpy-method melting, solidification and boiling, zero runtime dependencies.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/ClimateMesh">ClimateMesh</a></dt><dd>Raspberry Pi environmental sensing mesh with explainable early-warning risk scoring and provenance-labelled data.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/BoundarySeverance">BoundarySeverance</a></dt><dd>Does a removed border still bend a city’s road network? A geometric permutation test for boundary severance, applied to the Berlin Wall and the Cyprus buffer zone.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/SuiteAudit">SuiteAudit</a></dt><dd>Finds tests that cannot fail by reading the test code’s syntax tree. No dependencies.</dd></div>
 </dl></div>
 <div class="index-group"><h3>Talks</h3><dl class="repo-index">
 <div><dt><a href="https://github.com/Leo-Y-Zhang/HowToBreakTheInternet">HowToBreakTheInternet</a></dt><dd>A lecture on quantum computing and RSA: the slides with live demos, the maths, and four small Python programs.</dd></div>
 </dl></div>
 <div class="index-group"><h3>Team and web</h3><dl class="repo-index">
 <div><dt><a href="https://github.com/Leo-Y-Zhang/EndeavourRacing">EndeavourRacing</a></dt><dd>Single-file web apps for a student motorsport team: the marketing site, a lap-time prediction game, and a project, risk and budget dashboard.</dd></div>
-<div><dt><a href="https://github.com/Leo-Y-Zhang/PersonalWebsite">PersonalWebsite</a></dt><dd>Personal site and portfolio: a certificate-strip hero built from a real verified OEIS result, self-hosted type, no trackers.</dd></div>
+<div><dt><a href="https://github.com/Leo-Y-Zhang/PersonalWebsite">PersonalWebsite</a></dt><dd>This site: hand-written HTML and CSS, self-hosted type and no trackers. The certificate strip on the front page is the real lower bound for OEIS A217058 a(12).</dd></div>
 </dl></div>
 </div>
 </section>
 <section class="catalogue-section" id="recent" aria-labelledby="recent-h">
 <h2 id="recent-h">Recent</h2>
 <div class="section-content">
-<dl class="recent"><dt><time datetime="2026-10-31">31 Oct 2026</time></dt><dd>Ratified’s preprint <a href="https://aixiv.online/abs/2610.03288">published on aiXiv</a>.</dd>
-<dt><time datetime="2026-10-01">1 Oct 2026</time></dt><dd>Gave a lecture on quantum computing and RSA with a co-presenter. <a href="https://github.com/Leo-Y-Zhang/HowToBreakTheInternet">Slides and demos</a>.</dd>
+<dl class="recent"><dt><time datetime="2026-11-13">13 Nov 2026</time></dt><dd><a href="https://leo-y-zhang.github.io/GuessTheElo/">Guess the Elo</a> went live: watch a real rated Lichess game and guess the players’ average rating.</dd>
+<dt><time datetime="2026-10-31">31 Oct 2026</time></dt><dd>Ratified’s preprint <a href="https://aixiv.online/abs/2610.03288">published on aiXiv</a>.</dd>
+<dt><time datetime="2026-10">Oct 2026</time></dt><dd>Gave a lecture on quantum computing and RSA with a co-presenter. <a href="https://github.com/Leo-Y-Zhang/HowToBreakTheInternet">Slides and demos</a>.</dd>
 <dt><time datetime="2026-09-02">2 Sep 2026</time></dt><dd><a href="https://oeis.org/A337114">A337114</a> a(25) to a(36) published, bringing the total to 174 accepted terms across 21 sequences.</dd>
 <dt><time datetime="2026-08-13">13 Aug 2026</time></dt><dd>The last of the five mixed van der Waerden numbers approved.</dd></dl>
 </div>
@@ -298,7 +301,7 @@ python scripts/judge_validate.py</code></pre></div></article>
 
 </main>
 <footer class="site-footer">
-  <p>Set in Newsreader by Production Type, with Noto Serif for Greek. Both fonts use the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 3 November 2026.</p>
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek and IBM Plex Mono for code, all under the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 21 November 2026.</p>
   <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
 </body>

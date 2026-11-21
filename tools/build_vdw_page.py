@@ -87,7 +87,7 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
                 f'      <tr>\n'
                 f'        <th scope="row" class="m">a({j})</th>\n'
                 f'        <td class="m"><strong>{val}</strong></td>\n'
-                f'        <td><span class="ok">new</span> &mdash; published by the OEIS,'
+                f'        <td>new: published by the OEIS,'
                 f' credited {credited}; <a href="{GH}{cert}">witness colouring</a>'
                 f' for the lower bound; {upper}</td>\n'
                 f'      </tr>')
@@ -96,7 +96,7 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
                 f'      <tr>\n'
                 f'        <th scope="row" class="m">a({j})</th>\n'
                 f'        <td class="m">{val}</td>\n'
-                f'        <td>previously known &mdash; as recorded by the OEIS</td>\n'
+                f'        <td>previously known, as recorded by the OEIS</td>\n'
                 f'      </tr>')
     import re as _re
     name = html.escape(fam["name"], quote=False).replace("...", "&hellip;")
@@ -109,7 +109,7 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
   <p class="seqdef">{name}</p>
   <div class="table-scroll" role="region" aria-label="{seq} values" tabindex="0">
   <table class="seqs">
-    <caption>All known terms, as recorded by the OEIS.</caption>
+    <caption>Terms as recorded by the OEIS when this page was last regenerated.</caption>
     <thead>
       <tr><th scope="col">Term</th><th scope="col">Value</th><th scope="col">Provenance</th></tr>
     </thead>
@@ -133,7 +133,7 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leo Y. Zhang — Van der Waerden numbers</title>
+<title>Van der Waerden numbers · Leo Y. Zhang</title>
 <meta name="description" content="Known terms, colourings and checked upper bounds for five mixed van der Waerden families.">
 <link rel="canonical" href="https://leo-y-zhang.github.io/PersonalWebsite/vdw.html">
 <meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
@@ -141,7 +141,7 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="avatar.png">
 <link rel="stylesheet" href="style.css">
-<meta property="og:title" content="Leo Y. Zhang — Van der Waerden numbers">
+<meta property="og:title" content="Van der Waerden numbers · Leo Y. Zhang">
 <meta property="og:description" content="Known terms, colourings and checked upper bounds for five mixed van der Waerden families.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leo-y-zhang.github.io/PersonalWebsite/vdw.html">
@@ -150,14 +150,14 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Leo Y. Zhang: combinatorics, game engines and software">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Leo Y. Zhang — Van der Waerden numbers">
+<meta name="twitter:title" content="Van der Waerden numbers · Leo Y. Zhang">
 <meta name="twitter:description" content="Known terms, colourings and checked upper bounds for five mixed van der Waerden families.">
 <meta name="twitter:image" content="https://leo-y-zhang.github.io/PersonalWebsite/assets/og.png">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
-  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt="Eight-cell colouring mark" decoding="async" loading="lazy"><span>Leo Y. Zhang</span></a>
+  <a class="identity" href="./"><img class="mark" src="favicon.svg" width="40" height="40" alt=""><span>Leo Y. Zhang</span></a>
   <nav aria-label="Main navigation">
     <a href="index.html#work">Work</a> <a href="index.html#mathematics">Mathematics</a> <a href="index.html#try-it">Try it</a> <a href="index.html#index">Index</a> <a href="security.html">Security</a> <a href="index.html#about">About</a> <a href="index.html#contact">Contact</a> <a href="vdw.html">vdW numbers</a>
   </nav>
@@ -167,28 +167,26 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 
 
 <section class="catalogue-section" id="about-page" aria-labelledby="aboutp-h"><h2 id="aboutp-h">What this page is</h2><div class="section-content">
-  <p>For years the community's reference tables for van der Waerden data were
+  <p>For years the community’s reference tables for van der Waerden data were
   maintained by Tanbir Ahmed, whose computations produced many of the values
-  below; his pages have since gone offline. This page keeps a maintained,
-  verifiable successor for the five mixed families I work on: <strong>every
-  known term</strong> as the OEIS records it, <strong>every new term</strong>
+  below; his pages have since gone offline. This page is a verifiable
+  successor for the five mixed families I work on: <strong>every term</strong>
+  the OEIS recorded when the page was last regenerated, <strong>every new term</strong>
   with a certificate you can check yourself, and <strong>every claim labelled
   by the kind of evidence behind it</strong>.</p>
   <ul class="halves">
     <li><strong>Lower bounds are certificates.</strong> Each new term links a
     witness colouring; checking it needs the definition and nothing else.</li>
-    <li><strong>Upper bounds are labelled honestly.</strong> All five new
+    <li><strong>Upper bounds are labelled by their evidence.</strong> All five new
     refutations have been reduced to formally checked proof objects:
     23,851 per-cube DRAT proofs across the five families, each replayed to
     <samp>s&nbsp;VERIFIED</samp> by drat-trim, plus a checked proof
-    for each family that its cube set is exhaustive. The tables label every
-    upper bound by the evidence behind it rather than dressing a verdict as a
-    proof.</li>
+    for each family that its cube set is exhaustive.</li>
   </ul>
   <p>The tables are generated from the OEIS and cross-checked against the
   b-files in <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
   by <a href="{GH.replace('MathRecords/blob/main/', 'PersonalWebsite/blob/main/')}tools/build_vdw_page.py">a script that refuses to build the page
-  if the two sources disagree</a> &mdash; last regenerated {today}.</p>
+  if the two sources disagree</a>. It was last regenerated {today}.</p>
 </div></section>
 
 <section class="catalogue-section" id="tables" aria-labelledby="tables-h"><h2 id="tables-h">The five families</h2><div class="section-content">
@@ -196,14 +194,13 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 </div></section>
 
 <section class="catalogue-section" id="verify" aria-labelledby="verify-h"><h2 id="verify-h">Verify it yourself</h2><div class="section-content">
-  <p>No claim on this page asks for trust. The witness colourings check in
-  milliseconds with
-  <a href="{GH}vdw/verify_certificate.py">verify_certificate.py</a>; the whole
+  <p>The witness colourings check in milliseconds with
+  <a href="{GH}vdw/verify_certificate.py">verify_certificate.py</a>. The whole
   repository re-derives every published value independently under
-  <code>verify_all.py</code>, in CI; and the DRAT machinery &mdash;
-  including the measured cost of each proof and why colour symmetry had to
-  come out of the cube set before the equal-target families could be
-  certified &mdash; is documented in <a href="{GH}vdw/DRAT.md">DRAT.md</a>.</p>
+  <code>verify_all.py</code>, in CI. <a href="{GH}vdw/DRAT.md">DRAT.md</a>
+  documents the DRAT machinery, including the measured cost of each proof
+  and why colour symmetry had to come out of the cube set before the
+  equal-target families could be certified.</p>
 </div></section>
 
 <section class="catalogue-section" id="references" aria-labelledby="refs-h"><h2 id="refs-h">References</h2><div class="section-content">
@@ -211,13 +208,13 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
     <li>T. Ahmed, <em>Some new van der Waerden numbers and some van der
     Waerden-type numbers</em>, Integers 9 (2009); and
     <a href="https://cs.uwaterloo.ca/journals/JIS/VOL16/Ahmed/ahmed2.html"><em>Some
-    More Van der Waerden Numbers</em></a>, J. Integer Seq. 16 (2013) &mdash; the
+    More Van der Waerden Numbers</em></a>, J. Integer Seq. 16 (2013), the
     prior work these families stood on for over a decade.</li>
     <li>T. Ahmed, <a href="https://arxiv.org/abs/1102.5433"><em>On the van der
     Waerden numbers w(2;3,t)</em></a>, arXiv:1102.5433.</li>
     <li>The OEIS entries linked in each table, which carry the full submission
     history of every term.</li>
-    <li><em>Five new mixed van der Waerden numbers</em> &mdash; the write-up of
+    <li><em>Five new mixed van der Waerden numbers</em>, the write-up of
     the 2026 terms, with the encoding, the certificates and an explicit account
     of which claims rest on which kind of evidence:
     <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">Write-up</a>.</li>
@@ -227,7 +224,7 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 
 </main>
 <footer class="site-footer">
-  <p>Set in Newsreader by Production Type, with Noto Serif for Greek. Both fonts use the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 3 November 2026.</p>
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek and IBM Plex Mono for code, all under the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 21 November 2026.</p>
   <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
 </body>

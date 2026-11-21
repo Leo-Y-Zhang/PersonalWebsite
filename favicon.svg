@@ -1,10 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect x="2" y="18" width="12" height="12" rx="2" fill="#0b57a4"/>
-  <rect x="18" y="18" width="12" height="12" rx="2" fill="#0b57a4"/>
-  <rect x="34" y="18" width="12" height="12" rx="2" fill="#c08a1e"/>
-  <rect x="50" y="18" width="12" height="12" rx="2" fill="#c08a1e"/>
-  <rect x="2" y="34" width="12" height="12" rx="2" fill="#0b57a4"/>
-  <rect x="18" y="34" width="12" height="12" rx="2" fill="#0b57a4"/>
-  <rect x="34" y="34" width="12" height="12" rx="2" fill="#c08a1e"/>
-  <rect x="50" y="34" width="12" height="12" rx="2" fill="#c08a1e"/>
+  <style>
+    .c1 { fill: #1D4E89; } .c2 { fill: #B7791F; }
+    @media (prefers-color-scheme: dark) { .c1 { fill: #8AB4F0; } .c2 { fill: #E0A647; } }
+  </style>
+  <rect class="c1" x="2" y="18" width="12" height="12" rx="2"/>
+  <rect class="c1" x="18" y="18" width="12" height="12" rx="2"/>
+  <rect class="c2" x="34" y="18" width="12" height="12" rx="2"/>
+  <rect class="c2" x="50" y="18" width="12" height="12" rx="2"/>
+  <rect class="c1" x="2" y="34" width="12" height="12" rx="2"/>
+  <rect class="c1" x="18" y="34" width="12" height="12" rx="2"/>
+  <rect class="c2" x="34" y="34" width="12" height="12" rx="2"/>
+  <rect class="c2" x="50" y="34" width="12" height="12" rx="2"/>
 </svg>
