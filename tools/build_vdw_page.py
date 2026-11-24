@@ -6,6 +6,11 @@ in the --snapshots directory) cross-checked against the b-files in a
 MathRecords checkout. Any disagreement kills the build - a reference page whose
 two sources differ must not exist.
 
+Each term is credited as its OEIS entry credits it: the entry's author for its
+original terms, and an EXTENSIONS line for each term added later. The tables
+are dated by the day the page is built, so build it from snapshots fetched
+that day.
+
 Usage:
     python tools/build_vdw_page.py --mathrecords <MathRecords checkout> \
         --snapshots <dir with oeis_A2170xx.json> --out vdw.html
@@ -16,17 +21,27 @@ import argparse
 import datetime as _dt
 import html
 import json
+import re
 import sys
 from pathlib import Path
 
+#: The name the OEIS credits for the terms this page holds evidence for.
+OWNER = "Leo Y. Zhang"
+
 FAMILIES = [
-    # (sequence, new-term index, credited date, witness certificate path in MathRecords)
-    ("A217058", 12, "30 July 2026", "vdw/cert_n56.txt"),
-    ("A217005", 19, "7 August 2026", "vdw/cert_A217005_n51_witness.txt"),
-    ("A217007", 7, "7 August 2026", "vdw/cert_A217007_a7_n67_witness.txt"),
-    ("A217236", 4, "7 August 2026", "vdw/cert_A217236_a4_n83.txt"),
-    ("A217059", 9, "13 August 2026", "vdw/cert_A217059_a9_n73.txt"),
+    # (sequence, index of the term the OEIS credits to OWNER, witness
+    #  certificate path in MathRecords)
+    ("A217058", 12, "vdw/cert_n56.txt"),
+    ("A217005", 19, "vdw/cert_A217005_n51_witness.txt"),
+    ("A217007", 7, "vdw/cert_A217007_a7_n67_witness.txt"),
+    ("A217236", 4, "vdw/cert_A217236_a4_n83.txt"),
+    ("A217059", 9, "vdw/cert_A217059_a9_n73.txt"),
 ]
+
+# An OEIS credit, "_Name_, Mon DD YYYY", and an EXTENSIONS line that names the
+# terms it adds, such as "a(20)-a(33) from _Name_, Oct 16 2026".
+_CREDIT = r"_([^_]+)_, ([A-Z][a-z]{2}) \d{1,2} (\d{4})"
+_EXTENSION = re.compile(r"a\((\d+)\)(?:-a\((\d+)\))? (?:from|added by) " + _CREDIT)
 
 #: Families whose headline refutation is reduced to checked proof objects
 #: (paper, sec. DRAT): per-cube DRAT proofs each replayed to "s VERIFIED" + a
@@ -35,6 +50,42 @@ FAMILIES = [
 DRAT_CHECKED = {"A217058", "A217005", "A217007", "A217236", "A217059"}
 
 GH = "https://github.com/Leo-Y-Zhang/MathRecords/blob/main/"
+
+
+def term_credits(seq: str, rec: dict, offset: int, count: int) -> list[tuple[str, str]]:
+    """(name, "Mon YYYY") for each term, as the OEIS entry credits it.
+
+    The entry's author is credited with every term no EXTENSIONS line names.
+    EXTENSIONS lines that name no terms (edits, corrections) change no credit.
+    A line that adds terms without saying which, a term credited twice, or a
+    credit for a term the data lacks kills the build: the page could then not
+    say who added what.
+    """
+    author = re.fullmatch(_CREDIT, rec.get("author", ""))
+    if not author:
+        sys.exit(f"REFUSING: {seq} author line {rec.get('author')!r} is not a "
+                 f"dated OEIS credit")
+    credits = [(author.group(1), f"{author.group(2)} {author.group(3)}")] * count
+    last = offset + count - 1
+    credited = set()
+    for line in rec.get("ext", []):
+        m = _EXTENSION.fullmatch(line)
+        if not m:
+            if re.search(r"\bterms?\b", line, re.IGNORECASE):
+                sys.exit(f"REFUSING: {seq} EXTENSIONS line {line!r} does not say "
+                         f"which terms it adds")
+            continue
+        lo = int(m.group(1))
+        for j in range(lo, int(m.group(2) or lo) + 1):
+            if not offset <= j <= last:
+                sys.exit(f"REFUSING: {seq} EXTENSIONS line {line!r} credits a({j}), "
+                         f"but the OEIS data is a({offset})..a({last})")
+            if j in credited:
+                sys.exit(f"REFUSING: {seq} a({j}) is credited twice in its "
+                         f"EXTENSIONS lines")
+            credited.add(j)
+            credits[j - offset] = (m.group(3), f"{m.group(4)} {m.group(5)}")
+    return credits
 
 
 def load_family(seq: str, snapshots: Path, mathrecords: Path) -> dict:
@@ -60,26 +111,35 @@ def load_family(seq: str, snapshots: Path, mathrecords: Path) -> dict:
     if len(b_values) != len(oeis_values):
         sys.exit(f"REFUSING: {seq} term-count mismatch (b-file {len(b_values)}, "
                  f"OEIS {len(oeis_values)})")
-    return {"seq": seq, "name": rec["name"], "offset": offset, "values": oeis_values}
+    credits = term_credits(seq, rec, offset, len(oeis_values))
+    return {"seq": seq, "name": rec["name"], "offset": offset, "values": oeis_values,
+            "credits": credits}
 
 
-def family_html(fam: dict, new_idx: int, credited: str, cert: str,
-                mathrecords: Path) -> str:
+def family_html(fam: dict, owner_idx: int, cert: str, mathrecords: Path,
+                as_of: str) -> str:
     seq, offset = fam["seq"], fam["offset"]
     cert_file = mathrecords / cert
     if not cert_file.is_file():
         sys.exit(f"REFUSING: witness certificate {cert} not found in MathRecords")
     last = offset + len(fam["values"]) - 1
-    if not offset <= new_idx <= last:
-        sys.exit(f"REFUSING: {seq} a({new_idx}) is the new term, but the OEIS "
-                 f"snapshot only has a({offset})..a({last}) - the page would show "
-                 f"no new term and no certificate")
+    if not offset <= owner_idx <= last:
+        sys.exit(f"REFUSING: {seq} a({owner_idx}) is the term with evidence here, "
+                 f"but the OEIS snapshot only has a({offset})..a({last}) - the page "
+                 f"would show no certified term and no certificate")
+    credited_to = fam["credits"][owner_idx - offset][0]
+    if credited_to != OWNER:
+        sys.exit(f"REFUSING: {seq} a({owner_idx}) is credited to {credited_to} by "
+                 f"the OEIS, not {OWNER} - the page would attach {OWNER}'s "
+                 f"evidence to someone else's term")
     drat = seq in DRAT_CHECKED
 
     rows = []
     for i, val in enumerate(fam["values"]):
         j = offset + i
-        if j == new_idx:
+        who, when = fam["credits"][i]
+        credit = f"{html.escape(who, quote=False)}, {when}"
+        if j == owner_idx:
             upper = ("upper bound reduced to checked DRAT proof objects"
                      if drat else
                      "upper bound: cross-checked solver verdict, stated as such")
@@ -87,8 +147,7 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
                 f'      <tr>\n'
                 f'        <th scope="row" class="m">a({j})</th>\n'
                 f'        <td class="m"><strong>{val}</strong></td>\n'
-                f'        <td>new: published by the OEIS,'
-                f' credited {credited}; <a href="{GH}{cert}">witness colouring</a>'
+                f'        <td>{credit}; <a href="{GH}{cert}">witness colouring</a>'
                 f' for the lower bound; {upper}</td>\n'
                 f'      </tr>')
         else:
@@ -96,20 +155,19 @@ def family_html(fam: dict, new_idx: int, credited: str, cert: str,
                 f'      <tr>\n'
                 f'        <th scope="row" class="m">a({j})</th>\n'
                 f'        <td class="m">{val}</td>\n'
-                f'        <td>previously known, as recorded by the OEIS</td>\n'
+                f'        <td>{credit}</td>\n'
                 f'      </tr>')
-    import re as _re
     name = html.escape(fam["name"], quote=False).replace("...", "&hellip;")
     # The OEIS name arrives in ASCII maths; render the subscripts properly.
-    name = _re.sub(r"t_\{([^}]+)\}", lambda m: "t<sub>" + m.group(1) + "</sub>", name)
-    name = _re.sub(r"t_([0-9]+)", lambda m: "t<sub>" + m.group(1) + "</sub>", name)
+    name = re.sub(r"t_\{([^}]+)\}", lambda m: "t<sub>" + m.group(1) + "</sub>", name)
+    name = re.sub(r"t_([0-9]+)", lambda m: "t<sub>" + m.group(1) + "</sub>", name)
     name = name.replace("w(", '<span class="m">w(</span>').replace(') with', '<span class="m">)</span> with')
     return f'''
   <h3><a href="https://oeis.org/{seq}">{seq}</a></h3>
   <p class="seqdef">{name}</p>
   <div class="table-scroll" role="region" aria-label="{seq} values" tabindex="0">
   <table class="seqs">
-    <caption>Terms as recorded by the OEIS when this page was last regenerated.</caption>
+    <caption>Terms and credits as recorded by the OEIS on {as_of}.</caption>
     <thead>
       <tr><th scope="col">Term</th><th scope="col">Value</th><th scope="col">Provenance</th></tr>
     </thead>
@@ -124,9 +182,9 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
     today = _dt.date.today().strftime("%-d %B %Y") if sys.platform != "win32" \
         else _dt.date.today().strftime("%#d %B %Y")
     sections = []
-    for seq, new_idx, credited, cert in FAMILIES:
+    for seq, owner_idx, cert in FAMILIES:
         fam = load_family(seq, snapshots, mathrecords)
-        sections.append(family_html(fam, new_idx, credited, cert, mathrecords))
+        sections.append(family_html(fam, owner_idx, cert, mathrecords, today))
 
     page = f'''<!doctype html>
 <html lang="en-GB">
@@ -171,18 +229,25 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
   maintained by Tanbir Ahmed, whose computations produced many of the values
   below; his pages have since gone offline. This page is a verifiable
   successor for the five mixed families I work on: <strong>every term</strong>
-  the OEIS recorded when the page was last regenerated, <strong>every new term</strong>
-  with a certificate you can check yourself, and <strong>every claim labelled
-  by the kind of evidence behind it</strong>.</p>
+  the OEIS records, credited as the OEIS credits it; <strong>every term I
+  added</strong> with a certificate you can check yourself; and <strong>every
+  claim labelled by the kind of evidence behind it</strong>.</p>
   <ul class="halves">
-    <li><strong>Lower bounds are certificates.</strong> Each new term links a
+    <li><strong>Lower bounds are certificates.</strong> Each term I added links a
     witness colouring; checking it needs the definition and nothing else.</li>
-    <li><strong>Upper bounds are labelled by their evidence.</strong> All five new
-    refutations have been reduced to formally checked proof objects:
-    23,851 per-cube DRAT proofs across the five families, each replayed to
-    <samp>s&nbsp;VERIFIED</samp> by drat-trim, plus a checked proof
+    <li><strong>Upper bounds are labelled by their evidence.</strong> The
+    refutations behind those five terms have been reduced to formally checked
+    proof objects: 23,851 per-cube DRAT proofs across the five families, each
+    replayed to <samp>s&nbsp;VERIFIED</samp> by drat-trim, plus a checked proof
     for each family that its cube set is exhaustive.</li>
   </ul>
+  <p>Each term is credited as its OEIS entry credits it: the entry’s author
+  for its original terms, and the EXTENSIONS line for each term added later.
+  None of the five terms I added was a first determination. Marek Ochocki’s
+  preprint of June 2026 has four of them, and S. Karki published A217005
+  a(19) = 52 in 2024. What MathRecords adds for those five is a second
+  derivation by a different method, with each upper bound reduced to checked
+  DRAT proofs.</p>
   <p>The tables are generated from the OEIS and cross-checked against the
   b-files in <a href="https://github.com/Leo-Y-Zhang/MathRecords">MathRecords</a>
   by <a href="{GH.replace('MathRecords/blob/main/', 'PersonalWebsite/blob/main/')}tools/build_vdw_page.py">a script that refuses to build the page
@@ -195,12 +260,13 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 
 <section class="catalogue-section" id="verify" aria-labelledby="verify-h"><h2 id="verify-h">Verify it yourself</h2><div class="section-content">
   <p>The witness colourings check in milliseconds with
-  <a href="{GH}vdw/verify_certificate.py">verify_certificate.py</a>. The whole
-  repository re-derives every published value independently under
-  <code>verify_all.py</code>, in CI. <a href="{GH}vdw/DRAT.md">DRAT.md</a>
+  <a href="{GH}vdw/verify_certificate.py">verify_certificate.py</a>. In CI,
+  <code>verify_all.py</code> re-checks every claim in the repository against
+  the evidence committed beside it. <a href="{GH}vdw/DRAT.md">DRAT.md</a>
   documents the DRAT machinery, including the measured cost of each proof
   and why colour symmetry had to come out of the cube set before the
-  equal-target families could be certified.</p>
+  equal-target families could be certified. Terms credited to other people
+  are shown as the OEIS records them; MathRecords does not re-derive them.</p>
 </div></section>
 
 <section class="catalogue-section" id="references" aria-labelledby="refs-h"><h2 id="refs-h">References</h2><div class="section-content">
@@ -212,11 +278,17 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
     prior work these families stood on for over a decade.</li>
     <li>T. Ahmed, <a href="https://arxiv.org/abs/1102.5433"><em>On the van der
     Waerden numbers w(2;3,t)</em></a>, arXiv:1102.5433.</li>
+    <li>S. Karki, <em>A New van der Waerden Number</em>, U(t)-Mathazine 9
+    (2024), 34–39.</li>
+    <li>M. Ochocki, <a href="https://doi.org/10.5281/zenodo.20572598"><em>Computing
+    Off-Diagonal Van der Waerden Numbers: Improved Algorithm and New Exact
+    Values</em></a>, Zenodo preprint (2026).</li>
     <li>The OEIS entries linked in each table, which carry the full submission
     history of every term.</li>
-    <li><em>Five new mixed van der Waerden numbers</em>, the write-up of
-    the 2026 terms, with the encoding, the certificates and an explicit account
-    of which claims rest on which kind of evidence:
+    <li><em>Five mixed van der Waerden numbers, with machine-checked upper
+    bounds</em>, the write-up of the five terms I added, with the encoding, the
+    certificates and an explicit account of which claims rest on which kind of
+    evidence:
     <a href="https://github.com/Leo-Y-Zhang/MathRecords/tree/main/paper">Write-up</a>.</li>
   </ul>
 </div></section>
@@ -224,7 +296,7 @@ def build(mathrecords: Path, snapshots: Path, out: Path) -> None:
 
 </main>
 <footer class="site-footer">
-  <p>Set in Newsreader by Production Type, with Noto Serif for Greek and IBM Plex Mono for code, all under the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated 21 November 2026.</p>
+  <p>Set in Newsreader by Production Type, with Noto Serif for Greek and IBM Plex Mono for code, all under the SIL Open Font License. No trackers, no cookies, no JavaScript. Updated {today}.</p>
   <p><a href="projects.html">Project notes</a> <a href="vdw.html">vdW numbers</a></p>
 </footer>
 </body>
